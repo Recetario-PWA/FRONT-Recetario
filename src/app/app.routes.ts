@@ -2,12 +2,29 @@ import { Routes } from '@angular/router';
 
 export const routes: Routes = [
   {
-    path: 'home',
-    loadComponent: () => import('./home/home.page').then((m) => m.HomePage),
+    path: 'welcome',
+    loadComponent: () => import('./features/welcome/welcome.page').then( m => m.WelcomePage)
+  },
+  {
+    path: 'auth',
+    children: [
+      {
+        path: 'login',
+        loadComponent: () => import('./features/auth/login/login.page').then( m => m.LoginPage)
+      },
+      {
+        path: 'register',
+        loadComponent: () => import('./features/auth/register/register.page').then( m => m.RegisterPage)
+      },
+      {
+        path: 'verify-code',
+        loadComponent: () => import('./features/auth/code/code.page').then( m => m.CodePage)
+      }
+    ]
   },
   {
     path: '',
-    redirectTo: 'home',
-    pathMatch: 'full',
-  },
+    redirectTo: 'welcome',
+    pathMatch: 'full'
+  }
 ];

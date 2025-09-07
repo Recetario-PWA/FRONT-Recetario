@@ -1,0 +1,124 @@
+/*ion-content {
+  --background: url("/assets/img/2.webp") no-repeat center center / cover;
+  ion-toolbar {
+    --background: transparent;
+  }
+  ion-grid {
+    ion-label,
+    p {
+      font-size: 1.8rem;
+      font-weight: bold;
+      letter-spacing: 0.8px;
+    }
+  }
+}
+
+ion-footer {
+  ion-row {
+    padding-top: 5vh;
+    background: transparent;
+    display: block;
+    ion-list {
+      border-radius: 20px 20px 0 0;
+      ion-list-header {
+        ion-label {
+          font-weight: bold;
+          font-size: 1.8em;
+        }
+      }
+      ion-input,
+      ion-text {
+        font-size: 1rem;
+      }
+      .error {
+        font-size: 0.75em !important;
+      }
+
+      .register-btn {
+        margin-top: 1rem;
+        width: 100%;
+        max-width: 400px;
+        font-size: 1rem;
+        font-weight: 600;
+        text-transform: none;
+        color: white;
+      }
+
+      p {
+        margin-top: 1rem;
+        text-align: center;
+        margin-top: 1rem;
+        color: var(--text-principal);
+      }
+
+      p a {
+        text-decoration: none;
+        font-weight: 600;
+      }
+    }
+  }
+} */
+
+ion-content {
+  --background-color: white;
+  ion-toolbar {
+    --background: transparent;
+  }
+  ion-grid {
+    ion-label,
+    p {
+      font-size: 1.8rem;
+      font-weight: bold;
+      letter-spacing: 0.8px;
+    }
+
+    h4 {
+      font-size: 0.75rem;
+      color: var(--secondary-text);
+      margin-top: 0.6rem;
+    }
+  }
+
+  ion-row {
+    background: transparent;
+    display: block;
+    ion-list {
+      ion-list-header {
+        ion-label {
+          font-weight: bold;
+          font-size: 1.8em;
+        }
+      }
+      ion-input,
+      ion-text {
+        font-size: 1rem;
+      }
+      .error {
+        font-size: 0.75em !important;
+      }
+
+      .login-btn {
+        margin-top: 1rem;
+        width: 100%;
+        max-width: 400px;
+        font-size: 1rem;
+        font-weight: 600;
+        text-transform: none;
+        color: white;
+      }
+
+      p {
+        margin-top: 1.3rem;
+        text-align: center;
+        margin-bottom: 1rem;
+        color: var(--text-principal);
+      }
+
+      p a {
+        text-decoration: none;
+        font-weight: 600;
+      }
+    }
+  }
+}
+

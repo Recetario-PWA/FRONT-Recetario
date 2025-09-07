@@ -1,0 +1,43 @@
+<ion-content [fullscreen]="true">
+<ion-header class="ion-no-border">
+    <ion-toolbar>
+      <ion-buttons slot="start">
+        <ion-back-button defaultHref="/"></ion-back-button>
+      </ion-buttons>
+    </ion-toolbar>
+  </ion-header>
+  <ion-grid>
+    <ion-label color="white" class="ion-margin">
+      ¡Hola de nuevo! ✨
+    </ion-label>
+    <h4 class="info ion-margin">Inicia sesión para continuar.</h4>
+  </ion-grid>
+
+  <ion-row>
+    <ion-list lines="full">
+      <ion-item-group class="ion-margin-horizontal ion-margin-bottom">
+        <form>
+        <!-- EMAIL -->
+        <div class="ion-margin-vertical">
+          <ion-item>
+            <ion-input type="email" label="Email" labelPlacement="floating" placeholder="Ej. lizethjh17@gmail.com"></ion-input>
+          </ion-item>
+        </div>
+
+        <!-- PASSWORD -->
+        <div class="ion-margin-vertical">
+          <ion-item>
+            <ion-input type="password" label="Contraseña">
+              <ion-input-password-toggle slot="end"></ion-input-password-toggle>
+            </ion-input>
+          </ion-item>
+        </div>
+
+         <ion-button type="submit" size="large" class="login-btn">Iniciar sesión</ion-button> 
+      </form>
+
+      <p>¿Eres nuevo? <a routerLink="/auth/register">Registrate aquí</a></p>
+      </ion-item-group>
+    </ion-list>
+  </ion-row>
+</ion-content>

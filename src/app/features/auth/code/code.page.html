@@ -1,0 +1,29 @@
+<ion-content [fullscreen]="true">
+<ion-header class="ion-no-border">
+    <ion-toolbar>
+      <ion-buttons slot="start">
+        <ion-back-button defaultHref="/"></ion-back-button>
+      </ion-buttons>
+    </ion-toolbar>
+  </ion-header>
+  <ion-grid>
+    <ion-label color="white" class="ion-margin">
+      Ingresa tu código 
+    </ion-label>
+    <h4 class="info ion-margin">Revisa tu correo electrónico y escribe el código de seguridad.</h4>
+  </ion-grid>
+
+  <ion-row>
+    <ion-list lines="full">
+      <ion-item-group class="ion-margin-horizontal ion-margin-bottom">
+        <form>
+        <!-- CODE -->
+        <ion-input-otp length="5" type="text"> ¿No recibiste el código? <a>Enviar de nuevo</a> </ion-input-otp>
+
+        <!-- SUBMIT BUTTON -->
+        <ion-button type="submit" size="large" class="login-btn">Verificar</ion-button> 
+      </form>
+      </ion-item-group>
+    </ion-list>
+  </ion-row>
+</ion-content>

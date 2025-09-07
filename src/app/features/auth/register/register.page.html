@@ -1,0 +1,85 @@
+<ion-content [fullscreen]="true">
+<ion-header class="ion-no-border">
+    <ion-toolbar>
+      <ion-buttons slot="start">
+        <ion-back-button defaultHref="/" text=""></ion-back-button>
+      </ion-buttons>
+    </ion-toolbar>
+  </ion-header>
+  <ion-grid>
+    <ion-label color="white" class="ion-margin">
+      Crear cuenta ✨
+    </ion-label>
+    <h4 class="info ion-margin">Completa tus datos para unirte a la comunidad.</h4>
+  </ion-grid>
+
+  <ion-row>
+    <ion-list lines="full">
+      <ion-item-group class="ion-margin-horizontal ion-margin-bottom">
+        <form>
+        <!-- NOMBRE -->
+        <div class="ion-margin-vertical">
+          <ion-item>
+            <ion-input type="text" label="Nombre(s)" labelPlacement="floating" placeholder="Ej. Jessica"></ion-input>
+          </ion-item>
+        </div>
+
+        <!-- APELLIDO -->
+         <div class="ion-margin-vertical">
+          <ion-item>
+            <ion-input type="text" label="Apellido(s)" labelPlacement="floating" placeholder="Ej. Juarez"></ion-input>
+          </ion-item>
+         </div>
+
+        <!-- USERNAME -->
+        <div class="ion-margin-vertical">
+          <ion-item>
+            <ion-input type="text" label="Username" labelPlacement="floating" placeholder="Ej. Liz123"></ion-input>
+          </ion-item>
+        </div>
+
+        <!-- GENERO -->
+         <div class="ion-margin-vertical">
+          <ion-item>
+            <ion-select aria-label="Género" label="Género" labelPlacement="floating">
+              <ion-select-option value="femenino">Femenino</ion-select-option>
+              <ion-select-option value="masculino">Masculino</ion-select-option>
+              <ion-select-option value="39 tipos de gays">39 tipos de gays 🏳️‍🌈</ion-select-option>
+            </ion-select>
+          </ion-item>
+         </div>
+
+        <!-- EMAIL -->
+        <div class="ion-margin-vertical">
+          <ion-item>
+            <ion-input type="email" label="Email" labelPlacement="floating" placeholder="Ej. lizethjh17@gmail.com"></ion-input>
+          </ion-item>
+        </div>
+
+        <!-- PASSWORD -->
+        <div class="ion-margin-vertical">
+          <ion-item>
+            <ion-input type="password" label="Contraseña" label-placement="floating" placeholder="Mínimo 6 caracteres">
+              <ion-input-password-toggle slot="end"></ion-input-password-toggle>
+            </ion-input>
+          </ion-item>
+        </div>
+
+        <!-- CONFIRM PASSWORD -->
+         <div class="ion-margin-vertical">
+          <ion-item>
+            <ion-input type="password" label="Confirmar contraseña" label-placement="floating" placeholder="Mínimo 6 caracteres">
+              <ion-input-password-toggle slot="end"></ion-input-password-toggle>
+            </ion-input>
+          </ion-item>
+         </div>
+        
+         <ion-button type="submit" size="large" class="register-btn" (click)="showAlert()">Registrarse</ion-button> 
+      </form>
+
+      <p>¿Ya tienes una cuenta? <a routerLink="/auth/login">Iniciar Sesión</a></p>
+      </ion-item-group>
+    </ion-list>
+  </ion-row>
+</ion-content>
+  
