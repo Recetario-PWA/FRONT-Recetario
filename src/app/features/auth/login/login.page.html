@@ -2,7 +2,7 @@
 <ion-header class="ion-no-border">
     <ion-toolbar>
       <ion-buttons slot="start">
-        <ion-back-button defaultHref="/"></ion-back-button>
+        <ion-back-button defaultHref="/" text=""></ion-back-button>
       </ion-buttons>
     </ion-toolbar>
   </ion-header>
@@ -33,7 +33,7 @@
           </ion-item>
         </div>
 
-         <ion-button type="submit" size="large" class="login-btn">Iniciar sesión</ion-button> 
+         <ion-button type="submit" size="large" class="login-btn" routerLink="/tabs">Iniciar sesión</ion-button> 
       </form>
 
       <p>¿Eres nuevo? <a routerLink="/auth/register">Registrate aquí</a></p>

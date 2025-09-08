@@ -6,6 +6,37 @@ export const routes: Routes = [
     loadComponent: () => import('./features/welcome/welcome.page').then( m => m.WelcomePage)
   },
   {
+    path: 'tabs',
+    loadComponent: () => import('./shared/components/tabs/tabs.component').then( m => m.TabsComponent),
+    children: [
+      {
+        path: 'home',
+        loadComponent: () => import('./features/tabs/home/home.component').then( m => m.HomeComponent)
+      },
+      {
+        path: 'favorites',
+        loadComponent: () => import('./features/tabs/favorites/favorites.component').then( m => m.FavoritesComponent)
+      },
+      {
+        path: 'add-recipe',
+        loadComponent: () => import('./features/tabs/add-recipe/add-recipe.component').then( m => m.AddRecipeComponent)
+      },
+      {
+        path: 'dashboard',
+        loadComponent: () => import('./features/tabs/dashboard/dashboard.component').then( m => m.DashboardComponent)
+      },
+      {
+        path: 'notifications',
+        loadComponent: () => import('./features/tabs/notifications/notifications.component').then( m => m.NotificationsComponent)
+      },
+      {
+        path: '',
+        redirectTo: 'home',
+        pathMatch: 'full'
+      }
+    ]
+  },
+  {
     path: 'auth',
     children: [
       {

@@ -1,0 +1,55 @@
+<ion-header class="ion-no-border">
+  <ion-toolbar class="wrapper">
+    <ion-item lines="none">
+      <ion-label>
+        <div>
+          <ion-icon [name]="greetingIcon"></ion-icon>
+          <ion-text>{{ greeting }}</ion-text>
+        </div>
+        <p>{{ username }}</p>
+      </ion-label>
+
+      <ion-avatar slot="end">
+        <img alt="Profile photo" src="assets/img/avatar1.png" />
+      </ion-avatar>
+    </ion-item>
+    
+    <ion-searchbar class="custom-searchbar" debounce="800" inputmode="search" mode="ios" placeholder="Buscar receta"></ion-searchbar>
+  </ion-toolbar>
+</ion-header>
+<ion-content>
+  <ion-label class="ion-margin-horizontal">Todas las recetas 🍽️</ion-label>
+
+  <div class="ion-margin">
+    <ion-row>
+      <!-- RECIPE CARDS -->
+      @defer (when !loading()) {
+        @for (recipe of recipes; track recipe.id) {
+          <ion-col sizeLg="3" sizeMd="4" sizeSm="6" sizeXl="3" sizeXs="6">
+            <app-recipe-card [recipe_id]="recipe.id" [title]="recipe.title" [rating]="recipe.rating" [cooking_time]="recipe.cooking_time" [image_url]="recipe.image_url"></app-recipe-card>
+          </ion-col>
+        } @empty {
+          <div class="ion-text-center ion-padding">
+            <h4>No hay recetas disponibles 😔</h4>
+          </div>
+        }
+      } @placeholder {
+        @for (skeleton of skeletons; track $index) {
+          <ion-col sizeLg="3" sizeMd="4" sizeSm="6" sizeXl="3" sizeXs="6">
+            <ion-card>
+              <ion-thumbnail>
+                <ion-skeleton-text [animated]="true"></ion-skeleton-text>
+                <ion-item lines="none">
+                  <ion-label>
+                    <ion-skeleton-text [animated]="true" style="width: 80%;"></ion-skeleton-text>
+                    <ion-skeleton-text [animated]="true" style="width: 35%; margin-top: 0.5rem;"></ion-skeleton-text>
+                  </ion-label>
+                </ion-item>
+              </ion-thumbnail>
+            </ion-card>
+          </ion-col>
+        }
+      }
+    </ion-row>
+  </div>
+</ion-content>
