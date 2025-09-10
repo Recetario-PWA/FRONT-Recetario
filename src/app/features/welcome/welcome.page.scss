@@ -1,20 +1,20 @@
 ion-content {
   --background: none;
-  --overflow: hidden;
-
   position: relative;
-}
+  display: flex;
+  flex-direction: column;
 
-ion-content::before {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: linear-gradient(to top, rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.1)),
-    url("/assets/img/1.webp") no-repeat center center / cover;
-  z-index: -1;
+  &::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(to top, rgba(0,0,0,0.7), rgba(0,0,0,0.1)),
+      url("/assets/img/1.webp") no-repeat center center / cover;
+    z-index: -1;
+  }
 }
 
 .top-label {
@@ -30,10 +30,9 @@ ion-content::before {
 }
 
 .content {
-  height: 100vh;
   display: flex;
   flex-direction: column;
-  justify-content: flex-end;
+  margin-top: auto;
   align-items: center;
   padding: 1.5rem 2rem;
 
@@ -55,28 +54,55 @@ ion-content::before {
       color: white;
     }
   }
+}
 
-  .actions {
-    width: 100%;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+ion-footer {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  background: transparent;
+  text-align: center;
 
-    .login {
-      width: 90%;
-      max-width: 400px;
-      font-size: 1rem;
-      font-weight: 600;
-      color: white;
-      text-transform: none;
+  .footer-content {
+    padding: 1rem 2rem;
+
+    .heading h1 {
+      font-size: 2.25rem;
+      font-weight: 700;
+      text-transform: uppercase;
       margin-bottom: 1rem;
+      color: white;
     }
 
-    a {
-      text-decoration: none;
+    .heading p {
       font-size: 1rem;
+      margin: 0;
       color: white;
-      font-weight: 500;
+    }
+
+    .actions {
+      margin-top: 1rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+
+      .login {
+        width: 90%;
+        max-width: 400px;
+        font-size: 1rem;
+        font-weight: 600;
+        color: white;
+        text-transform: none;
+        margin-bottom: 1rem;
+      }
+
+      a {
+        text-decoration: none;
+        font-size: 1rem;
+        color: white;
+        font-weight: 500;
+      }
     }
   }
 }
+

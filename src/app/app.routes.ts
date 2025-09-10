@@ -6,6 +6,10 @@ export const routes: Routes = [
     loadComponent: () => import('./features/welcome/welcome.page').then( m => m.WelcomePage)
   },
   {
+    path: 'recipe-detail',
+    loadComponent: () => import('./features/recipe-detail/recipe-detail.page').then( m => m.RecipeDetailPage)
+  },
+  {
     path: 'tabs',
     loadComponent: () => import('./shared/components/tabs/tabs.component').then( m => m.TabsComponent),
     children: [

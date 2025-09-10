@@ -1,7 +1,22 @@
-<ion-header>
-  <ion-toolbar>
-    <ion-title>Agregar receta</ion-title>
+<ion-header class="ion-no-border" mode="ios">
+  <ion-toolbar class="wrapper">
+    <ion-item lines="none">
+    <!-- <ion-buttons slot="start">
+        <ion-back-button defaultHref="/" text=""></ion-back-button>
+      </ion-buttons> -->
+      <ion-label>
+        <p>Publicar receta</p>
+      </ion-label>
+    </ion-item>
   </ion-toolbar>
 </ion-header>
-<ion-content>
+
+<ion-content class="hide-scrollbar">
+  <ion-button expand="block" (click)="takePhoto()">
+    Tomar Foto
+  </ion-button>
+
+  <div *ngIf="photo">
+    <ion-img [src]="photo"></ion-img>
+  </div>
 </ion-content>
