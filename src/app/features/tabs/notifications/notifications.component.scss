@@ -1,0 +1,108 @@
+ion-header {
+  --background: white !important;
+  ion-toolbar.wrapper {
+    --background: white !important;
+    ion-item {
+      margin: 2.5vh 0;
+      ion-label {
+        font-size: 1rem;
+        color: var(--text-primary);
+        p {
+          margin-top: 0rem;
+          font-size: 1.5rem;
+          font-weight: 700;
+          color: var(--text-primary);
+        }
+      }
+      ion-button{
+        --background: var(--ion-color-primary);
+      ion-icon {
+        color: white;
+      }
+      }
+    }
+  }
+}
+
+ion-content {
+  --padding-bottom: 60px;
+
+  ion-avatar img {
+    border: 2px solid var(--ion-color-primary);
+  }
+
+  ion-label {
+    font-size: 1rem;
+    font-weight: 600;
+  }
+
+  ion-label.comment-label-container {
+    display: flex;
+    flex-direction: column;
+
+    .user-info-line {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 0.95rem;
+      color: var(--text-principal);
+
+      ion-text:first-child {
+        font-weight: 600;
+      }
+    }
+
+    .recipe-info-line {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.9rem;
+      color: var(--secondary-text);
+      margin-top: 4px;
+
+      .recipe-title {
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        max-width: 150px;
+      }
+    }
+
+    .time-stamp {
+      margin-top: 4px;
+      font-size: 0.9rem;
+      color: var(--secondary-text);
+      font-size: 0.8rem;
+    }
+  }
+
+  ion-label.empty-message {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    text-align: center;
+  }
+
+  ion-thumbnail {
+    --size: 45px;
+    --border-radius: 8px;
+  }
+
+  ion-item.unread {
+    --background: var(--ion-color-light);
+  }
+
+  ion-list {
+    margin-bottom: 1rem;
+  }
+
+  ion-thumbnail.userSkeleton{
+    --border-radius: 50%;
+  }
+
+  ion-thumbnail.recipeImgSkeleton{
+    --size: 45px;
+  }
+
+}

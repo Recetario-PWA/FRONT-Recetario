@@ -54,6 +54,23 @@ export const routes: Routes = [
     ]
   },
   {
+    path: 'dashboard',
+    children: [
+      {
+        path: 'edit-profile',
+        loadComponent: () => import('./features/dashboard/edit-profile/edit-profile.page').then( m => m.EditProfilePage)
+      },
+      {
+        path: 'my-recipes',
+        loadComponent: () => import('./features/dashboard/my-recipes/my-recipes.page').then( m => m.MyRecipesPage)
+      },
+      {
+        path: 'my-comments',
+        loadComponent: () => import('./features/dashboard/my-comments/my-comments.page').then( m => m.MyCommentsPage)
+      }
+    ]
+  },
+  {
     path: '',
     redirectTo: 'welcome',
     pathMatch: 'full'

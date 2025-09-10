@@ -26,5 +26,4 @@ export class TabsComponent  implements OnInit {
   goToCreateRecipe() {
     this.router.navigateByUrl('/tabs/add-recipe'); 
   }
-
 }
