@@ -2,7 +2,7 @@
 <ion-header class="ion-no-border">
     <ion-toolbar>
       <ion-buttons slot="start">
-        <ion-back-button defaultHref="/" text=""></ion-back-button>
+        <ion-back-button mode="md" defaultHref="/" text=""></ion-back-button>
       </ion-buttons>
     </ion-toolbar>
   </ion-header>
@@ -18,63 +18,50 @@
       <ion-item-group class="ion-margin-horizontal ion-margin-bottom">
         <form>
         <!-- NOMBRE -->
-        <div class="ion-margin-vertical">
-          <ion-item>
-            <ion-input type="text" label="Nombre(s)" labelPlacement="floating" placeholder="Ej. Jessica"></ion-input>
-          </ion-item>
-        </div>
+        <ion-item lines="none">
+          <ion-label position="stacked">Nombre(s)</ion-label>
+          <input value="" type="text" placeholder="Ej. Jessica Lizeth">
+        </ion-item>
 
-        <!-- APELLIDO -->
-         <div class="ion-margin-vertical">
-          <ion-item>
-            <ion-input type="text" label="Apellido(s)" labelPlacement="floating" placeholder="Ej. Juarez"></ion-input>
-          </ion-item>
-         </div>
+        <ion-item lines="none">
+          <ion-label position="stacked">Apellidos(s)</ion-label>
+          <input value="" type="text" placeholder="Ej. Juarez Hernandez">
+        </ion-item>
 
-        <!-- USERNAME -->
-        <div class="ion-margin-vertical">
-          <ion-item>
-            <ion-input type="text" label="Username" labelPlacement="floating" placeholder="Ej. Liz123"></ion-input>
-          </ion-item>
-        </div>
+        <ion-item lines="none">
+          <ion-label position="stacked">Username</ion-label>
+          <input value="" type="text" placeholder="Iceli">
+        </ion-item>
 
-        <!-- GENERO -->
-         <div class="ion-margin-vertical">
-          <ion-item>
-            <ion-select aria-label="Género" label="Género" labelPlacement="floating">
-              <ion-select-option value="femenino">Femenino</ion-select-option>
-              <ion-select-option value="masculino">Masculino</ion-select-option>
-              <ion-select-option value="39 tipos de gays">39 tipos de gays 🏳️‍🌈</ion-select-option>
-            </ion-select>
-          </ion-item>
-         </div>
-
-        <!-- EMAIL -->
-        <div class="ion-margin-vertical">
-          <ion-item>
-            <ion-input type="email" label="Email" labelPlacement="floating" placeholder="Ej. lizethjh17@gmail.com"></ion-input>
-          </ion-item>
-        </div>
-
-        <!-- PASSWORD -->
-        <div class="ion-margin-vertical">
-          <ion-item>
-            <ion-input type="password" label="Contraseña" label-placement="floating" placeholder="Mínimo 6 caracteres">
-              <ion-input-password-toggle slot="end"></ion-input-password-toggle>
-            </ion-input>
-          </ion-item>
-        </div>
-
-        <!-- CONFIRM PASSWORD -->
-         <div class="ion-margin-vertical">
-          <ion-item>
-            <ion-input type="password" label="Confirmar contraseña" label-placement="floating" placeholder="Mínimo 6 caracteres">
-              <ion-input-password-toggle slot="end"></ion-input-password-toggle>
-            </ion-input>
-          </ion-item>
-         </div>
+        <ion-item lines="none">
+          <ion-label position="stacked">Correo electronico</ion-label>
+          <input value="" type="email" placeholder="lizethjh17@gmail.com">
+        </ion-item>
         
-         <ion-button type="submit" size="large" class="register-btn" (click)="showAlert()">Registrarse</ion-button> 
+        <ion-item lines="none">
+          <ion-label position="stacked">Género</ion-label>
+          <ion-select class="ion-margin-bottom" mode="md" aria-label="Genero" interface="popover" placeholder="Seleccionar">
+            <ion-select-option value="femenino">Femenino</ion-select-option>
+            <ion-select-option value="masculino">Masculino</ion-select-option>
+            <ion-select-option value="39 tipos de gays🏳️‍🌈">39 tipos de gays🏳️‍🌈</ion-select-option>
+          </ion-select>
+        </ion-item>
+
+        <ion-item lines="none">
+          <ion-label position="stacked">Contraseña</ion-label>
+          <ion-input class="ion-margin-bottom" type="password">
+            <ion-input-password-toggle slot="end"></ion-input-password-toggle>
+          </ion-input>
+        </ion-item>
+
+        <ion-item lines="none">
+          <ion-label position="stacked">Confirmar contraseña</ion-label>
+          <ion-input type="password">
+            <ion-input-password-toggle slot="end"></ion-input-password-toggle>
+          </ion-input>
+        </ion-item>
+
+        <ion-button type="submit" size="large" class="btnCustom" expand="block">Registrarse</ion-button>
       </form>
 
       <p>¿Ya tienes una cuenta? <a routerLink="/auth/login">Iniciar Sesión</a></p>

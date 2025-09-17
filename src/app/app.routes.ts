@@ -3,11 +3,11 @@ import { Routes } from '@angular/router';
 export const routes: Routes = [
   {
     path: 'welcome',
-    loadComponent: () => import('./features/welcome/welcome.page').then( m => m.WelcomePage)
+    loadComponent: () => import('./features/welcome/welcome.page').then(m => m.WelcomePage)
   },
   {
-    path: 'recipe-detail',
-    loadComponent: () => import('./features/recipe-detail/recipe-detail.page').then( m => m.RecipeDetailPage)
+    path: 'recipe-detail/:id',
+    loadComponent: () => import('./features/recipe-detail/recipe-detail.component').then( m => m.RecipeDetailComponent)
   },
   {
     path: 'tabs',
@@ -22,7 +22,11 @@ export const routes: Routes = [
         loadComponent: () => import('./features/tabs/favorites/favorites.component').then( m => m.FavoritesComponent)
       },
       {
-        path: 'add-recipe',
+        path: 'recipe/add',
+        loadComponent: () => import('./features/tabs/add-recipe/add-recipe.component').then( m => m.AddRecipeComponent)
+      },
+      {
+        path: 'recipe/:id',
         loadComponent: () => import('./features/tabs/add-recipe/add-recipe.component').then( m => m.AddRecipeComponent)
       },
       {

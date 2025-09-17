@@ -9,10 +9,10 @@ import { enableProdMode, isDevMode } from '@angular/core';
 import { provideServiceWorker } from '@angular/service-worker';
 import { environment } from './environments/environment.prod';
 
-defineCustomElements(window);
+/*defineCustomElements(window);
 if (environment.production) {
   enableProdMode();
-}
+} */
 
 bootstrapApplication(AppComponent, {
   providers: [

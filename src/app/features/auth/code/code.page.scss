@@ -1,7 +1,7 @@
 ion-content.ios {
   ion-header {
     --ion-safe-area-top: 20px;
-    
+
     ion-toolbar {
       --padding-top: 0;
       --padding-bottom: 1rem;
@@ -39,7 +39,20 @@ ion-content {
           font-size: 1.8em;
         }
       }
-      ion-input,
+      ion-input-otp {
+        --background: var(--ion-color-light);
+        //--border-radius: 8px;
+        border: none !important;
+        outline: none !important;
+        box-shadow: none !important;
+        font-size: 1rem;
+        --separator-color: #c0c9ee;
+        --highlight-color-focused: var(--ion-color-primary);
+      }
+      .input-otp-fill-outline {
+        --border-color: var(--ion-color-light);
+        --color: var(--text-principal);
+      }
       ion-text {
         font-size: 1rem;
       }
@@ -48,9 +61,7 @@ ion-content {
       }
 
       .login-btn {
-        margin-top: 1rem;
-        width: 100%;
-        max-width: 400px;
+        margin-top: 1.75rem;
         font-size: 1rem;
         font-weight: 600;
         text-transform: none;
@@ -71,4 +82,3 @@ ion-content {
     }
   }
 }
-

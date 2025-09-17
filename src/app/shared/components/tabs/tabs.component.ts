@@ -23,7 +23,7 @@ export class TabsComponent  implements OnInit {
   ngOnInit() {
   }
 
-  goToCreateRecipe() {
-    this.router.navigateByUrl('/tabs/add-recipe'); 
+  goToCreateEditRecipe() {
+    this.router.navigateByUrl('/tabs/recipe/add'); 
   }
 }

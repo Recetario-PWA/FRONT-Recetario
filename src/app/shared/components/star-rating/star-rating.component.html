@@ -1,0 +1,8 @@
+<div class="star-rating-container">
+  <ion-icon
+    *ngFor="let star of stars; let i = index"
+    [name]="isAboveRating(i) ? 'star-outline' : 'star'"
+    [color]="getColor(i)"
+    (click)="rate(i)"
+  ></ion-icon>
+</div>

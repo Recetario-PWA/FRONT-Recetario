@@ -22,6 +22,10 @@
   --ion-color-primary-shade: #8f96c1;
   --ion-color-primary-tint: #abb3df;
 
+  --ion-color-warning: #f9e79f;
+
+  --ion-color-danger: #A53F3F;
+
   --text-principal: #2b2d2f;
   --secondary-text: #6b6f73;
   --input-color: #f1f4f6;
@@ -30,6 +34,11 @@
 * {
   font-family: "Quicksand", sans-serif;
   font-weight: 400;
+}
+
+ion-item,
+ion-label {
+  --font-family: "Quicksand", sans-serif;
 }
 
 /* Core CSS required for Ionic components to work properly */

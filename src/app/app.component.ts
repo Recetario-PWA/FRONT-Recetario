@@ -14,7 +14,7 @@ import { AlertController } from '@ionic/angular';
 export class AppComponent {
 
   constructor(private swUpdate: SwUpdate, private alertController: AlertController) {
-    if (this.swUpdate.isEnabled) {
+   /* if (this.swUpdate.isEnabled) {
       this.swUpdate.versionUpdates.pipe(
         filter((event): event is VersionReadyEvent => event.type === 'VERSION_READY')
       ).subscribe(() => {
@@ -22,10 +22,10 @@ export class AppComponent {
       });
 
       this.swUpdate.checkForUpdate();
-    }
+    } */
   }
 
-  async showUpdateAlert() {
+  /* async showUpdateAlert() {
     const alert = await this.alertController.create({
       header: '✨ ¡Actualización disponible!',
       message: 'Descubre funciones nuevas y mejoras que harán tu experiencia aún mejor.',
@@ -44,5 +44,5 @@ export class AppComponent {
     });
 
     await alert.present();
-  }
+  } */
 }

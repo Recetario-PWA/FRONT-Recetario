@@ -1,13 +1,93 @@
-<ion-header [translucent]="true">
-  <ion-toolbar>
-    <ion-title>editProfile</ion-title>
+<ion-header class="ion-no-border" mode="ios">
+  <ion-toolbar class="wrapper">
+    <ion-item lines="none">
+      <ion-buttons slot="start">
+        <ion-back-button mode="md" defaultHref="/tabs/dashboard" text=""></ion-back-button>
+      </ion-buttons>
+      <ion-label>
+        <p>Editar perfil</p>
+      </ion-label>
+    </ion-item>
   </ion-toolbar>
 </ion-header>
 
-<ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">editProfile</ion-title>
-    </ion-toolbar>
-  </ion-header>
+<ion-content class="hide-scrollbar ion-padding">
+ <div class="profile-container">
+    <div class="profile-photo-wrapper">
+      <img src="https://ionicframework.com/docs/img/demos/avatar.svg" alt="Profile Photo" class="profile-photo" />
+    </div>
+  </div>
+
+  <ion-list>
+    <form>
+      <ion-item>
+        <ion-label position="stacked">Nombre(s)</ion-label>
+        <input value="" type="text" placeholder="Ej. Jessica Lizeth">
+      </ion-item>
+
+      <ion-item>
+        <ion-label position="stacked">Apellidos(s)</ion-label>
+        <input value="" type="text" placeholder="Ej. Juarez Hernandez">
+      </ion-item>
+
+      <ion-item>
+        <ion-label position="stacked">Username</ion-label>
+        <input value="" type="text" placeholder="Iceli">
+      </ion-item>
+
+      <ion-item>
+        <ion-label position="stacked">Correo electronico</ion-label>
+        <input value="" type="email" placeholder="lizethjh17@gmail.com">
+      </ion-item>
+      
+      <ion-item>
+        <ion-label position="stacked">Género</ion-label>
+        <ion-select mode="md" aria-label="Genero" interface="popover" placeholder="Seleccionar">
+          <ion-select-option value="femenino">Femenino</ion-select-option>
+          <ion-select-option value="masculino">Masculino</ion-select-option>
+          <ion-select-option value="39 tipos de gays🏳️‍🌈">39 tipos de gays🏳️‍🌈</ion-select-option>
+        </ion-select>
+      </ion-item>
+
+      <div class="actions">
+        <ion-button size="large" class="btnCustom" id="open-modal" expand="block">Cambiar Contraseña</ion-button>
+        <ion-button size="large" type="submit" class="btnCustom" expand="block">Guardar cambios</ion-button>
+      </div>
+    </form>
+
+    <ion-modal #modal trigger="open-modal" >
+      <ng-template>
+        <ion-content>
+          <ion-toolbar>
+            <ion-title>Cambiar Contraseña</ion-title>
+            <ion-buttons slot="end">
+              <ion-button color="light" (click)="modal.dismiss()">
+                <ion-icon class="iconXl" name="close-outline"></ion-icon>
+              </ion-button>
+            </ion-buttons>
+          </ion-toolbar>
+          <ion-list>
+            <form>
+              <ion-item class="ion-margin-top ion-margin-horizontal ion-margin-bottom">
+                <ion-label position="stacked">Contraseña nueva</ion-label>
+                <ion-input type="password">
+                  <ion-input-password-toggle slot="end"></ion-input-password-toggle>
+                </ion-input>
+              </ion-item>
+              <ion-item class="ion-margin-horizontal ion-margin-bottom">
+                <ion-label position="stacked">Confirmar contraseña</ion-label>
+                <ion-input type="password">
+                  <ion-input-password-toggle slot="end"></ion-input-password-toggle>
+                </ion-input>
+              </ion-item>
+
+              <div class="ion-text-center ion-padding-top">
+                <ion-button size="large" type="submit" class="btnCustom">Actualizar contraseña</ion-button>
+              </div>
+            </form>
+          </ion-list>
+        </ion-content>
+      </ng-template>
+  </ion-modal>
+  </ion-list>
 </ion-content>

@@ -1,36 +1,17 @@
 import { Component, OnInit, signal } from '@angular/core';
-import {
-  IonHeader,
-  IonToolbar,
-  IonTitle,
-  IonContent,
-  IonLabel,
-  IonText,
-  IonIcon,
-  IonItem,
-  IonSearchbar,
-  IonCardSubtitle,
-  IonCardHeader,
-  IonCardTitle,
-  IonCardContent,
-  IonCard,
-  IonThumbnail,
-  IonImg,
-  IonAccordion,
-  IonRow,
-  IonCol,
-  IonAvatar,
-  IonGrid,
-  IonList, IonSkeletonText } from '@ionic/angular/standalone';
+import { IonHeader, IonToolbar, IonTitle, IonContent, IonLabel, IonText, IonIcon, IonItem, IonSearchbar, IonCardSubtitle, IonCardHeader, IonCardTitle, IonCardContent, IonCard, IonThumbnail, IonImg, IonAccordion, IonRow, IonCol, IonAvatar, IonGrid, IonList, IonSkeletonText, IonButton } from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
 import { sunnyOutline, cloudOutline, moonOutline } from 'ionicons/icons';
 import { RecipeCardComponent } from '../components/recipe-card/recipe-card.component';
+import { CommonModule } from '@angular/common';
+import { RouterModule } from '@angular/router';
 @Component({
   selector: 'app-home',
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.scss'],
   standalone: true,
-  imports: [IonSkeletonText, 
+  imports: [IonSkeletonText,
+    CommonModule,
     IonList,
     IonGrid,
     IonAvatar,
@@ -53,8 +34,9 @@ import { RecipeCardComponent } from '../components/recipe-card/recipe-card.compo
     IonThumbnail,
     IonImg,
     IonAccordion,
-    RecipeCardComponent,
-  ],
+    RecipeCardComponent, 
+    RouterModule,
+    IonButton],
 })
 export class HomeComponent implements OnInit {
   greeting: string = '';

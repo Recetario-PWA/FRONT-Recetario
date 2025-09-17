@@ -1,22 +1,81 @@
 <ion-header class="ion-no-border" mode="ios">
   <ion-toolbar class="wrapper">
     <ion-item lines="none">
-    <!-- <ion-buttons slot="start">
-        <ion-back-button defaultHref="/" text=""></ion-back-button>
-      </ion-buttons> -->
+      @if (isEditMode() === true) {
+        <ion-buttons slot="start">
+          <ion-back-button mode="md" defaultHref="/dashboard/my-recipes" text=""></ion-back-button>
+        </ion-buttons>
+      }
       <ion-label>
-        <p>Publicar receta</p>
+        <p>{{ pageTitle() }}</p>
       </ion-label>
     </ion-item>
   </ion-toolbar>
 </ion-header>
 
 <ion-content class="hide-scrollbar">
-  <ion-button expand="block" (click)="takePhoto()">
-    Tomar Foto
-  </ion-button>
+  <ion-list>
+    <form>
+      <ion-item lines="none" class="ion-margin-bottom">
+        @if (loading()) {
+          <div class="drag-area">
+            <ion-spinner name="dots"></ion-spinner>
+            <ion-text>Cargando foto...</ion-text>
+          </div>
+        } @else if (photo) {
+          <div class="actionPhoto">
+            <div class="photo-area">
+              <ion-img [src]="photo"></ion-img>
+            </div>
+            <ion-button class="btnDelete ion-margin-top" size="medium" (click)="deletePhoto()">
+              <ion-icon slot="start" name="trash-outline"></ion-icon>
+              Eliminar foto
+            </ion-button>
+          </div>
+        } @else {
+          <div class="drag-area">
+            <ion-icon class="photoIcon" name="image-outline"></ion-icon>
+            <ion-text>Agregar foto 🍳</ion-text>
+            <ion-button class="ion-margin-top" size="medium" (click)="takePhoto()">
+              <ion-icon slot="start" name="camera-outline"></ion-icon>
+              Tomar foto
+            </ion-button>
+            <ion-button size="medium" (click)="selectPhoto()">
+              <ion-icon slot="start" name="images-outline"></ion-icon>
+              Seleccionar foto
+            </ion-button>
+          </div>
+        }
+      </ion-item>
 
-  <div *ngIf="photo">
-    <ion-img [src]="photo"></ion-img>
-  </div>
+      <ion-item lines="none" class="ion-margin-bottom">
+        <ion-label position="stacked">Nombre de la receta</ion-label>
+        <input type="text" placeholder="Ej. Pizza casera">
+      </ion-item>
+
+      <ion-item lines="none" class="ion-margin-bottom">
+        <ion-label position="stacked">Porciones</ion-label>
+        <input type="number" placeholder="Ej. 1">
+      </ion-item>
+
+      <ion-item lines="none" class="ion-margin-bottom">
+        <ion-label position="stacked">Tiempo de preparación</ion-label>
+        <input type="number" placeholder="Ej. 15min">
+      </ion-item>
+
+      <ion-item lines="none" class="ion-margin-bottom">
+        <ion-label position="stacked">Ingredientes</ion-label>
+        <!--<ion-textarea placeholder="Enter text"></ion-textarea>-->
+        <textarea autocapitalize="on" wrap="hard" minlength="20" maxlength="1000" spellcheck="true" rows="8" placeholder="Escribe los ingredientes separados por (,)"></textarea>
+      </ion-item>
+
+      <ion-item lines="none" class="ion-margin-bottom">
+        <ion-label position="stacked">Instrucciones</ion-label>
+        <!--<ion-textarea placeholder="Enter text"></ion-textarea>-->
+        <textarea autocapitalize="on" wrap="hard" minlength="20" maxlength="1000" spellcheck="true" rows="8" placeholder="Escribe las instrucciones separadas por (,)"></textarea>
+      </ion-item>
+
+      <ion-button type="submit" size="large" class="ion-margin-horizontal btnCustom" expand="block">{{ btnText() }}</ion-button>
+    </form>
+  </ion-list>
 </ion-content>

@@ -2,9 +2,9 @@ import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
-import { IonSearchbar, IonHeader, IonLabel, IonToolbar, IonItem, IonContent, IonAvatar, IonText, IonButton, IonList, IonIcon, IonToggle } from "@ionic/angular/standalone";
+import { IonSearchbar, IonHeader, IonLabel, IonToolbar, IonItem, IonContent, IonAvatar, IonText, IonButton, IonList, IonIcon, IonToggle, NavController } from "@ionic/angular/standalone";
 import { addIcons } from 'ionicons';
-import { personOutline, restaurantOutline, settingsOutline, logOutOutline, chatbubblesOutline, moonOutline } from 'ionicons/icons';
+import { chevronForwardOutline, personOutline, restaurantOutline, settingsOutline, logOutOutline, chatbubblesOutline, moonOutline } from 'ionicons/icons';
 
 @Component({
   selector: 'app-dashboard',
@@ -16,8 +16,8 @@ import { personOutline, restaurantOutline, settingsOutline, logOutOutline, chatb
 export class DashboardComponent  implements OnInit {
   paletteToggle = false;
 
-  constructor(private router: Router) {
-    addIcons({ personOutline, restaurantOutline, settingsOutline, logOutOutline, chatbubblesOutline, moonOutline }); 
+  constructor(private router: Router, private navCtrl: NavController) {
+    addIcons({ chevronForwardOutline, personOutline, restaurantOutline, settingsOutline, logOutOutline, chatbubblesOutline, moonOutline }); 
   }
 
   ngOnInit() {
@@ -48,6 +48,7 @@ export class DashboardComponent  implements OnInit {
 
   goToPage(page: string) {
     this.router.navigateByUrl(`/dashboard/${page}`);
+    //this.navCtrl.navigateForward(['/dashboard/', page]);
   }
 
   logout() {

@@ -1,5 +1,5 @@
 {
-  "name": "Recetario PWA",
+  "name": "Recetario",
   "short_name": "Recetario",
   "description": "Una aplicación para descubrir, guardar y compartir recetas de cocina de forma rápida y sencilla.",
   "display": "standalone",
@@ -12,7 +12,7 @@
       "src": "icons/icon-72x72.png",
       "sizes": "72x72",
       "type": "image/png",
-      "purpose": "maskable"
+      "purpose": "any"
     },
     {
       "src": "icons/icon-96x96.png",
@@ -45,6 +45,12 @@
       "purpose": "any"
     },
     {
+      "src": "icons/icon-256x256.png",
+      "sizes": "256x256",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
       "src": "icons/icon-384x384.png",
       "sizes": "384x384",
       "type": "image/png",
@@ -54,7 +60,7 @@
       "src": "icons/icon-512x512.png",
       "sizes": "512x512",
       "type": "image/png",
-      "purpose": "any"
+      "purpose": "maskable"
     }
   ],
   "screenshots": [

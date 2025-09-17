@@ -1,13 +1,31 @@
-<ion-header [translucent]="true">
-  <ion-toolbar>
-    <ion-title>myRecipes</ion-title>
+<ion-header class="ion-no-border" mode="ios">
+  <ion-toolbar class="wrapper">
+    <ion-item lines="none">
+      <ion-buttons slot="start">
+        <ion-back-button mode="md" defaultHref="/tabs/dashboard" text=""></ion-back-button>
+      </ion-buttons>
+      <ion-label>
+        <p>Mis recetas</p>
+      </ion-label>
+    </ion-item>
+    <ion-searchbar class="custom-searchbar" debounce="800" inputmode="search" mode="ios" placeholder="Buscar receta"></ion-searchbar>
   </ion-toolbar>
 </ion-header>
 
-<ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">myRecipes</ion-title>
-    </ion-toolbar>
-  </ion-header>
+<ion-content class="hide-scrollbar">
+ <ion-row class="ion-margin">
+    <ion-col sizeLg="3" sizeMd="4" sizeSm="6" sizeXl="3" sizeXs="6">
+      <app-my-recipe-card (cardAction)="openActionSheet(1)" [recipe_id]="1" [title]="'Pruebangas'" [rating]="2" [cooking_time]="20" [image_url]="''"></app-my-recipe-card>
+    </ion-col>
+ </ion-row>
+
+  <ion-action-sheet
+    [isOpen]="isActionSheetOpen"
+    header="Opciones"
+    class="actionSheetCustom"
+    backdropDismiss = false
+    [buttons]="actionSheetButtons"
+    (didDismiss)="setOpen($event)"
+  ></ion-action-sheet>
 </ion-content>
+

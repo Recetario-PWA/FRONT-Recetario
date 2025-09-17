@@ -1,7 +1,7 @@
 ion-content.ios {
   ion-header {
     --ion-safe-area-top: 20px;
-    
+
     ion-toolbar {
       --padding-top: 0;
       --padding-bottom: 1rem;
@@ -39,7 +39,61 @@ ion-content {
           font-size: 1.8em;
         }
       }
-      ion-input,
+
+      ion-label {
+        font-family: "Quicksand", sans-serif;
+        font-weight: 500;
+        margin-bottom: 1rem;
+        font-size: 1rem;
+        color: var(--principal-text);
+      }
+      input {
+        margin-bottom: 1rem;
+        background: var(--ion-color-light) !important;
+        border: none !important;
+        outline: none !important;
+        box-shadow: none !important;
+        padding-bottom: 8px;
+        padding-top: 8px;
+        padding-left: 20px;
+        padding-right: 20px;
+        border-radius: 8px;
+        color: var(--text-principal);
+        width: 100%;
+      }
+
+      ion-input {
+        --background: var(--ion-color-light);
+        border: none !important;
+        outline: none !important;
+        box-shadow: none !important;
+        --border-radius: 8px;
+        --padding-start: 16px;
+        color: var(--text-principal);
+      }
+
+      ion-select {
+        --background: var(--ion-color-light);
+        border: none !important;
+        outline: none !important;
+        box-shadow: none !important;
+        --border-radius: 8px;
+        --padding-start: 16px;
+        color: var(--text-principal);
+        --placeholder-color: var(--ion-color-medium);
+      }
+
+      ion-popover::part(content) {
+        --background: #ffffff;
+        --border-radius: 12px;
+        --box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+      }
+
+      ion-select-popover::part(option) {
+        --ion-background-color-activated: transparent;
+        --color: #333;
+      }
+
       ion-text {
         font-size: 1rem;
       }
@@ -51,10 +105,8 @@ ion-content {
         font-size: 0.75em !important;
       }
 
-      .register-btn {
-        margin-top: 1rem;
-        width: 100%;
-        max-width: 400px;
+      .btnCustom {
+        margin-top: 1.75rem;
         font-size: 1rem;
         font-weight: 600;
         text-transform: none;
@@ -62,9 +114,9 @@ ion-content {
       }
 
       p {
-        margin-top: 1.3rem;
+        margin-top: 1.7rem;
         text-align: center;
-        margin-bottom: 1rem;
+        margin-bottom: 1.7rem;
         color: var(--text-principal);
       }
 
@@ -76,3 +128,15 @@ ion-content {
   }
 }
 
+ion-item {
+  --ripple-color: transparent;
+  --background-activated: transparent;
+  --background-activated-opacity: transparent;
+  --background-focused: transparent;
+  --background-focused-opacity: transparent;
+  --background-hover: transparent;
+  --background-hover-opacity: transparent;
+  --padding-start: 0;
+  --inner-padding-end: 0;
+  --border-color: transparent !important;
+}
