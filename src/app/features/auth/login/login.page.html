@@ -16,26 +16,32 @@
   <ion-row>
     <ion-list lines="full">
       <ion-item-group class="ion-margin-bottom">
-        <form>
+        <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
         <!-- EMAIL -->
         <div>
           <ion-item lines="none">
             <ion-label position="stacked">Correo electronico</ion-label>
-            <input value="" type="email" placeholder="lizethjh17@gmail.com">
+            <input value="" type="email" placeholder="ejemplo@gmail.com" formControlName="email">
           </ion-item>
+          
+          <app-error-messages [control]="getControl('email')" label="Este campo"></app-error-messages>
+
         </div>
 
         <!-- PASSWORD -->
         <div>
           <ion-item lines="none">
             <ion-label position="stacked">Contraseña</ion-label>
-              <ion-input type="password">
+              <ion-input type="password" formControlName="password">
               <ion-input-password-toggle slot="end"></ion-input-password-toggle>
             </ion-input>
           </ion-item>
+
+          <app-error-messages [control]="getControl('password')" label="Este campo"></app-error-messages>
+
         </div>
 
-         <ion-button type="submit" size="large" expand="block" class="login-btn ion-margin-horizontal" routerLink="/tabs">Iniciar sesión</ion-button> 
+         <ion-button type="submit" size="large" expand="block" class="login-btn ion-margin-horizontal">Iniciar sesión</ion-button> 
       </form>
 
       <p>¿Eres nuevo? <a routerLink="/auth/register">Registrate aquí</a></p>

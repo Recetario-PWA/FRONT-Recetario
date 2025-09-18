@@ -12,10 +12,14 @@ import { RouterModule } from '@angular/router';
   imports: [RouterModule, IonInputOtp, IonButton, IonItemGroup, IonList, IonRow, IonLabel, IonGrid, IonBackButton, IonButtons, IonContent, IonHeader, IonToolbar, CommonModule, FormsModule]
 })
 export class CodePage implements OnInit {
-
+  email!: string
   constructor() { }
 
   ngOnInit() {
+    const { email } = history.state;
+
+    this.email = email;
+    console.log(email);
   }
 
 }
