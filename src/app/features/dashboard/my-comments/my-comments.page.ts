@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { AlertController, IonBackButton, IonButtons, IonContent, IonHeader, IonIcon, IonItem, IonItemOption, IonItemOptions, IonItemSliding, IonLabel, IonList, IonText, IonTitle, IonToolbar } from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
-import { trashOutline } from 'ionicons/icons';
+import { trashOutline, eyeOutline } from 'ionicons/icons';
 
 @Component({
   selector: 'app-my-comments',
@@ -15,7 +15,7 @@ import { trashOutline } from 'ionicons/icons';
 export class MyCommentsPage implements OnInit {
 
   constructor(private alertCtrl: AlertController) { 
-    addIcons({ trashOutline });
+    addIcons({ trashOutline, eyeOutline });
   }
 
   ngOnInit() {
