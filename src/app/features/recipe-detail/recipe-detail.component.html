@@ -5,17 +5,17 @@
         <ion-back-button mode="md" default-href="#"></ion-back-button>
       </ion-buttons>
       <ion-buttons slot="end">
-        <ion-fab-button class="addFavBtn" size="small">
-          <ion-icon name="heart-outline"></ion-icon>
+        <ion-fab-button (click)="toggleFav()" class="addFavBtn" size="small">
+          <ion-icon *ngIf="isInFavList()" name="heart" color="light"></ion-icon>
+          <ion-icon *ngIf="!isInFavList()" name="heart-outline"></ion-icon>
         </ion-fab-button>
       </ion-buttons>
     </ion-toolbar>
   </ion-header>
 
-  <div class="bg">
+  <div class="bg" [style.background-image]="'url(' + recipe.image_path + ')'">
     <ion-modal
       #modal
-      trigger="open-modal"
       [isOpen]="true"
       [initialBreakpoint]="0.72"
       [breakpoints]="[1, 0.72]"
@@ -27,17 +27,21 @@
       <ng-template>
         <ion-content class="ion-padding">
           <ion-item lines="none" class="ion-margin-top">
-            <ion-text class="title">Receta de prueba</ion-text>
+            <ion-text class="title">{{ recipe.title }}</ion-text>
           </ion-item>
+            <div class="rating ion-margin-start">
+              <ion-icon name="star" color="warning"></ion-icon>
+              {{ averageRating.toFixed(1) }}
+            </div>
           <ion-item lines="none">
             <div class="infoRecipe">
               <div class="time-container" slot="start">
                 <ion-icon name="time-outline"></ion-icon>
-                <ion-text class="timeText">Tiempo: 15 min</ion-text>
+                <ion-text class="timeText">Tiempo: {{ recipe.prep_time }}</ion-text>
               </div>
               <div class="time-container">
                 <ion-icon name="restaurant-outline"></ion-icon>
-                <ion-text class="timeText">Porciones: 20</ion-text>
+                <ion-text class="timeText">Porciones: {{ recipe.servings }}</ion-text>
               </div>
             </div>
           </ion-item>
@@ -45,7 +49,7 @@
             <ion-avatar slot="start">
               <img alt="Profile photo" src="/assets/img/kirbsIcon.jpg" />
             </ion-avatar>
-            <ion-label class="userName">Iceli</ion-label>
+            <ion-label class="userName">{{ recipe.user?.user_name }}</ion-label>
           </ion-item>
           <ion-item lines="full">
             <div>
@@ -59,26 +63,30 @@
               </ion-segment>
               <ion-segment-view class="ion-margin-top">
                 <ion-segment-content id="ingredients">
-                  <ion-item lines="none">
-                    <div class="ingredient-marker-container">
-                      <div class="ingredient-marker"></div> 
-                      <ion-label>15g de no se</ion-label>
-                    </div>
-                  </ion-item>
+                  @for (ingredient of ingredientsList; track $index; let i = $index) {
+                    <ion-item lines="none">
+                      <div class="ingredient-marker-container">
+                        <div class="ingredient-marker"></div>
+                        <ion-label>{{ ingredient }}</ion-label>
+                      </div>
+                    </ion-item>
+                  }
                 </ion-segment-content>
                 <ion-segment-content id="steps">
-                  <div class="numbered-callout">
-                    <div class="number-circle">1</div>
-                    <p class="callout-text">
-                      Lorem ipsum dolor, sit amet consectetur adipisicing elit. Asperiores beatae nam dolores sit, possimus quae error modi ex repellat, debitis eius? Dolor consequuntur, aspernatur labore praesentium quasi quis tenetur aut.
-                    </p>
-                  </div>
+                  @for (instruction of instructionsList; track $index; let i = $index) {
+                    <div class="numbered-callout">
+                      <div class="number-circle">{{ i + 1 }}</div>
+                      <p class="callout-text">
+                        {{ instruction }}.
+                      </p>
+                    </div>
+                  }
                 </ion-segment-content>
               </ion-segment-view>
             </div>
           </ion-item>
           <div class="addCommentContainer ion-margin">
-            <form>
+            <form [formGroup]="commentForm" (ngSubmit)="onSubmit()">
               <div class="inputContainer">
                 <ion-label>Calificación</ion-label>
                 <app-star-rating [rating]="0" (ratingChanged)="onRatingChange($event)"></app-star-rating>
@@ -86,7 +94,7 @@
 
               <div class="inputContainer">
                 <ion-label>Comentario</ion-label>
-                <textarea autocapitalize="on" wrap="hard" minlength="20" maxlength="1000" spellcheck="true" rows="5" placeholder="Redacta tu comentario"></textarea>
+                <textarea formControlName="info" autocapitalize="on" wrap="hard" minlength="20" maxlength="1000" spellcheck="true" rows="5" placeholder="Redacta tu comentario"></textarea>
               </div>
 
               <ion-button type="submit" class="customBtn">
@@ -101,27 +109,34 @@
           </ion-item>
 
           <ion-list class="ion-margin-top">
-          @for (item of items; track item; let index = $index) {
-            <div class="commentContainer">
-              <ion-item lines="none">
-                <ion-avatar slot="start">
-                  <img alt="Profile photo" [src]="'https://picsum.photos/80/80?random=' + index" alt="avatar" />
-                </ion-avatar>
-                <ion-label>
-                  <h2>{{ item.user }}</h2>
-                  <p class="comment-time">hace 10 min</p>
-                </ion-label>
-              </ion-item>
-
-              <ion-card-content>
-                <p>{{ item.text }}</p>
-              </ion-card-content>
-            </div>
-          }
+            @for (comment of comments; track comment.id) {
+              <div class="commentContainer">
+                <ion-item lines="none">
+                  <ion-avatar slot="start">
+                    <img alt="Profile photo" src="assets/img/avatar1.png" alt="avatar" />
+                  </ion-avatar>
+                  <ion-label>
+                    <h2>{{ comment.user_id }}</h2>
+                    <p class="comment-time">{{ comment.created_at | timeAgo }}</p>
+                  </ion-label>
+                </ion-item>
+              
+                <ion-card-content>
+                <div class="comment-rating" style="display: flex; gap: 3px; margin-bottom: 0.5rem;">
+                  <ion-icon 
+                    *ngFor="let star of [1,2,3,4,5]" 
+                    [name]="star <= comment.score ? 'star' : 'star-outline'" 
+                    color="warning">
+                  </ion-icon>
+                </div>
+                  <p>{{ comment.content }}</p>
+                </ion-card-content>
+              </div>
+            }
           </ion-list>
-          <ion-infinite-scroll (ionInfinite)="onIonInfinite($event)" class="ion-margin-top">
+          <!--<ion-infinite-scroll (ionInfinite)="onIonInfinite($event)" class="ion-margin-top">
             <ion-infinite-scroll-content loadingText="Cargando comentarios..." loadingSpinner="dots"></ion-infinite-scroll-content>
-          </ion-infinite-scroll>
+          </ion-infinite-scroll>-->
                     
         </ion-content>
       </ng-template>

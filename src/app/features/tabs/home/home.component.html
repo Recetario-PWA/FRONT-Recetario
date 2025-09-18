@@ -14,25 +14,32 @@
       </ion-avatar>
     </ion-item>
     
-    <ion-searchbar class="custom-searchbar" debounce="800" inputmode="search" mode="ios" placeholder="Buscar receta"></ion-searchbar>
+    <ion-searchbar [value]="searchBar()" (input)="searchBar.set($any($event.target).value)" (ionClear)="searchBar.set('')" class="custom-searchbar" debounce="800" inputmode="search" mode="ios" placeholder="Buscar receta"></ion-searchbar>
   </ion-toolbar>
 </ion-header>
 
 <ion-content class="hide-scrollbar">
-  <ion-label class="ion-margin-horizontal">Todas las recetas 🍽️</ion-label>
+  <ion-label class="ion-margin-horizontal">{{ title() }} 🍽️</ion-label>
 
   <div class="ion-margin">
     <ion-row>
       <!-- RECIPE CARDS -->
       @defer (when !loading()) {
-        @for (recipe of recipes; track recipe.id) {
+        @for (recipe of filteredRecipes(); track recipe.id) {
           <ion-col sizeLg="3" sizeMd="4" sizeSm="6" sizeXl="3" sizeXs="6">
-            <app-recipe-card [recipe_id]="recipe.id" [title]="recipe.title" [rating]="recipe.rating" [cooking_time]="recipe.cooking_time" [image_url]="recipe.image_url"></app-recipe-card>
+            <app-recipe-card [recipe_id]="recipe.id" [title]="recipe.title" [rating]="recipe.averageScore" [cooking_time]="recipe.prep_time" [servings]="recipe.servings" [image_url]="recipe.image_path"></app-recipe-card>
           </ion-col>
         } @empty {
-          <div class="ion-text-center ion-padding">
-            <h4>No hay recetas disponibles 😔</h4>
-          </div>
+          @if (recipes().length === 0) {
+            <div class="ion-text-center ion-padding">
+              <h4>Parece que la cocina está vacía 😔</h4>
+            </div>
+          }
+          @else {
+            <div class="ion-text-center ion-padding">
+              <h4>No encontramos coincidencias 🔍</h4>
+            </div>
+          }
         }
       } @placeholder {
         @for (skeleton of skeletons; track $index) {
