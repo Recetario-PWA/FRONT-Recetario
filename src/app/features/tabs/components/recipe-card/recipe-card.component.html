@@ -1,18 +1,19 @@
 <ion-card>
   <ion-thumbnail>
-    <ion-img [src]="image_url && image_url.trim() !== '' ? image_url : 'https://ionicframework.com/docs/img/demos/thumbnail.svg'"></ion-img>
+    <ion-img (click)="goToDetails()" [src]="image_url && image_url.trim() !== '' ? image_url : 'https://ionicframework.com/docs/img/demos/thumbnail.svg'"></ion-img>
 
     <div class="rating">
       <ion-icon name="star" color="warning"></ion-icon>
        {{ rating }}
     </div>
 
-    <ion-button class="favorite" size="small" shape="round">
-      <ion-icon slot="icon-only" name="heart-outline"></ion-icon>
+    <ion-button (click)="toggleFav()" class="favorite" size="small" shape="round">
+      <ion-icon *ngIf="isInFavList()" slot="icon-only" name="heart" color="danger"></ion-icon>
+      <ion-icon *ngIf="!isInFavList()" slot="icon-only" name="heart-outline"></ion-icon>
     </ion-button>
   </ion-thumbnail>
 
-  <ion-item lines="none">
+  <ion-item lines="none" (click)="goToDetails()">
     <ion-label>
       <ion-text>
         <strong>{{ title }}</strong>
@@ -21,10 +22,13 @@
       <p class="time-info">
         <ion-icon name="time-outline"></ion-icon>
         <ion-text>
-          <small>{{ cooking_time }} min</small>
+          <small>{{ cooking_time }}</small>
         </ion-text>
+
+      <!-- <ion-icon name="restaurant-outline"></ion-icon>
+        <ion-text><small>Porciones {{ servings }}</small></ion-text> -->
       </p>
     </ion-label>
-    
   </ion-item>
+  
 </ion-card>
