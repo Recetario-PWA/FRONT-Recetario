@@ -12,10 +12,16 @@
 </ion-header>
 
 <ion-content class="hide-scrollbar">
+  <p class="indication ion-margin-horizontal">Desliza a la izquierda para ver los detalles o a la derecha para eliminar.</p>
   <ion-list>
     
     <ion-item-sliding #slidingItem>
-      <ion-item lines="none">
+      <ion-item-options side="start">
+        <ion-item-option color="primary">
+          <ion-icon slot="icon-only" color="light" name="eye-outline"></ion-icon>
+        </ion-item-option>
+      </ion-item-options>
+      <ion-item lines="full">
         <div>
           <ion-label>Receta</ion-label>
           <ion-text>10 Septiembre 2025</ion-text>
@@ -24,7 +30,7 @@
 
       <ion-item-options side="end">
         <ion-item-option color="danger" (click)="deleteAlert(slidingItem)">
-          <ion-icon slot="bottom" slot="icon-only" name="trash-outline"></ion-icon>
+          <ion-icon slot="icon-only" slot="icon-only" name="trash-outline"></ion-icon>
         </ion-item-option>
       </ion-item-options>
     </ion-item-sliding>
