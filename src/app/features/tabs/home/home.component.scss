@@ -26,6 +26,12 @@ ion-header {
           color: var(--text-primary);
         }
       }
+      ion-avatar {
+        background-color: white;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
       ion-avatar img {
         border: 2px solid var(--ion-color-primary);
       }

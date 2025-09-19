@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
-import { Component, computed, ElementRef, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
+import { Component, computed, ElementRef, OnInit, signal } from '@angular/core';
+import { AbstractControl, FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import {ModalController, IonContent, IonText, IonIcon, IonRow, IonGrid, IonCol, IonButton, IonList, IonItem, IonLabel, IonAvatar, IonButtons, IonToolbar, IonHeader, IonModal, IonSearchbar, IonImg, IonFab, IonFabButton, IonBackButton, IonTitle, IonChip, IonSegment, IonSegmentButton, IonSegmentView, IonSegmentContent, InfiniteScrollCustomEvent, IonInfiniteScroll, IonInfiniteScrollContent, IonCard, IonCardContent, IonCardHeader, IonCardTitle, IonCardSubtitle } from "@ionic/angular/standalone";
 import { addIcons } from 'ionicons';
@@ -10,26 +10,35 @@ import { Recipe } from 'src/app/core/services/recipes/recipe';
 import { addTofavList, removeFromfavList, usefavList } from 'src/app/core/stores/favoriteRecipes.store';
 import { StarRatingComponent } from "src/app/shared/components/star-rating/star-rating.component";
 import { TimeAgoPipe } from 'src/app/core/pipes/time-ago-pipe';
+import { ErrorMessagesComponent } from 'src/app/shared/components/error-messages/error-messages.component';
 
 @Component({
   selector: 'app-recipe-detail',
   templateUrl: './recipe-detail.component.html',
   styleUrls: ['./recipe-detail.component.scss'],
   standalone: true,
-  imports: [TimeAgoPipe, ReactiveFormsModule, FormsModule, IonCard, IonCardContent, IonCardHeader, IonCardTitle, IonCardSubtitle, IonInfiniteScroll, IonInfiniteScrollContent, IonSegment, IonSegmentButton, IonSegmentView, IonSegmentContent, IonChip, IonTitle, IonBackButton, IonFab, IonImg, IonSearchbar, IonModal, IonHeader, IonToolbar, IonButtons, IonAvatar, IonLabel, IonItem, IonList, IonButton, IonCol, IonGrid, IonRow, IonIcon, IonText, CommonModule, IonContent, IonFabButton, StarRatingComponent]
+  imports: [ErrorMessagesComponent, TimeAgoPipe, ReactiveFormsModule, FormsModule, IonCard, IonCardContent, IonCardHeader, IonCardTitle, IonCardSubtitle, IonInfiniteScroll, IonInfiniteScrollContent, IonSegment, IonSegmentButton, IonSegmentView, IonSegmentContent, IonChip, IonTitle, IonBackButton, IonFab, IonImg, IonSearchbar, IonModal, IonHeader, IonToolbar, IonButtons, IonAvatar, IonLabel, IonItem, IonList, IonButton, IonCol, IonGrid, IonRow, IonIcon, IonText, CommonModule, IonContent, IonFabButton, StarRatingComponent]
 })
 export class RecipeDetailComponent  implements OnInit {
   recipeId!: number;
   recipe: any = {};
-  selectedRating!: number;
+  selectedRating = signal<number>(0);
   ingredientsList: string[] = [];
   instructionsList: string[] = [];
-  comments: any[] = [];
-  averageRating: number = 0;
+  comments = signal<any[]>([]);
   commentForm: FormGroup;
+  loading = signal(false);
 
   favs = usefavList();
   isInFavList = computed(() => this.favs().includes(this.recipeId));
+
+  //CALCULAR SCORE TOTAL DE LA RECETA
+  averageScore = computed(() => {
+    const list = this.comments();
+    if (!list.length) return 0;
+    const total = list.reduce((acc, comment) => acc + comment.score, 0);
+    return parseFloat((total / list.length).toFixed(1));
+  });
 
   constructor(private fb: FormBuilder, private recipeService: Recipe, private el: ElementRef, private route: ActivatedRoute, private router: Router) { 
     addIcons({ heart, heartOutline, timeOutline, restaurantOutline, chatbubbleOutline });
@@ -47,6 +56,10 @@ export class RecipeDetailComponent  implements OnInit {
     this.getRecipe();
   }
 
+  getControl(name: string): AbstractControl {
+    return this.commentForm.controls[name];
+  }
+
   toggleFav() {
     if (this.isInFavList()) {
       removeFromfavList(this.recipeId);
@@ -56,7 +69,7 @@ export class RecipeDetailComponent  implements OnInit {
   }
 
   onRatingChange(rating: number) {
-    this.selectedRating = rating;
+    this.selectedRating.set(rating);
     this.commentForm.patchValue({ score: rating });
   }
 
@@ -64,17 +77,17 @@ export class RecipeDetailComponent  implements OnInit {
     this.recipeService.getRecipe(this.recipeId).pipe(timeout(15000), take(1)).subscribe({
       next: (response) => {
         if (response.result) {
+          //GUARDAR TODA LA RECETA
           this.recipe = response.data;
-          this.ingredientsList = this.recipe.ingredients.split(',').map((i: any) => i.trim());
-          this.instructionsList =  this.recipe.instructions.split('.').map((s: any) => s.trim()).filter((s: any) => s !== '');
-          this.comments = this.recipe.comments || [];
 
-          if (this.comments.length > 0) {
-            const totalScore = this.comments.reduce((acc, comment) => acc + comment.score, 0);
-            this.averageRating = totalScore / this.comments.length;
-          } else {
-            this.averageRating = 0;
-          }
+          //GUARDAR SOLO LOS INGREDIENTES
+          this.ingredientsList = this.recipe.ingredients.split(',').map((i: any) => i.trim());
+
+          //GUARDAR SOLO LAS INSTRUCCIONES
+          this.instructionsList =  this.recipe.instructions.split('.').map((s: any) => s.trim()).filter((s: any) => s !== '');
+
+          //GUARDAR LOS COMENTARIOS DE LA RECETA
+          this.comments.set(this.recipe.comments || []);
         }
       },
       error: (error) => {
@@ -107,6 +120,7 @@ export class RecipeDetailComponent  implements OnInit {
     return parseFloat(averageScore.toFixed(1));
   }
 
+  //PUBLICAR COMENTARIO
   onSubmit() {
     if (this.commentForm.invalid) {
       this.commentForm.markAllAsTouched();
@@ -118,15 +132,23 @@ export class RecipeDetailComponent  implements OnInit {
     });
 
     const data = this.commentForm.value;
-    console.log('FORM VALUES: ', data);
+
+     this.loading.set(true); 
 
     this.recipeService.addComment(data).pipe(timeout(15000), take(1)).subscribe({
       next: (response) => {
         console.log(response);
+        //ACTUALIZAR LOS COMENTARIOS
+        this.getRecipe();
+
         this.commentForm.reset();
+        this.selectedRating.set(0);
       },
       error: (error) => {
         console.log(error);
+      },
+      complete: () => {
+        this.loading.set(false);
       }
     });
   }

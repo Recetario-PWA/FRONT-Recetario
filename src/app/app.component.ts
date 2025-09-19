@@ -4,6 +4,7 @@ import { SwUpdate, VersionReadyEvent } from '@angular/service-worker';
 import { filter, first } from 'rxjs';
 import { CommonModule } from '@angular/common';
 import { AlertController } from '@ionic/angular';
+import { Auth } from './core/services/auth';
 
 @Component({
   selector: 'app-root',
@@ -13,7 +14,7 @@ import { AlertController } from '@ionic/angular';
 })
 export class AppComponent {
 
-  constructor(private swUpdate: SwUpdate, private alertController: AlertController) {
+  constructor(private swUpdate: SwUpdate, private alertController: AlertController, private authService: Auth) {
    /* if (this.swUpdate.isEnabled) {
       this.swUpdate.versionUpdates.pipe(
         filter((event): event is VersionReadyEvent => event.type === 'VERSION_READY')
@@ -23,6 +24,10 @@ export class AppComponent {
 
       this.swUpdate.checkForUpdate();
     } */
+  }
+
+  ngOnInit() {
+    this.authService.getUserInfo();
   }
 
   /* async showUpdateAlert() {

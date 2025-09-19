@@ -66,6 +66,7 @@ ion-content {
   }
 
   ion-item {
+    margin-bottom: 1rem;
     --ripple-color: transparent;
     --background-activated: transparent;
     --background-activated-opacity: transparent;
@@ -86,13 +87,12 @@ ion-content {
     }
 
     input {
-      margin-bottom: 1rem;
       background: var(--ion-color-light) !important;
       border: none !important;
       outline: none !important;
       box-shadow: none !important;
-      padding-bottom: 8px;
-      padding-top: 8px;
+      padding-bottom: 13px;
+      padding-top: 13px;
       padding-left: 20px;
       padding-right: 20px;
       border-radius: 8px;

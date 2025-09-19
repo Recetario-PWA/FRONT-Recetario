@@ -6,11 +6,11 @@
           <ion-icon [name]="greetingIcon"></ion-icon>
           <ion-text>{{ greeting }}</ion-text>
         </div>
-        <p>{{ username }}</p>
+        <p>{{ user()?.user_name || 'user' }}</p>
       </ion-label>
 
       <ion-avatar slot="end">
-        <img alt="Profile photo" src="assets/img/avatar1.png" />
+        <img alt="Profile photo" [src]="getIcon()" />
       </ion-avatar>
     </ion-item>
     

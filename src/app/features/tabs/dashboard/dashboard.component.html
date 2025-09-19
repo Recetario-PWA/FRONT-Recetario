@@ -14,12 +14,12 @@
 <ion-content>
   <ion-item lines="none" class="ion-margin">
     <ion-avatar slot="start" class="big-avatar">
-      <img alt="Avatar" src="https://ionicframework.com/docs/img/demos/avatar.svg" />
+      <img alt="Avatar" [src]="getIcon()" />
     </ion-avatar>
 
     <ion-label class="ion-margin-top ion-margin-hortizontal">
-      Name Lastname
-      <h3>Username</h3>
+      {{ (user()?.name && user()?.last_name) ? user()?.name + ' ' + user()?.last_name : 'Name Lastname' }}
+      <h3>{{ user()?.user_name || 'User' }}</h3>
     <!-- <ion-button size="small" color="primary">Editar perfil</ion-button> -->
     </ion-label>
   </ion-item>

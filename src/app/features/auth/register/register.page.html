@@ -16,49 +16,56 @@
   <ion-row>
     <ion-list lines="full">
       <ion-item-group class="ion-margin-horizontal ion-margin-bottom">
-        <form>
+        <form [formGroup]="registerForm" (ngSubmit)="onSubmit()">
         <!-- NOMBRE -->
         <ion-item lines="none">
           <ion-label position="stacked">Nombre(s)</ion-label>
-          <input value="" type="text" placeholder="Ej. Jessica Lizeth">
+          <input formControlName="name" value="" type="text" placeholder="Ej. Tyler">
+          <app-error-messages [control]="getControl('name')" label="Este campo"></app-error-messages>
         </ion-item>
 
         <ion-item lines="none">
           <ion-label position="stacked">Apellidos(s)</ion-label>
-          <input value="" type="text" placeholder="Ej. Juarez Hernandez">
+          <input formControlName="last_name" type="text" placeholder="Ej. Joseph">
+          <app-error-messages [control]="getControl('last_name')" label="Este campo"></app-error-messages>
         </ion-item>
 
         <ion-item lines="none">
           <ion-label position="stacked">Username</ion-label>
-          <input value="" type="text" placeholder="Iceli">
+          <input formControlName="user_name" type="text" placeholder="tylerrjoseph">
+          <app-error-messages [control]="getControl('user_name')" label="Este campo"></app-error-messages>
+        </ion-item>
+
+        <ion-item lines="none">
+          <ion-label position="stacked">Género</ion-label>
+          <ion-select formControlName="gender" class="ion-margin-bottom" mode="md" aria-label="Genero" interface="popover" placeholder="Seleccionar">
+            <ion-select-option value="femenino">Femenino</ion-select-option>
+            <ion-select-option value="masculino">Masculino</ion-select-option>
+            <ion-select-option value="39 tipos de gays">39 tipos de gays🏳️‍🌈</ion-select-option>
+          </ion-select>
+          <app-error-messages [control]="getControl('gender')" label="Este campo"></app-error-messages>
         </ion-item>
 
         <ion-item lines="none">
           <ion-label position="stacked">Correo electronico</ion-label>
-          <input value="" type="email" placeholder="lizethjh17@gmail.com">
+          <input formControlName="email" type="email" placeholder="ejemplo@gmail.com">
+          <app-error-messages [control]="getControl('email')" label="Este campo"></app-error-messages>
         </ion-item>
         
         <ion-item lines="none">
-          <ion-label position="stacked">Género</ion-label>
-          <ion-select class="ion-margin-bottom" mode="md" aria-label="Genero" interface="popover" placeholder="Seleccionar">
-            <ion-select-option value="femenino">Femenino</ion-select-option>
-            <ion-select-option value="masculino">Masculino</ion-select-option>
-            <ion-select-option value="39 tipos de gays🏳️‍🌈">39 tipos de gays🏳️‍🌈</ion-select-option>
-          </ion-select>
-        </ion-item>
-
-        <ion-item lines="none">
           <ion-label position="stacked">Contraseña</ion-label>
-          <ion-input class="ion-margin-bottom" type="password">
+          <ion-input formControlName="password" type="password">
             <ion-input-password-toggle slot="end"></ion-input-password-toggle>
           </ion-input>
+          <app-error-messages [control]="getControl('password')" label="Este campo"></app-error-messages>
         </ion-item>
 
         <ion-item lines="none">
           <ion-label position="stacked">Confirmar contraseña</ion-label>
-          <ion-input type="password">
+          <ion-input formControlName="password_confirmation" type="password">
             <ion-input-password-toggle slot="end"></ion-input-password-toggle>
           </ion-input>
+          <app-error-messages [control]="getControl('password_confirmation')" label="Este campo"></app-error-messages>
         </ion-item>
 
         <ion-button type="submit" size="large" class="btnCustom" expand="block">Registrarse</ion-button>

@@ -14,44 +14,49 @@
 <ion-content class="hide-scrollbar ion-padding">
  <div class="profile-container">
     <div class="profile-photo-wrapper">
-      <img src="https://ionicframework.com/docs/img/demos/avatar.svg" alt="Profile Photo" class="profile-photo" />
+      <img [src]="getIcon()" alt="Profile Photo" class="profile-photo" />
     </div>
   </div>
 
   <ion-list>
-    <form>
+    <form [formGroup]="updateInfoForm">
       <ion-item>
         <ion-label position="stacked">Nombre(s)</ion-label>
-        <input value="" type="text" placeholder="Ej. Jessica Lizeth">
+        <input formControlName="name" type="text" placeholder="Ej. Tyler">
+        <app-error-messages [control]="getControl('name')" label="Este campo"></app-error-messages>
       </ion-item>
 
       <ion-item>
         <ion-label position="stacked">Apellidos(s)</ion-label>
-        <input value="" type="text" placeholder="Ej. Juarez Hernandez">
+        <input formControlName="last_name" type="text" placeholder="Ej. Joseph">
+        <app-error-messages [control]="getControl('last_name')" label="Este campo"></app-error-messages>
       </ion-item>
 
       <ion-item>
         <ion-label position="stacked">Username</ion-label>
-        <input value="" type="text" placeholder="Iceli">
+        <input formControlName="user_name" type="text" placeholder="tylerrjoseph">
+        <app-error-messages [control]="getControl('user_name')" label="Este campo"></app-error-messages>
+      </ion-item>
+
+      <ion-item>
+        <ion-label position="stacked">Género</ion-label>
+        <ion-select formControlName="gender" mode="md" aria-label="Genero" interface="popover" placeholder="Seleccionar">
+          <ion-select-option value="femenino">Femenino</ion-select-option>
+          <ion-select-option value="masculino">Masculino</ion-select-option>
+          <ion-select-option value="39 tipos de gays">39 tipos de gays🏳️‍🌈</ion-select-option>
+        </ion-select>
+        <app-error-messages [control]="getControl('gender')" label="Este campo"></app-error-messages>
       </ion-item>
 
       <ion-item>
         <ion-label position="stacked">Correo electronico</ion-label>
-        <input value="" type="email" placeholder="lizethjh17@gmail.com">
+        <input formControlName="email" type="email" placeholder="ejemplo@gmail.com">
+        <app-error-messages [control]="getControl('email')" label="Este campo"></app-error-messages>
       </ion-item>
       
-      <ion-item>
-        <ion-label position="stacked">Género</ion-label>
-        <ion-select mode="md" aria-label="Genero" interface="popover" placeholder="Seleccionar">
-          <ion-select-option value="femenino">Femenino</ion-select-option>
-          <ion-select-option value="masculino">Masculino</ion-select-option>
-          <ion-select-option value="39 tipos de gays🏳️‍🌈">39 tipos de gays🏳️‍🌈</ion-select-option>
-        </ion-select>
-      </ion-item>
-
       <div class="actions">
         <ion-button size="large" class="btnCustom" id="open-modal" expand="block">Cambiar Contraseña</ion-button>
-        <ion-button size="large" type="submit" class="btnCustom" expand="block">Guardar cambios</ion-button>
+        <ion-button size="large" type="button" (click)="confirmAlert()" class="btnCustom" expand="block">Guardar cambios</ion-button>
       </div>
     </form>
 

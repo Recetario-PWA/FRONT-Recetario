@@ -16,12 +16,13 @@
   <ion-row>
     <ion-list lines="full">
       <ion-item-group class="ion-margin-horizontal ion-margin-bottom">
-        <form>
-        <!-- CODE -->
-        <ion-input-otp length="5" separators="all" type="text"> ¿No recibiste el código? <a>Enviar de nuevo</a> </ion-input-otp>
+        <form [formGroup]="codeForm" (ngSubmit)="onSubmit()">
+          <!-- CODE -->
+          <ion-input-otp formControlName="code" length="5" separators="all" type="text"> ¿No recibiste el código? <a>Enviar de nuevo</a> </ion-input-otp>
+          <app-error-messages [control]="getControl('code')" label="El código"></app-error-messages>
 
-        <!-- SUBMIT BUTTON -->
-        <ion-button type="submit" size="large" expand="block" class="login-btn">Verificar</ion-button> 
+          <!-- SUBMIT BUTTON -->
+          <ion-button type="submit" size="large" expand="block" class="login-btn">Verificar</ion-button> 
       </form>
       </ion-item-group>
     </ion-list>

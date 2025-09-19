@@ -1,10 +1,12 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import { Component, computed, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
 import { IonSearchbar, IonHeader, IonLabel, IonToolbar, IonItem, IonContent, IonAvatar, IonText, IonButton, IonList, IonIcon, IonToggle, NavController } from "@ionic/angular/standalone";
 import { addIcons } from 'ionicons';
 import { chevronForwardOutline, personOutline, restaurantOutline, settingsOutline, logOutOutline, chatbubblesOutline, moonOutline } from 'ionicons/icons';
+import { Auth } from 'src/app/core/services/auth';
+import { currentUser } from 'src/app/core/stores/auth.store';
 
 @Component({
   selector: 'app-dashboard',
@@ -15,8 +17,15 @@ import { chevronForwardOutline, personOutline, restaurantOutline, settingsOutlin
 })
 export class DashboardComponent  implements OnInit {
   paletteToggle = false;
+  public user = computed(() => currentUser());
 
-  constructor(private router: Router, private navCtrl: NavController) {
+  icons: Record<string, string> = {
+    'femenino': 'assets/img/avatarF.png',
+    'masculino': 'assets/img/avatarM.png',
+    '39 tipos de gays': 'assets/img/avatarG.png'
+  }
+
+  constructor(private router: Router, private authServive: Auth, private navCtrl: NavController) {
     addIcons({ chevronForwardOutline, personOutline, restaurantOutline, settingsOutline, logOutOutline, chatbubblesOutline, moonOutline }); 
   }
 
@@ -41,7 +50,7 @@ export class DashboardComponent  implements OnInit {
     this.toggleDarkPalette(event.detail.checked);
   }
 
-  // Add or remove the "ion-palette-dark" class on the html element
+
   toggleDarkPalette(shouldAdd: boolean) {
     document.documentElement.classList.toggle('ion-palette-dark', shouldAdd);
   }
@@ -51,7 +60,15 @@ export class DashboardComponent  implements OnInit {
     //this.navCtrl.navigateForward(['/dashboard/', page]);
   }
 
+  getIcon(): string {
+    const user = this.user();
+    const genderKey = user?.gender?.toLowerCase() ?? 'default';
+    return this.icons[genderKey] ?? 'https://ionicframework.com/docs/img/demos/avatar.svg';
+  }
+
   logout() {
-    console.log('Se cerro sesion');
+    this.authServive.logout().subscribe(() => {
+      this.navCtrl.navigateForward(['/auth/login']);
+    });
   }
 }

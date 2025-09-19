@@ -31,7 +31,7 @@
           </ion-item>
             <div class="rating ion-margin-start">
               <ion-icon name="star" color="warning"></ion-icon>
-              {{ averageRating.toFixed(1) }}
+              {{ averageScore().toFixed(1) }}
             </div>
           <ion-item lines="none">
             <div class="infoRecipe">
@@ -91,32 +91,34 @@
                 <ion-label>Calificación</ion-label>
                 <app-star-rating [rating]="0" (ratingChanged)="onRatingChange($event)"></app-star-rating>
               </div>
+              <app-error-messages label="Este campo" [control]="getControl('score')"></app-error-messages>
 
               <div class="inputContainer">
                 <ion-label>Comentario</ion-label>
                 <textarea formControlName="info" autocapitalize="on" wrap="hard" minlength="20" maxlength="1000" spellcheck="true" rows="5" placeholder="Redacta tu comentario"></textarea>
               </div>
+              <app-error-messages label="Este campo" [control]="getControl('info')"></app-error-messages>
 
-              <ion-button type="submit" class="customBtn">
+              <ion-button [disabled]="loading()" type="submit" class="customBtn">
                 <ion-icon name="chatbubble-outline" slot="start"></ion-icon>
-                Agregar comentario
+                {{ loading() ? 'Agregando...' : 'Agregar comentario' }}
               </ion-button>
             </form>
           </div>
 
           <ion-item lines="none">
-            <ion-text class="comment">Comentarios</ion-text>
+            <ion-text class="comment">Comentarios ({{ comments().length }})</ion-text>
           </ion-item>
 
           <ion-list class="ion-margin-top">
-            @for (comment of comments; track comment.id) {
+            @for (comment of comments(); track comment.id) {
               <div class="commentContainer">
                 <ion-item lines="none">
                   <ion-avatar slot="start">
                     <img alt="Profile photo" src="assets/img/avatar1.png" alt="avatar" />
                   </ion-avatar>
                   <ion-label>
-                    <h2>{{ comment.user_id }}</h2>
+                    <h2>{{ comment.user.user_name }}</h2>
                     <p class="comment-time">{{ comment.created_at | timeAgo }}</p>
                   </ion-label>
                 </ion-item>

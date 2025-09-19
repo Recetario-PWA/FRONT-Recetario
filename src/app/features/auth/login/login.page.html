@@ -22,10 +22,8 @@
           <ion-item lines="none">
             <ion-label position="stacked">Correo electronico</ion-label>
             <input value="" type="email" placeholder="ejemplo@gmail.com" formControlName="email">
+            <app-error-messages [control]="getControl('email')" label="Este campo"></app-error-messages>
           </ion-item>
-          
-          <app-error-messages [control]="getControl('email')" label="Este campo"></app-error-messages>
-
         </div>
 
         <!-- PASSWORD -->
@@ -35,9 +33,10 @@
               <ion-input type="password" formControlName="password">
               <ion-input-password-toggle slot="end"></ion-input-password-toggle>
             </ion-input>
+            <app-error-messages [control]="getControl('password')" label="Este campo"></app-error-messages>
           </ion-item>
 
-          <app-error-messages [control]="getControl('password')" label="Este campo"></app-error-messages>
+          
 
         </div>
 

@@ -7,6 +7,8 @@ import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { Recipe } from 'src/app/core/services/recipes/recipe';
 import { take, timeout } from 'rxjs';
+import { currentUser } from 'src/app/core/stores/auth.store';
+import { Auth } from 'src/app/core/services/auth';
 @Component({
   selector: 'app-home',
   templateUrl: './home.component.html',
@@ -37,11 +39,11 @@ import { take, timeout } from 'rxjs';
 export class HomeComponent implements OnInit {
   greeting: string = '';
   greetingIcon: string = '';
-  username: string = 'User';
   loading = signal(true);
   skeletons = Array(4).fill(0);
   recipes = signal<any[]>([]);
   searchBar = signal('');
+  public user = computed(() => currentUser());
 
   filteredRecipes = computed(() => {
     const normalize = (str: string) => 
@@ -70,12 +72,19 @@ export class HomeComponent implements OnInit {
     }
   });
 
-  constructor(private recipeService: Recipe) {
+  icons: Record<string, string> = {
+    'femenino': 'assets/img/avatarF.png',
+    'masculino': 'assets/img/avatarM.png',
+    '39 tipos de gays': 'assets/img/avatarG.png'
+  }
+
+  constructor(private recipeService: Recipe, private authService: Auth) {
     addIcons({ sunnyOutline, cloudOutline, moonOutline });
   }
 
   ngOnInit() {
     this.setGreeting();
+    //this.authService.getUserInfo();
     this.getRecipes();
   }
 
@@ -132,6 +141,12 @@ export class HomeComponent implements OnInit {
     const averageScore = totalScore / validScores.length;
 
     return parseFloat(averageScore.toFixed(1));
+  }
+
+  getIcon(): string {
+    const user = this.user();
+    const genderKey = user?.gender?.toLowerCase() ?? 'default';
+    return this.icons[genderKey] ?? 'https://ionicframework.com/docs/img/demos/avatar.svg';
   }
 
   onIonInfinite(event: InfiniteScrollCustomEvent) {

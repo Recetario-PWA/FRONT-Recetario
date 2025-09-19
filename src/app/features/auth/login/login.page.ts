@@ -33,42 +33,49 @@ export class LoginPage implements OnInit {
   }
 
   //Eventos
-  onSubmit(){
-    if(this.loginForm.invalid){
+  onSubmit() {
+    if (this.loginForm.invalid) {
       this.loginForm.markAllAsTouched();
       return;
     }
+
     const userData = this.loginForm.value;
 
     this.authService.login(userData).pipe(timeout(15000)).subscribe({
-      next: (response) => {
+      next: async (response) => {
         const email = userData.email;
 
-        this.loginAlert("Credenciales correctas.", response.msg);
-        this.router.navigate(['auth/verify-code'], { state: { email } });
-
-
+        const result = await this.loginAlert("Credenciales correctas.", response.msg);
+        if (result === 'confirm') {
+          this.router.navigate(['auth/verify-code'], { state: { email } });
+        }
       },
       error: (error: HttpErrorResponse | TimeoutError) => {
         if (error instanceof TimeoutError) {
           this.onSubmit();
           return;
         }
-                
+
         const msg = (error as HttpErrorResponse).error?.msg || 'Ha ocurrido un error inesperado';
         this.loginAlert("Error.", msg);
-      }
+      },
     });
   }
-  async loginAlert(title: string, msg: any) {
+
+  async loginAlert(title: string, msg: any): Promise<'confirm' | undefined> {
     const alert = await this.alertCtrl.create({
       header: title,
       message: msg,
-      buttons: [ { text: 'Aceptar', role: 'confirm', } ],
+      buttons: [
+        {
+          text: 'Aceptar',
+          role: 'confirm',
+        },
+      ],
     });
 
     await alert.present();
+    const { role } = await alert.onDidDismiss();
+    return role as 'confirm' | undefined;
   }
-
-
 }
