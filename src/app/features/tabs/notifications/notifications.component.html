@@ -8,7 +8,7 @@
         <p>Notificaciones</p>
       </ion-label>
 
-      <ion-button size="medium" shape="round">
+      <ion-button (click)="markAllAsRead()" [disabled]="loadingMarkAll() || loading()" size="medium" shape="round">
         <ion-icon slot="icon-only" name="notifications-outline"></ion-icon>
       </ion-button>
     </ion-item>
@@ -17,30 +17,67 @@
 
 <ion-content class="hide-scrollbar">
   <ion-list lines="none">
-  <ion-list-header>
-    <ion-label class="day">Hoy</ion-label>
-  </ion-list-header>
-  @defer (when !loading()) {
-    @for (msg of messages; track msg.id) {
-      <ion-item [class.unread]="!msg.read" (click)="markAsRead(msg)">
-        <ion-avatar slot="start">
-          <img alt="User profile photo" src="https://ionicframework.com/docs/img/demos/avatar.svg" />
-        </ion-avatar>
-        <ion-label class="comment-label-container">
-          <div class="user-info-line">
-            <ion-text>{{msg.user}}</ion-text>
-            <ion-text>comentó tu receta</ion-text>
-          </div>
-          <div class="recipe-info-line">
-            <ion-text class="recipe-title">{{msg.recipe}}</ion-text>
-          </div>
-          <span class="time-stamp">{{msg.time}}</span>
-        </ion-label>
 
-        <ion-thumbnail slot="end">
-          <img src="https://ionicframework.com/docs/img/demos/thumbnail.svg"  />
-        </ion-thumbnail>
+  @defer (when !loading()) {
+    @if (groupedComments().today.length) {
+      <ion-list-header>
+        <ion-label class="ion-margin-bottom day">Hoy</ion-label>
+      </ion-list-header>
+      @for (comment of groupedComments().today; track comment.id) {
+        <ion-item [class.unread]="!comment.read_at" (click)="markAsRead(comment)">
+          <ion-avatar slot="start">
+            <img [src]="getIcon(comment)" alt="User Avatar" />
+          </ion-avatar>
+          <ion-label class="comment-label-container">
+            <div class="user-info-line">
+              <p class="notiContent"><strong>{{comment.data.user.user_name}}</strong> comentó tu receta</p>
+            </div>
+            <div class="recipe-info-line">
+              <ion-text class="recipe-title">{{comment.data.recipe.title}}</ion-text>
+            </div>
+            <span class="time-stamp">{{comment.created_at | timeAgo}}</span>
+          </ion-label>
+
+          <ion-thumbnail slot="end">
+            <img [src]="comment.data.recipe.image_path"  />
+          </ion-thumbnail>
+        </ion-item>
+      } 
+    } 
+    
+    @if (allComments().length === 0 || allComments() === null) {
+      <ion-item>
+        <div class="emptyContainer">
+          <ion-text>No hay notificaciones...</ion-text>
+        </div>
       </ion-item>
+    }
+
+    @if (groupedComments().older.length) {
+      <ion-list-header>
+        <ion-label class="day">Comentarios antiguos</ion-label>
+      </ion-list-header>
+
+      @for (comment of groupedComments().older; track comment.id) {
+        <ion-item [class.unread]="!comment.read_at" (click)="markAsRead(comment)">
+          <ion-avatar slot="start">
+            <img [src]="getIcon(comment)" alt="User Avatar" />
+          </ion-avatar>
+          <ion-label class="comment-label-container">
+            <div class="user-info-line">
+              <p class="notiContent"><strong>{{comment.data.user.user_name}}</strong> comentó tu receta</p>
+            </div>
+            <div class="recipe-info-line">
+              <ion-text class="recipe-title">{{comment.data.recipe.title}}</ion-text>
+            </div>
+            <span class="time-stamp">{{comment.created_at | timeAgo}}</span>
+          </ion-label>
+
+          <ion-thumbnail slot="end">
+            <img [src]="comment.data.recipe.image_path"  />
+          </ion-thumbnail>
+        </ion-item>
+      }
     }
   } @placeholder {
     @for (skeleton of skeletons; track $index) {
@@ -65,11 +102,5 @@
     </ion-item>
     }
   }
-  <!-- <ion-list-header>
-    <ion-label class="day">Esta semana</ion-label>
-  </ion-list-header>
-  <ion-list-header>
-    <ion-label class="day">Antiguas</ion-label>
-  </ion-list-header> -->
 </ion-list>
 </ion-content>

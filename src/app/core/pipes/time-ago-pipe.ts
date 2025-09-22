@@ -11,12 +11,15 @@ export class TimeAgoPipe implements PipeTransform {
     const now = new Date();
     const diff = (now.getTime() - date.getTime()) / 1000;
 
-    if (diff < 60) return `hace ${Math.floor(diff)} segundos`;
-    if (diff < 3600) return `hace ${Math.floor(diff / 60)} minutos`;
-    if (diff < 86400) return `hace ${Math.floor(diff / 3600)} horas`;
-    if (diff < 604800) return `hace ${Math.floor(diff / 86400)} días`;
-    if (diff < 2629800) return `hace ${Math.floor(diff / 604800)} semamnas`;
-    if (diff < 31557600) return `hace ${Math.floor(diff / 2629800)} meses`;
-    return `hace ${Math.floor(diff / 31557600)} año(s)`;
+    const pluralize = (count: number, singular: string, plural?: string) =>
+      `${count} ${count === 1 ? singular : (plural || singular + 's')}`;
+
+    if (diff < 60) return `hace ${pluralize(Math.floor(diff), 'segundo')}`;
+    if (diff < 3600) return `hace ${pluralize(Math.floor(diff / 60), 'minuto')}`;
+    if (diff < 86400) return `hace ${pluralize(Math.floor(diff / 3600), 'hora')}`;
+    if (diff < 604800) return `hace ${pluralize(Math.floor(diff / 86400), 'día')}`;
+    if (diff < 2629800) return `hace ${pluralize(Math.floor(diff / 604800), 'semana')}`;
+    if (diff < 31557600) return `hace ${pluralize(Math.floor(diff / 2629800), 'mes')}`;
+    return `hace ${pluralize(Math.floor(diff / 31557600), 'año')}`;
   }
 }

@@ -2,22 +2,23 @@ import { CommonModule } from '@angular/common';
 import { Component, computed, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
-import { IonSearchbar, IonHeader, IonLabel, IonToolbar, IonItem, IonContent, IonAvatar, IonText, IonButton, IonList, IonIcon, IonToggle, NavController } from "@ionic/angular/standalone";
+import { IonSearchbar, IonHeader, IonLabel, IonToolbar, IonItem, IonContent, IonAvatar, IonText, IonButton, IonList, IonIcon, IonToggle, NavController, IonSkeletonText, IonThumbnail } from "@ionic/angular/standalone";
 import { addIcons } from 'ionicons';
 import { chevronForwardOutline, personOutline, restaurantOutline, settingsOutline, logOutOutline, chatbubblesOutline, moonOutline } from 'ionicons/icons';
 import { Auth } from 'src/app/core/services/auth';
-import { currentUser } from 'src/app/core/stores/auth.store';
+import { currentUser, userInfoLoading } from 'src/app/core/stores/auth.store';
 
 @Component({
   selector: 'app-dashboard',
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.scss'],
   standalone: true,
-  imports: [CommonModule, RouterModule, FormsModule, IonToggle, IonIcon, IonList, IonButton, IonText, IonContent, IonItem, IonToolbar, IonHeader, IonLabel, IonAvatar]
+  imports: [IonSkeletonText, IonThumbnail, CommonModule, RouterModule, FormsModule, IonToggle, IonIcon, IonList, IonButton, IonText, IonContent, IonItem, IonToolbar, IonHeader, IonLabel, IonAvatar]
 })
 export class DashboardComponent  implements OnInit {
   paletteToggle = false;
   public user = computed(() => currentUser());
+  loadingUser = computed(() => userInfoLoading());
 
   icons: Record<string, string> = {
     'femenino': 'assets/img/avatarF.png',

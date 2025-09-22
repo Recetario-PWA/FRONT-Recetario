@@ -1,8 +1,12 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, computed, effect, OnInit, ViewChild } from '@angular/core';
 import { NavigationEnd, Router } from '@angular/router';
 import { IonIcon, IonTabBar, IonTabButton, IonTabs, IonBadge, IonFabButton, IonFab } from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
 import { homeOutline, heartOutline, personOutline, notificationsOutline, home, heart, person, notifications, restaurantOutline, restaurant } from 'ionicons/icons';
+import { Auth } from 'src/app/core/services/auth';
+import { Notifications } from 'src/app/core/services/notifications';
+import { currentUser } from 'src/app/core/stores/auth.store';
+import { notifications as notis } from 'src/app/core/stores/auth.store';
 
 @Component({
   selector: 'app-tabs',
@@ -12,12 +16,26 @@ import { homeOutline, heartOutline, personOutline, notificationsOutline, home, h
   imports: [IonFab, IonFabButton, IonBadge,  IonTabs, IonTabButton, IonTabBar, IonIcon ]
 })
 export class TabsComponent  implements OnInit {
+  user = computed(() => currentUser());
+
+  hasUnreadNotifications = computed(() => 
+    notis().some((n:any) => !n.read_at)
+  );
+
   isTabActive(tabName: string): boolean {
     return this.router.url.includes(`/tabs/${tabName}`);
   }
 
-  constructor(private router: Router) { 
+  constructor(private router: Router, private authService: Auth ,private notificationService: Notifications) { 
     addIcons({ homeOutline, heartOutline, personOutline, notificationsOutline, home, heart, person, notifications, restaurantOutline, restaurant });
+      
+    effect(() => {
+      const user = this.user();
+
+      if (user?.id) {
+        this.notificationService.subscribeToUserNotifications(user.id);
+      }
+    })
   }
 
   ngOnInit() {

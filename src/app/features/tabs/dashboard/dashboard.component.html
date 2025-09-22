@@ -13,15 +13,28 @@
 
 <ion-content>
   <ion-item lines="none" class="ion-margin">
-    <ion-avatar slot="start" class="big-avatar">
-      <img alt="Avatar" [src]="getIcon()" />
-    </ion-avatar>
+    @defer (when !loadingUser()) {
+      <ion-avatar slot="start" class="big-avatar">
+        <img alt="Avatar" [src]="getIcon()" />
+      </ion-avatar>
 
-    <ion-label class="ion-margin-top ion-margin-hortizontal">
-      {{ (user()?.name && user()?.last_name) ? user()?.name + ' ' + user()?.last_name : 'Name Lastname' }}
-      <h3>{{ user()?.user_name || 'User' }}</h3>
-    <!-- <ion-button size="small" color="primary">Editar perfil</ion-button> -->
-    </ion-label>
+      <ion-label class="ion-margin-top ion-margin-hortizontal">
+        {{ (user()?.name && user()?.last_name) ? user()?.name + ' ' + user()?.last_name : 'Name Lastname' }}
+        <h3>{{ user()?.user_name || 'User' }}</h3>
+      <!-- <ion-button size="small" color="primary">Editar perfil</ion-button> -->
+      </ion-label>
+    } @placeholder {
+      <ion-thumbnail class="iconUser" slot="start">
+        <ion-skeleton-text [animated]="true"></ion-skeleton-text>
+      </ion-thumbnail>
+
+      <ion-label class="ion-margin-top ion-margin-hortizontal">
+        <ion-skeleton-text [animated]="true" style="width: 80%; height: 0.75rem;"></ion-skeleton-text>
+        <h3>
+          <ion-skeleton-text [animated]="true" style="width: 80%; height: 0.75rem;"></ion-skeleton-text>
+        </h3>
+      </ion-label>
+    }
   </ion-item>
 
   <ion-list lines="none" inset="true">

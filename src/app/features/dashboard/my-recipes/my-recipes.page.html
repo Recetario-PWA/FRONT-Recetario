@@ -14,9 +14,11 @@
 
 <ion-content class="hide-scrollbar">
  <ion-row class="ion-margin">
+  @for (recipe of recipes(); track recipe.id) {
     <ion-col sizeLg="3" sizeMd="4" sizeSm="6" sizeXl="3" sizeXs="6">
-      <app-my-recipe-card (cardAction)="openActionSheet(1)" [recipe_id]="1" [title]="'Pruebangas'" [rating]="2" [cooking_time]="20" [image_url]="''"></app-my-recipe-card>
+      <app-my-recipe-card (cardAction)="openActionSheet(recipe.id)" [recipe_id]="recipe.id" [title]="recipe.title" [rating]="recipe.averageScore" [cooking_time]="recipe.prep_time" [image_url]="recipe.image_path"></app-my-recipe-card>
     </ion-col>
+  }
  </ion-row>
 
   <ion-action-sheet

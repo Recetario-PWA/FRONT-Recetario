@@ -14,11 +14,11 @@ ion-header {
           color: var(--text-primary);
         }
       }
-      ion-button{
+      ion-button {
         --background: var(--ion-color-primary);
-      ion-icon {
-        color: white;
-      }
+        ion-icon {
+          color: white;
+        }
       }
     }
   }
@@ -97,12 +97,23 @@ ion-content {
     margin-bottom: 1rem;
   }
 
-  ion-thumbnail.userSkeleton{
+  ion-thumbnail.userSkeleton {
     --border-radius: 50%;
   }
 
-  ion-thumbnail.recipeImgSkeleton{
+  ion-thumbnail.recipeImgSkeleton {
     --size: 45px;
   }
 
+  .notiContent {
+    font-family: "Quicksand", sans-serif;
+  }
+}
+
+.emptyContainer {
+  width: 100%;
+  display: flex;
+  justify-content: center; 
+  align-items: center;
+  padding: 1rem 0;         
 }

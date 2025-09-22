@@ -2,7 +2,7 @@ import { CommonModule } from '@angular/common';
 import { Component, computed, ElementRef, OnInit, signal } from '@angular/core';
 import { AbstractControl, FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import {ModalController, IonContent, IonText, IonIcon, IonRow, IonGrid, IonCol, IonButton, IonList, IonItem, IonLabel, IonAvatar, IonButtons, IonToolbar, IonHeader, IonModal, IonSearchbar, IonImg, IonFab, IonFabButton, IonBackButton, IonTitle, IonChip, IonSegment, IonSegmentButton, IonSegmentView, IonSegmentContent, InfiniteScrollCustomEvent, IonInfiniteScroll, IonInfiniteScrollContent, IonCard, IonCardContent, IonCardHeader, IonCardTitle, IonCardSubtitle } from "@ionic/angular/standalone";
+import {ModalController, IonContent, IonText, IonIcon, IonRow, IonGrid, IonCol, IonButton, IonList, IonItem, IonLabel, IonAvatar, IonButtons, IonToolbar, IonHeader, IonModal, IonSearchbar, IonImg, IonFab, IonFabButton, IonBackButton, IonTitle, IonChip, IonSegment, IonSegmentButton, IonSegmentView, IonSegmentContent, InfiniteScrollCustomEvent, IonInfiniteScroll, IonInfiniteScrollContent, IonCard, IonCardContent, IonCardHeader, IonCardTitle, IonCardSubtitle, IonSkeletonText, IonThumbnail, IonSpinner } from "@ionic/angular/standalone";
 import { addIcons } from 'ionicons';
 import { heart, heartOutline, timeOutline, restaurantOutline, chatbubbleOutline } from 'ionicons/icons';
 import { take, timeout } from 'rxjs';
@@ -17,7 +17,7 @@ import { ErrorMessagesComponent } from 'src/app/shared/components/error-messages
   templateUrl: './recipe-detail.component.html',
   styleUrls: ['./recipe-detail.component.scss'],
   standalone: true,
-  imports: [ErrorMessagesComponent, TimeAgoPipe, ReactiveFormsModule, FormsModule, IonCard, IonCardContent, IonCardHeader, IonCardTitle, IonCardSubtitle, IonInfiniteScroll, IonInfiniteScrollContent, IonSegment, IonSegmentButton, IonSegmentView, IonSegmentContent, IonChip, IonTitle, IonBackButton, IonFab, IonImg, IonSearchbar, IonModal, IonHeader, IonToolbar, IonButtons, IonAvatar, IonLabel, IonItem, IonList, IonButton, IonCol, IonGrid, IonRow, IonIcon, IonText, CommonModule, IonContent, IonFabButton, StarRatingComponent]
+  imports: [IonSkeletonText, IonSpinner,IonThumbnail, ErrorMessagesComponent, TimeAgoPipe, ReactiveFormsModule, FormsModule, IonCard, IonCardContent, IonCardHeader, IonCardTitle, IonCardSubtitle, IonInfiniteScroll, IonInfiniteScrollContent, IonSegment, IonSegmentButton, IonSegmentView, IonSegmentContent, IonChip, IonTitle, IonBackButton, IonFab, IonImg, IonSearchbar, IonModal, IonHeader, IonToolbar, IonButtons, IonAvatar, IonLabel, IonItem, IonList, IonButton, IonCol, IonGrid, IonRow, IonIcon, IonText, CommonModule, IonContent, IonFabButton, StarRatingComponent]
 })
 export class RecipeDetailComponent  implements OnInit {
   recipeId!: number;
@@ -28,9 +28,16 @@ export class RecipeDetailComponent  implements OnInit {
   comments = signal<any[]>([]);
   commentForm: FormGroup;
   loading = signal(false);
+  loadingRecipe = signal(true);
 
   favs = usefavList();
   isInFavList = computed(() => this.favs().includes(this.recipeId));
+
+  icons: Record<string, string> = {
+    'femenino': 'assets/img/avatarF.png',
+    'masculino': 'assets/img/avatarM.png',
+    '39 tipos de gays': 'assets/img/avatarG.png'
+  }
 
   //CALCULAR SCORE TOTAL DE LA RECETA
   averageScore = computed(() => {
@@ -87,7 +94,21 @@ export class RecipeDetailComponent  implements OnInit {
           this.instructionsList =  this.recipe.instructions.split('.').map((s: any) => s.trim()).filter((s: any) => s !== '');
 
           //GUARDAR LOS COMENTARIOS DE LA RECETA
-          this.comments.set(this.recipe.comments || []);
+          this.comments.set((this.recipe.comments || []).sort((a:any, b:any) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime()));
+          
+          setTimeout(() => {
+            const commentId = this.route.snapshot.queryParamMap.get('commentId');
+            if (commentId) {
+              const element = document.getElementById(`comment-${commentId}`)?.querySelector('.commentWrapper');
+              if (element) {
+                element.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                element?.classList.add('highlight');
+                setTimeout(() => element.classList.remove('highlight'), 2000);
+              }
+            }
+          }, 300);
+
+          this.loadingRecipe.set(false);
         }
       },
       error: (error) => {
@@ -133,11 +154,10 @@ export class RecipeDetailComponent  implements OnInit {
 
     const data = this.commentForm.value;
 
-     this.loading.set(true); 
+    this.loading.set(true); 
 
     this.recipeService.addComment(data).pipe(timeout(15000), take(1)).subscribe({
       next: (response) => {
-        console.log(response);
         //ACTUALIZAR LOS COMENTARIOS
         this.getRecipe();
 
@@ -148,9 +168,15 @@ export class RecipeDetailComponent  implements OnInit {
         console.log(error);
       },
       complete: () => {
+        this.selectedRating.set(0);
         this.loading.set(false);
       }
     });
+  }
+
+  getIcon(gender?: string): string {
+    const genderKey = gender?.toLowerCase() ?? 'default';
+    return this.icons[genderKey] ?? 'https://ionicframework.com/docs/img/demos/avatar.svg';
   }
 
   ngOnDestroy(){

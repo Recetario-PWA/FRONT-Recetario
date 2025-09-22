@@ -7,7 +7,7 @@ import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { Recipe } from 'src/app/core/services/recipes/recipe';
 import { take, timeout } from 'rxjs';
-import { currentUser } from 'src/app/core/stores/auth.store';
+import { currentUser, userInfoLoading } from 'src/app/core/stores/auth.store';
 import { Auth } from 'src/app/core/services/auth';
 @Component({
   selector: 'app-home',
@@ -31,9 +31,8 @@ import { Auth } from 'src/app/core/services/auth';
     IonThumbnail,
     RecipeCardComponent, 
     RouterModule,
-    IonList,
-    IonInfiniteScroll,
-    IonInfiniteScrollContent
+    IonSkeletonText,
+    IonThumbnail
   ],
 })
 export class HomeComponent implements OnInit {
@@ -43,6 +42,7 @@ export class HomeComponent implements OnInit {
   skeletons = Array(4).fill(0);
   recipes = signal<any[]>([]);
   searchBar = signal('');
+  userLoading = computed(() => userInfoLoading());
   public user = computed(() => currentUser());
 
   filteredRecipes = computed(() => {

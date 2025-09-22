@@ -30,4 +30,8 @@ export class Recipe {
   addComment(data: any): Observable<any> {
     return this.http.post(`${this.commentsBaseUrl}`, data);
   }
+
+  userRecipes(): Observable<any> {
+    return this.http.get<any>(`${this.baseUrl}user-recipes`);
+  }
 }

@@ -27,10 +27,42 @@ ion-content {
     ion-label {
       font-size: 1.2rem;
       margin-bottom: 0.5rem;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
 
     ion-text {
       color: var(--ion-color-medium);
     }
   }
+}
+
+ion-item-sliding{
+    .infoContainer {
+      display: flex;
+      flex-direction: column;
+      margin-top: 1rem;
+      margin-bottom: 1rem;
+      width: 70%;
+
+      small{
+        display: block;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        margin-bottom: 0.2rem;
+      }
+    }
+}
+
+ion-thumbnail {
+  border: 1px solid var(--ion-color-primary);
+  --border-radius: 8px;
+}
+
+.emptyComments {
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }

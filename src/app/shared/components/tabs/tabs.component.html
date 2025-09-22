@@ -19,7 +19,10 @@
 
     <ion-tab-button tab="notifications">
       <ion-icon [name]="isTabActive('notifications') ? 'notifications' : 'notifications-outline'"></ion-icon>
-      <ion-badge class="notification-dot"></ion-badge>
+      
+      @if (hasUnreadNotifications()) {
+        <ion-badge class="notification-dot"></ion-badge>
+      }
     </ion-tab-button>
 
     <ion-tab-button tab="dashboard">

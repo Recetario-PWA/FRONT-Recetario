@@ -2,7 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { environment } from '../../../environments/environment';
 import { Observable, tap } from 'rxjs';
-import { currentUser } from '../stores/auth.store';
+import { currentUser, userInfoLoading } from '../stores/auth.store';
 
 @Injectable({
   providedIn: 'root'
@@ -45,17 +45,21 @@ export class Auth {
   //INFO DEL USUARIO
   //lo deje aqui porque tiene la ruta auth xd
   getUserInfo() {
+    userInfoLoading.set(true);
     this.httpClient.get<any>(`${this.baseUrl}about-me`).subscribe({
       next: (response) => {
         if (response.result) {
           currentUser.set(response.data);
+          userInfoLoading.set(false);
         } else {
           currentUser.set(null);
+          userInfoLoading.set(false);
         }
       },
       error: (error) => {
         currentUser.set(null);
-        console.log(error);
+        userInfoLoading.set(false);
+        //console.log(error);
       }
     });
   }

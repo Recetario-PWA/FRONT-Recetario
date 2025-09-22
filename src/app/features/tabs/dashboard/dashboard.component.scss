@@ -56,3 +56,12 @@ ion-content {
     --ionicon-stroke-width: 2.25rem;
   }
 }
+
+.iconUser {
+  width: 61px;
+  height: 61px;
+
+  ion-skeleton-text {
+    --border-radius: 9999px;
+  }
+}

@@ -13,54 +13,92 @@
 
 <ion-content class="hide-scrollbar ion-padding">
  <div class="profile-container">
-    <div class="profile-photo-wrapper">
-      <img [src]="getIcon()" alt="Profile Photo" class="profile-photo" />
-    </div>
+    @defer (when !loadingUser()) {
+      <div class="profile-photo-wrapper">
+        <img [src]="getIcon()" alt="Profile Photo" class="profile-photo" />
+      </div>
+    } @placeholder {
+      <div class="profile-photo-wrapper">
+        <ion-skeleton-text [animated]="true"></ion-skeleton-text>
+      </div>
+    }
   </div>
 
   <ion-list>
     <form [formGroup]="updateInfoForm">
-      <ion-item>
-        <ion-label position="stacked">Nombre(s)</ion-label>
-        <input formControlName="name" type="text" placeholder="Ej. Tyler">
-        <app-error-messages [control]="getControl('name')" label="Este campo"></app-error-messages>
-      </ion-item>
+      @defer (when !loadingUser()) {
+        <ion-item>
+          <ion-label position="stacked">Nombre(s)</ion-label>
+          <input formControlName="name" type="text" placeholder="Ej. Tyler">
+          <app-error-messages [control]="getControl(updateInfoForm, 'name')" label="Este campo"></app-error-messages>
+        </ion-item>
 
-      <ion-item>
-        <ion-label position="stacked">Apellidos(s)</ion-label>
-        <input formControlName="last_name" type="text" placeholder="Ej. Joseph">
-        <app-error-messages [control]="getControl('last_name')" label="Este campo"></app-error-messages>
-      </ion-item>
+        <ion-item>
+          <ion-label position="stacked">Apellidos(s)</ion-label>
+          <input formControlName="last_name" type="text" placeholder="Ej. Joseph">
+          <app-error-messages [control]="getControl(updateInfoForm, 'last_name')" label="Este campo"></app-error-messages>
+        </ion-item>
 
-      <ion-item>
-        <ion-label position="stacked">Username</ion-label>
-        <input formControlName="user_name" type="text" placeholder="tylerrjoseph">
-        <app-error-messages [control]="getControl('user_name')" label="Este campo"></app-error-messages>
-      </ion-item>
+        <ion-item>
+          <ion-label position="stacked">Username</ion-label>
+          <input formControlName="user_name" type="text" placeholder="tylerrjoseph">
+          <app-error-messages [control]="getControl(updateInfoForm, 'user_name')" label="Este campo"></app-error-messages>
+        </ion-item>
 
-      <ion-item>
-        <ion-label position="stacked">Género</ion-label>
-        <ion-select formControlName="gender" mode="md" aria-label="Genero" interface="popover" placeholder="Seleccionar">
-          <ion-select-option value="femenino">Femenino</ion-select-option>
-          <ion-select-option value="masculino">Masculino</ion-select-option>
-          <ion-select-option value="39 tipos de gays">39 tipos de gays🏳️‍🌈</ion-select-option>
-        </ion-select>
-        <app-error-messages [control]="getControl('gender')" label="Este campo"></app-error-messages>
-      </ion-item>
+        <ion-item>
+          <ion-label position="stacked">Género</ion-label>
+          <ion-select formControlName="gender" mode="md" aria-label="Genero" interface="popover" placeholder="Seleccionar">
+            <ion-select-option value="femenino">Femenino</ion-select-option>
+            <ion-select-option value="masculino">Masculino</ion-select-option>
+            <ion-select-option value="39 tipos de gays">39 tipos de gays🏳️‍🌈</ion-select-option>
+          </ion-select>
+          <app-error-messages [control]="getControl(updateInfoForm, 'gender')" label="Este campo"></app-error-messages>
+        </ion-item>
 
-      <ion-item>
-        <ion-label position="stacked">Correo electronico</ion-label>
-        <input formControlName="email" type="email" placeholder="ejemplo@gmail.com">
-        <app-error-messages [control]="getControl('email')" label="Este campo"></app-error-messages>
-      </ion-item>
-      
-      <div class="actions">
-        <ion-button size="large" class="btnCustom" id="open-modal" expand="block">Cambiar Contraseña</ion-button>
-        <ion-button size="large" type="button" (click)="confirmAlert()" class="btnCustom" expand="block">Guardar cambios</ion-button>
-      </div>
+        <ion-item>
+          <ion-label position="stacked">Correo electronico</ion-label>
+          <input formControlName="email" type="email" placeholder="ejemplo@gmail.com">
+          <app-error-messages [control]="getControl(updateInfoForm, 'email')" label="Este campo"></app-error-messages>
+        </ion-item>
+        
+        <div class="actions">
+          <ion-button size="large" class="btnCustom" id="open-modal" expand="block">Cambiar Contraseña</ion-button>
+          <ion-button size="large" type="button" (click)="confirmAlert()" class="btnCustom" expand="block">Guardar cambios</ion-button>
+        </div>
+      } @placeholder {
+        <ion-item>
+          <ion-label position="stacked">Nombre(s)</ion-label>
+          <ion-skeleton-text [animated]="true" style="width: 100%; height: 42px; border-radius: 8px;"></ion-skeleton-text>
+        </ion-item>
+
+        <ion-item>
+          <ion-label position="stacked">Apellidos(s)</ion-label>
+          <ion-skeleton-text [animated]="true" style="width: 100%; height: 42px; border-radius: 8px;"></ion-skeleton-text>
+        </ion-item>
+
+        <ion-item>
+          <ion-label position="stacked">Username</ion-label>
+          <ion-skeleton-text [animated]="true" style="width: 100%; height: 42px; border-radius: 8px;"></ion-skeleton-text>
+        </ion-item>
+
+        <ion-item>
+          <ion-label position="stacked">Género</ion-label>
+          <ion-skeleton-text [animated]="true" style="width: 100%; height: 42px; border-radius: 8px;"></ion-skeleton-text>
+        </ion-item>
+
+        <ion-item>
+          <ion-label position="stacked">Correo electronico</ion-label>
+          <ion-skeleton-text [animated]="true" style="width: 100%; height: 42px; border-radius: 8px;"></ion-skeleton-text>
+        </ion-item>
+        
+        <div class="actions">
+          <ion-button size="large" class="btnCustom" [disabled]="true" expand="block">Cambiar Contraseña</ion-button>
+          <ion-button size="large" type="button" [disabled]="true" class="btnCustom" expand="block">Guardar cambios</ion-button>
+        </div>
+      }
     </form>
 
-    <ion-modal #modal trigger="open-modal" >
+    <ion-modal #modal trigger="open-modal" (ionModalDidDismiss)="onPasswordModalClose()" >
       <ng-template>
         <ion-content>
           <ion-toolbar>
@@ -72,22 +110,24 @@
             </ion-buttons>
           </ion-toolbar>
           <ion-list>
-            <form>
+            <form [formGroup]="changePasswordForm">
               <ion-item class="ion-margin-top ion-margin-horizontal ion-margin-bottom">
                 <ion-label position="stacked">Contraseña nueva</ion-label>
-                <ion-input type="password">
+                <ion-input autocomplete="off" autocorrect="off" spellcheck="false" formControlName="password" type="password">
                   <ion-input-password-toggle slot="end"></ion-input-password-toggle>
                 </ion-input>
+                <app-error-messages [control]="getControl(changePasswordForm, 'password')" label="Este campo"></app-error-messages>
               </ion-item>
               <ion-item class="ion-margin-horizontal ion-margin-bottom">
                 <ion-label position="stacked">Confirmar contraseña</ion-label>
-                <ion-input type="password">
+                <ion-input autocomplete="off" autocorrect="off" spellcheck="false" formControlName="password_confirmation" type="password">
                   <ion-input-password-toggle slot="end"></ion-input-password-toggle>
                 </ion-input>
+                <app-error-messages [control]="getControl(changePasswordForm, 'password_confirmation')" label="Este campo"></app-error-messages>
               </ion-item>
 
               <div class="ion-text-center ion-padding-top">
-                <ion-button size="large" type="submit" class="btnCustom">Actualizar contraseña</ion-button>
+                <ion-button size="large" type="button" (click)="confirmPasswordAlert()" class="btnCustom">Actualizar contraseña</ion-button>
               </div>
             </form>
           </ion-list>

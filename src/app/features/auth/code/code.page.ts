@@ -46,7 +46,6 @@ export class CodePage implements OnInit {
     });
 
     const data = this.codeForm.value;
-    console.log('CODE FORM: ', data);
 
     this.authService.verifyCode(data).pipe(timeout(15000), take(1)).subscribe({
       next: (response) => {

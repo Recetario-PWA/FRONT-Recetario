@@ -13,135 +13,206 @@
     </ion-toolbar>
   </ion-header>
 
-  <div class="bg" [style.background-image]="'url(' + recipe.image_path + ')'">
-    <ion-modal
-      #modal
-      [isOpen]="true"
-      [initialBreakpoint]="0.72"
-      [breakpoints]="[1, 0.72]"
-      [backdropDismiss]="false"
-      [backdropBreakpoint]="1"
-      [expandToScroll]="false"
-      mode="ios"
-    >
-      <ng-template>
-        <ion-content class="ion-padding">
-          <ion-item lines="none" class="ion-margin-top">
-            <ion-text class="title">{{ recipe.title }}</ion-text>
-          </ion-item>
-            <div class="rating ion-margin-start">
-              <ion-icon name="star" color="warning"></ion-icon>
-              {{ averageScore().toFixed(1) }}
-            </div>
-          <ion-item lines="none">
-            <div class="infoRecipe">
-              <div class="time-container" slot="start">
-                <ion-icon name="time-outline"></ion-icon>
-                <ion-text class="timeText">Tiempo: {{ recipe.prep_time }}</ion-text>
+    <div class="bg" [style.background-image]="'url(' + recipe.image_path + ')'">
+      <ion-modal
+        #modal
+        [isOpen]="true"
+        [initialBreakpoint]="0.72"
+        [breakpoints]="[1, 0.72]"
+        [backdropDismiss]="false"
+        [backdropBreakpoint]="1"
+        [expandToScroll]="false"
+        mode="ios"
+      >
+        <ng-template>
+        @defer (when !loadingRecipe()) {
+          <ion-content class="ion-padding">
+            <ion-item lines="none" class="ion-margin-top">
+              <ion-text class="title">{{ recipe.title }}</ion-text>
+            </ion-item>
+              <div class="rating ion-margin-start">
+                <ion-icon name="star" color="warning"></ion-icon>
+                {{ averageScore().toFixed(1) }}
               </div>
-              <div class="time-container">
-                <ion-icon name="restaurant-outline"></ion-icon>
-                <ion-text class="timeText">Porciones: {{ recipe.servings }}</ion-text>
-              </div>
-            </div>
-          </ion-item>
-          <ion-item lines="full" class="userInfo">
-            <ion-avatar slot="start">
-              <img alt="Profile photo" src="/assets/img/kirbsIcon.jpg" />
-            </ion-avatar>
-            <ion-label class="userName">{{ recipe.user?.user_name }}</ion-label>
-          </ion-item>
-          <ion-item lines="full">
-            <div>
-              <ion-segment mode="ios" value="default"> 
-                <ion-segment-button value="default" content-id="ingredients">
-                  <ion-label>Ingredientes</ion-label>
-                </ion-segment-button>
-                <ion-segment-button value="steps" content-id="steps">
-                  <ion-label>Preparación</ion-label>
-                </ion-segment-button>
-              </ion-segment>
-              <ion-segment-view class="ion-margin-top">
-                <ion-segment-content id="ingredients">
-                  @for (ingredient of ingredientsList; track $index; let i = $index) {
-                    <ion-item lines="none">
-                      <div class="ingredient-marker-container">
-                        <div class="ingredient-marker"></div>
-                        <ion-label>{{ ingredient }}</ion-label>
-                      </div>
-                    </ion-item>
-                  }
-                </ion-segment-content>
-                <ion-segment-content id="steps">
-                  @for (instruction of instructionsList; track $index; let i = $index) {
-                    <div class="numbered-callout">
-                      <div class="number-circle">{{ i + 1 }}</div>
-                      <p class="callout-text">
-                        {{ instruction }}.
-                      </p>
-                    </div>
-                  }
-                </ion-segment-content>
-              </ion-segment-view>
-            </div>
-          </ion-item>
-          <div class="addCommentContainer ion-margin">
-            <form [formGroup]="commentForm" (ngSubmit)="onSubmit()">
-              <div class="inputContainer">
-                <ion-label>Calificación</ion-label>
-                <app-star-rating [rating]="0" (ratingChanged)="onRatingChange($event)"></app-star-rating>
-              </div>
-              <app-error-messages label="Este campo" [control]="getControl('score')"></app-error-messages>
-
-              <div class="inputContainer">
-                <ion-label>Comentario</ion-label>
-                <textarea formControlName="info" autocapitalize="on" wrap="hard" minlength="20" maxlength="1000" spellcheck="true" rows="5" placeholder="Redacta tu comentario"></textarea>
-              </div>
-              <app-error-messages label="Este campo" [control]="getControl('info')"></app-error-messages>
-
-              <ion-button [disabled]="loading()" type="submit" class="customBtn">
-                <ion-icon name="chatbubble-outline" slot="start"></ion-icon>
-                {{ loading() ? 'Agregando...' : 'Agregar comentario' }}
-              </ion-button>
-            </form>
-          </div>
-
-          <ion-item lines="none">
-            <ion-text class="comment">Comentarios ({{ comments().length }})</ion-text>
-          </ion-item>
-
-          <ion-list class="ion-margin-top">
-            @for (comment of comments(); track comment.id) {
-              <div class="commentContainer">
-                <ion-item lines="none">
-                  <ion-avatar slot="start">
-                    <img alt="Profile photo" src="assets/img/avatar1.png" alt="avatar" />
-                  </ion-avatar>
-                  <ion-label>
-                    <h2>{{ comment.user.user_name }}</h2>
-                    <p class="comment-time">{{ comment.created_at | timeAgo }}</p>
-                  </ion-label>
-                </ion-item>
-              
-                <ion-card-content>
-                <div class="comment-rating" style="display: flex; gap: 3px; margin-bottom: 0.5rem;">
-                  <ion-icon 
-                    *ngFor="let star of [1,2,3,4,5]" 
-                    [name]="star <= comment.score ? 'star' : 'star-outline'" 
-                    color="warning">
-                  </ion-icon>
+            <ion-item lines="none">
+              <div class="infoRecipe">
+                <div class="time-container" slot="start">
+                  <ion-icon name="time-outline"></ion-icon>
+                  <ion-text class="timeText">Tiempo: {{ recipe.prep_time }}</ion-text>
                 </div>
-                  <p>{{ comment.content }}</p>
-                </ion-card-content>
+                <div class="time-container">
+                  <ion-icon name="restaurant-outline"></ion-icon>
+                  <ion-text class="timeText">Porciones: {{ recipe.servings }}</ion-text>
+                </div>
               </div>
-            }
-          </ion-list>
-          <!--<ion-infinite-scroll (ionInfinite)="onIonInfinite($event)" class="ion-margin-top">
-            <ion-infinite-scroll-content loadingText="Cargando comentarios..." loadingSpinner="dots"></ion-infinite-scroll-content>
-          </ion-infinite-scroll>-->
-                    
-        </ion-content>
-      </ng-template>
-    </ion-modal>
-  </div>
+            </ion-item>
+            <ion-item lines="full" class="userInfo">
+              <ion-avatar slot="start">
+                <img alt="Profile photo" [src]="getIcon(recipe.user?.gender)" />
+              </ion-avatar>
+              <ion-label class="userName">{{ recipe.user?.user_name }}</ion-label>
+            </ion-item>
+            <ion-item lines="full">
+              <div>
+                <ion-segment mode="ios" value="default"> 
+                  <ion-segment-button value="default" content-id="ingredients">
+                    <ion-label>Ingredientes</ion-label>
+                  </ion-segment-button>
+                  <ion-segment-button value="steps" content-id="steps">
+                    <ion-label>Preparación</ion-label>
+                  </ion-segment-button>
+                </ion-segment>
+                <ion-segment-view class="ion-margin-top">
+                  <ion-segment-content id="ingredients">
+                    @for (ingredient of ingredientsList; track $index; let i = $index) {
+                      <ion-item lines="none">
+                        <div class="ingredient-marker-container">
+                          <div class="ingredient-marker"></div>
+                          <ion-label>{{ ingredient }}</ion-label>
+                        </div>
+                      </ion-item>
+                    }
+                  </ion-segment-content>
+                  <ion-segment-content id="steps">
+                    @for (instruction of instructionsList; track $index; let i = $index) {
+                      <div class="numbered-callout">
+                        <div class="number-circle">{{ i + 1 }}</div>
+                        <p class="callout-text">
+                          {{ instruction }}.
+                        </p>
+                      </div>
+                    }
+                  </ion-segment-content>
+                </ion-segment-view>
+              </div>
+            </ion-item>
+            <div class="addCommentContainer ion-margin">
+              <form [formGroup]="commentForm" (ngSubmit)="onSubmit()">
+                <div class="inputContainer">
+                  <ion-label>Calificación</ion-label>
+                  <app-star-rating [rating]="selectedRating()" (ratingChanged)="onRatingChange($event)"></app-star-rating>
+                </div>
+                <app-error-messages label="Este campo" [control]="getControl('score')"></app-error-messages>
+
+                <div class="inputContainer">
+                  <ion-label>Comentario</ion-label>
+                  <textarea formControlName="info" autocapitalize="on" wrap="hard" minlength="20" maxlength="1000" spellcheck="true" rows="5" placeholder="Redacta tu comentario"></textarea>
+                </div>
+                <app-error-messages label="Este campo" [control]="getControl('info')"></app-error-messages>
+
+                <ion-button [disabled]="loading()" type="submit" class="customBtn">
+                  <ion-icon name="chatbubble-outline" slot="start"></ion-icon>
+                  {{ loading() ? 'Agregando...' : 'Agregar comentario' }}
+                </ion-button>
+              </form>
+            </div>
+
+            <ion-item lines="none">
+              <ion-text class="comment">Comentarios ({{ comments().length }})</ion-text>
+            </ion-item>
+
+            <ion-list class="ion-margin-top">
+              @for (comment of comments(); track comment.id) {
+                <div class="commentContainer" [id]="'comment-' + comment.id">
+                  <div class="commentWrapper">
+                    <ion-item lines="none">
+                      <ion-avatar slot="start">
+                        <img alt="Profile photo" [src]="getIcon(comment.user.gender)" alt="avatar" />
+                      </ion-avatar>
+                      <ion-label>
+                        <h2>{{ comment.user.user_name }}</h2>
+                        <p class="comment-time">{{ comment.created_at | timeAgo }}</p>
+                      </ion-label>
+                    </ion-item>
+                  
+                    <ion-card-content>
+                    <div class="comment-rating" style="display: flex; gap: 3px; margin-bottom: 0.5rem;">
+                      <ion-icon 
+                        *ngFor="let star of [1,2,3,4,5]" 
+                        [name]="star <= comment.score ? 'star' : 'star-outline'" 
+                        color="warning">
+                      </ion-icon>
+                    </div>
+                      <p>{{ comment.content }}</p>
+                    </ion-card-content>
+                  </div>
+                </div>
+              }
+            </ion-list>
+            <!--<ion-infinite-scroll (ionInfinite)="onIonInfinite($event)" class="ion-margin-top">
+              <ion-infinite-scroll-content loadingText="Cargando comentarios..." loadingSpinner="dots"></ion-infinite-scroll-content>
+            </ion-infinite-scroll>-->
+                      
+          </ion-content>
+        } @placeholder {
+            <ion-content class="ion-padding">
+              <ion-item lines="none" class="ion-margin-top">
+                <ion-skeleton-text [animated]="true" style="width: 100%; height: 12px"></ion-skeleton-text>
+              </ion-item>
+                <div class="rating ion-margin-start">
+                  <ion-icon name="star" color="warning"></ion-icon>
+                  <ion-skeleton-text [animated]="true" style="width: 40px"></ion-skeleton-text>
+                </div>
+              <ion-item lines="none">
+                <div class="infoRecipe">
+                  <div class="time-container" slot="start">
+                    <ion-icon name="time-outline"></ion-icon>
+                    <ion-skeleton-text [animated]="true" style="width: 80px"></ion-skeleton-text>
+                  </div>
+                  <div class="time-container">
+                    <ion-icon name="restaurant-outline"></ion-icon>
+                    <ion-skeleton-text [animated]="true" style="width: 80px"></ion-skeleton-text>
+                  </div>
+                </div>
+              </ion-item>
+              <ion-item lines="full" class="userInfo">
+                <ion-thumbnail slot="start" class="ion-margin-bottom">
+                  <ion-skeleton-text [animated]="true"></ion-skeleton-text>
+                </ion-thumbnail>
+                <ion-skeleton-text [animated]="true" style="width: 100%"></ion-skeleton-text>
+              </ion-item>
+              <ion-item lines="full">
+                <div class="loadingContainer">
+                  <ion-spinner name="dots"></ion-spinner>
+                </div>
+              </ion-item>
+              <div class="addCommentContainer ion-margin">
+                <form [formGroup]="commentForm" (ngSubmit)="onSubmit()">
+                  <div class="inputContainer">
+                    <ion-label>Calificación</ion-label>
+                    <app-star-rating [rating]="selectedRating()" (ratingChanged)="onRatingChange($event)"></app-star-rating>
+                  </div>
+                  <app-error-messages label="Este campo" [control]="getControl('score')"></app-error-messages>
+
+                  <div class="inputContainer">
+                    <ion-label>Comentario</ion-label>
+                    <textarea formControlName="info" autocapitalize="on" wrap="hard" minlength="20" maxlength="1000" spellcheck="true" rows="5" placeholder="Redacta tu comentario"></textarea>
+                  </div>
+                  <app-error-messages label="Este campo" [control]="getControl('info')"></app-error-messages>
+
+                  <ion-button [disabled]="true" type="submit" class="customBtn">
+                    <ion-icon name="chatbubble-outline" slot="start"></ion-icon>
+                  Agregar comentario
+                  </ion-button>
+                </form>
+              </div>
+
+              <ion-item lines="none">
+                <ion-text class="comment">Comentarios ({{ comments().length }})</ion-text>
+              </ion-item>
+
+              <ion-list class="ion-margin-top">
+                <div class="loadingContainer">
+                  <ion-spinner name="dots"></ion-spinner>
+                </div>
+              </ion-list>
+              <!--<ion-infinite-scroll (ionInfinite)="onIonInfinite($event)" class="ion-margin-top">
+                <ion-infinite-scroll-content loadingText="Cargando comentarios..." loadingSpinner="dots"></ion-infinite-scroll-content>
+              </ion-infinite-scroll>-->
+                        
+            </ion-content>
+          }
+        </ng-template>
+      </ion-modal>
+    </div>
 </ion-content>

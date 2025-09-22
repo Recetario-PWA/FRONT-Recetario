@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, computed, OnInit, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { AlertController, IonActionSheet, IonBackButton, IonButtons, IonCol, IonContent, IonHeader, IonItem, IonLabel, IonRow, IonSearchbar, IonTitle, IonToolbar, NavController } from '@ionic/angular/standalone';
@@ -6,6 +6,10 @@ import { RecipeCardComponent } from "../../tabs/components/recipe-card/recipe-ca
 import { MyRecipeCardComponent } from '../components/my-recipe-card/my-recipe-card.component';
 import { addIcons } from 'ionicons';
 import { trashOutline, createOutline, eyeOutline } from 'ionicons/icons';
+import { userRecipes } from 'src/app/core/stores/recipes.store';
+import { Recipe } from 'src/app/core/services/recipes/recipe';
+import { Router } from '@angular/router';
+import { take, timeout } from 'rxjs';
 
 @Component({
   selector: 'app-my-recipes',
@@ -18,6 +22,7 @@ export class MyRecipesPage implements OnInit {
   @ViewChild(IonActionSheet) actionSheet!: IonActionSheet;
   isActionSheetOpen = false;
   selectedItem: any;
+  recipes = computed(() => userRecipes());
 
   public actionSheetButtons = [
     {
@@ -47,11 +52,12 @@ export class MyRecipesPage implements OnInit {
     },
   ];
 
-  constructor(private navCtrl: NavController, private alertCtrl: AlertController) {
+  constructor(private navCtrl: NavController, private alertCtrl: AlertController, private recipeService: Recipe, private router: Router) {
     addIcons({ trashOutline, createOutline, eyeOutline });
   }
 
   ngOnInit() {
+    this.getRecipes();
   }
 
   openActionSheet(item: any) {
@@ -82,6 +88,46 @@ export class MyRecipesPage implements OnInit {
     } else if (role === 'destructive') {
       this.deleteAlert();
     } 
+  }
+
+  calculateTotalScore(recipe: any): number {
+    if (!recipe.comments || !Array.isArray(recipe.comments) || recipe.comments.length === 0) {
+      return 0;
+    }
+
+    const validScores = recipe.comments.map((comment: any) => {
+      const score = Number(comment.score);
+      return isNaN(score) ? null : score;
+    }).filter((score: any) => score !== null);
+
+    if (validScores.length === 0) return 0;
+
+    const totalScore = validScores.reduce((sum: any, score: any) =>sum + score, 0);
+    const averageScore = totalScore / validScores.length;
+
+    return parseFloat(averageScore.toFixed(1));
+  }
+
+  getRecipes() {
+    this.recipeService.userRecipes().pipe(timeout(15000), take(1)).subscribe({
+      next: (response) => {
+        if (response.result) {
+          const recipesWithScore = response.data.map((recipe: any) => ({
+            ...recipe,
+            averageScore: this.calculateTotalScore(recipe)
+          }));
+          
+          userRecipes.set(recipesWithScore);
+          console.log('RECETAS: ', userRecipes());
+        } else {
+          userRecipes.set(null);
+        }
+      },
+      error: (error) => {
+        userRecipes.set(null);
+        console.log(error);
+      }
+    });
   }
 
   deleteItem() {

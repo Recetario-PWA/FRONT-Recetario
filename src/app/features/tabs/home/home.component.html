@@ -6,12 +6,22 @@
           <ion-icon [name]="greetingIcon"></ion-icon>
           <ion-text>{{ greeting }}</ion-text>
         </div>
-        <p>{{ user()?.user_name || 'user' }}</p>
+        @defer (when !userLoading()) {
+          <p>{{ user()?.user_name || 'user' }}</p>
+        } @placeholder {
+          <p><ion-skeleton-text [animated]="true" style="width: 80%; height: 1.8rem;"></ion-skeleton-text></p>
+        }
       </ion-label>
 
-      <ion-avatar slot="end">
-        <img alt="Profile photo" [src]="getIcon()" />
-      </ion-avatar>
+      @defer (when !userLoading()) {
+        <ion-avatar slot="end">
+          <img alt="Profile photo" [src]="getIcon()" />
+        </ion-avatar>
+      } @placeholder {
+        <ion-thumbnail class="iconUser" slot="end">
+          <ion-skeleton-text  [animated]="true"></ion-skeleton-text>
+        </ion-thumbnail>
+      }
     </ion-item>
     
     <ion-searchbar [value]="searchBar()" (input)="searchBar.set($any($event.target).value)" (ionClear)="searchBar.set('')" class="custom-searchbar" debounce="800" inputmode="search" mode="ios" placeholder="Buscar receta"></ion-searchbar>

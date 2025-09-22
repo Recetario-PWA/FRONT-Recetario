@@ -5,6 +5,7 @@ import { filter, first } from 'rxjs';
 import { CommonModule } from '@angular/common';
 import { AlertController } from '@ionic/angular';
 import { Auth } from './core/services/auth';
+import { User } from './core/services/user';
 
 @Component({
   selector: 'app-root',
@@ -14,7 +15,7 @@ import { Auth } from './core/services/auth';
 })
 export class AppComponent {
 
-  constructor(private swUpdate: SwUpdate, private alertController: AlertController, private authService: Auth) {
+  constructor(private swUpdate: SwUpdate, private alertController: AlertController, private authService: Auth, private userService: User) {
    /* if (this.swUpdate.isEnabled) {
       this.swUpdate.versionUpdates.pipe(
         filter((event): event is VersionReadyEvent => event.type === 'VERSION_READY')
@@ -28,6 +29,7 @@ export class AppComponent {
 
   ngOnInit() {
     this.authService.getUserInfo();
+    this.userService.getNotifications();
   }
 
   /* async showUpdateAlert() {

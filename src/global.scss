@@ -41,6 +41,14 @@ ion-label {
   --font-family: "Quicksand", sans-serif;
 }
 
+ion-toast {
+  //--background: #ADB2D4;
+  --background: var(--ion-color-primary);
+  --border-radius: 8px;
+  color: white;
+  font-weight: 600;
+}
+
 /* Core CSS required for Ionic components to work properly */
 @import "@ionic/angular/css/core.css";
 

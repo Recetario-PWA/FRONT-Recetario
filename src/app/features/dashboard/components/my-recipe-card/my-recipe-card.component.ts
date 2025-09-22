@@ -17,7 +17,7 @@ export class MyRecipeCardComponent  implements OnInit {
   @Input() title!: string;
   @Input() cooking_time!: number;
   @Input() image_url!: string;
-  @Input() rating!: number;
+  @Input() rating!: any;
   @Output() cardAction = new EventEmitter<any>();
 
   constructor() { 

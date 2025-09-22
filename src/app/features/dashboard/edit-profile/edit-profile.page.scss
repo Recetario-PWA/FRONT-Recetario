@@ -168,9 +168,9 @@ ion-modal {
   --box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1),
     0 4px 6px -4px rgb(0 0 0 / 0.1);
 
-    ion-label{
-      font-family: "Quicksand", sans-serif;
-    }
+  ion-label {
+    font-family: "Quicksand", sans-serif;
+  }
 }
 
 ion-modal::part(backdrop) {
@@ -185,4 +185,10 @@ ion-modal ion-toolbar {
 
 .iconXl {
   font-size: 1.75rem;
+}
+
+.profile-photo-wrapper {
+  ion-skeleton-text {
+    --border-radius: 9999px;
+  }
 }
