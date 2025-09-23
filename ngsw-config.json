@@ -26,5 +26,57 @@
         ]
       }
     }
+  ],
+  "dataGroups": [
+    {
+      "name": "favorites",
+      "urls": ["/recipes/favorites"],
+      "cacheConfig": {
+        "strategy": "freshness",
+        "maxSize": 20,
+        "maxAge": "1w",
+        "timeout": "10s"
+      }
+    },
+    {
+      "name": "user-recipes",
+      "urls": ["/recipes/user-recipes"],
+      "cacheConfig": {
+        "strategy": "freshness",
+        "maxSize": 50,
+        "maxAge": "1w",
+        "timeout": "10s"
+      }
+    },
+    {
+      "name": "notifications",
+      "urls": ["/notifications"],
+      "cacheConfig": {
+        "strategy": "freshness",
+        "maxSize": 50,
+        "maxAge": "1w",
+        "timeout": "5s"
+      }
+    },
+    {
+      "name": "history-comments",
+      "urls": ["/comments/history-comments"],
+      "cacheConfig": {
+        "strategy": "freshness",
+        "maxSize": 100,
+        "maxAge": "1w",
+        "timeout": "10s"
+      }
+    },
+    {
+      "name": "about-me",
+      "urls": ["/auth/about-me"],
+      "cacheConfig": {
+        "strategy": "freshness",
+        "maxSize": 10,
+        "maxAge": "1w",
+        "timeout": "5s"
+      }
+    }
   ]
 }

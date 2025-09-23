@@ -8,7 +8,7 @@ export const codeGuard: CanActivateFn = (route, state) => {
   if (codeEmail()) {
     return true;
   } else {
-    router.navigateByUrl('/auth/login');
+    router.navigateByUrl('/welcome');
     return false;
   }
 };

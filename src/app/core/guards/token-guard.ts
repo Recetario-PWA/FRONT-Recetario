@@ -9,7 +9,7 @@ export const tokenGuard: CanActivateFn = (route, state) => {
   if (authService.getToken()) {
     return true;
   } else {
-    router.navigateByUrl('/auth/login');
+    router.navigateByUrl('/welcome');
     return false;
   }
 };
