@@ -68,7 +68,7 @@
           <app-error-messages [control]="getControl('password_confirmation')" label="Este campo"></app-error-messages>
         </ion-item>
 
-        <ion-button type="submit" size="large" class="btnCustom" expand="block">Registrarse</ion-button>
+        <ion-button type="submit" [disabled]="loading()" size="large" class="btnCustom" expand="block">Registrarse</ion-button>
       </form>
 
       <p>¿Ya tienes una cuenta? <a routerLink="/auth/login">Iniciar Sesión</a></p>

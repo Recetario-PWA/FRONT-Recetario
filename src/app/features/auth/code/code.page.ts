@@ -1,11 +1,13 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { AbstractControl, FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { IonContent, IonHeader, IonInputOtp, IonToolbar, IonButtons, IonBackButton, IonGrid, IonLabel, IonRow, IonList, IonItemGroup, IonButton, NavController } from '@ionic/angular/standalone';
-import { RouterModule } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 import { ErrorMessagesComponent } from "src/app/shared/components/error-messages/error-messages.component";
 import { Auth } from 'src/app/core/services/auth';
 import { take, timeout } from 'rxjs';
+import { User } from 'src/app/core/services/user';
+import { codeEmail } from 'src/app/core/stores/auth.store';
 
 @Component({
   selector: 'app-code',
@@ -15,10 +17,11 @@ import { take, timeout } from 'rxjs';
   imports: [ReactiveFormsModule, RouterModule, IonInputOtp, IonButton, IonItemGroup, IonList, IonRow, IonLabel, IonGrid, IonBackButton, IonButtons, IonContent, IonHeader, IonToolbar, CommonModule, FormsModule, ErrorMessagesComponent]
 })
 export class CodePage implements OnInit {
-  email!: string
+  email!: any;
   codeForm: FormGroup;
+  loading = signal(false);
 
-  constructor(private fb: FormBuilder, private authService: Auth, private navCtrl: NavController) {
+  constructor(private fb: FormBuilder, private authService: Auth, private userService: User, private navCtrl: NavController, private router: Router) {
     this.codeForm = this.fb.group({
       email: [''],
       code: ['', [Validators.required, Validators.pattern('^[A-Za-z0-9]{5}$')]]
@@ -26,9 +29,15 @@ export class CodePage implements OnInit {
   }
 
   ngOnInit() {
-    const { email } = history.state;
+    //const { email } = history.state;
+    const email = codeEmail();
 
     this.email = email;
+    codeEmail.set(null);
+
+   /* if (!this.email) {
+      this.router.navigateByUrl('/auth/login');
+    } */
   }
 
   getControl(name: string): AbstractControl {
@@ -46,6 +55,8 @@ export class CodePage implements OnInit {
     });
 
     const data = this.codeForm.value;
+
+    this.loading.set(true);
 
     this.authService.verifyCode(data).pipe(timeout(15000), take(1)).subscribe({
       next: (response) => {

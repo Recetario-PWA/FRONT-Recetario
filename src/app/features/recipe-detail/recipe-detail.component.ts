@@ -52,7 +52,7 @@ export class RecipeDetailComponent  implements OnInit {
 
     this.commentForm = this.fb.group({
       recipe_id: [''],
-      info: ['',  [Validators.required, Validators.pattern("^[A-Za-zÑñÁÉÍÓÚáéíóú0-9.,¡!¿?()\"'\\s-]*$"), Validators.minLength(20), Validators.maxLength(500)]],
+      info: ['', [Validators.required, Validators.minLength(20), Validators.maxLength(500)]],
       score: ['', [Validators.required, Validators.min(1), Validators.max(5)]],
     });
   }

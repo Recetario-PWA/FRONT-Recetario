@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { AbstractControl, FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { AlertController, IonContent, IonSelect ,IonHeader, IonToolbar, IonButton, IonItem, IonInput, IonInputPasswordToggle, IonSelectOption, IonButtons, IonBackButton, IonFooter, IonLabel, IonItemGroup, IonRow, IonListHeader, IonList, IonGrid } from '@ionic/angular/standalone';
@@ -16,6 +16,7 @@ import { take, timeout } from 'rxjs';
 })
 export class RegisterPage implements OnInit {
   registerForm: FormGroup;
+  loading = signal(false);
 
   constructor(private alertController: AlertController, private router: Router, private fb: FormBuilder, private authService: Auth) {
     this.registerForm = this.fb.group({
@@ -40,6 +41,7 @@ export class RegisterPage implements OnInit {
     const alert = await this.alertController.create({
       header: ' ¡Registro completo!',
       message: '¡Bienvenido a la comunidad! Ahora solo necesitas verificar tu correo electrónico para empezar.',
+      backdropDismiss: false,
       buttons: [
         {
           text: '¡Entendido!',
@@ -60,15 +62,18 @@ export class RegisterPage implements OnInit {
     }
 
     const userData = this.registerForm.value;
+    this.loading.set(true);
 
     this.authService.register(userData).pipe(timeout(15000), take(1)).subscribe({
       next: (response) => {
         if (response.result) {
           this.showAlert();
+          this.loading.set(false);
           this.registerForm.reset();
         }
       },
       error: (error) => {
+        this.loading.set(false);
         console.log(error);
       }
     });

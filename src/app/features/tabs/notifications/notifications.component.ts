@@ -2,7 +2,7 @@ import { Component, computed, OnInit, signal } from '@angular/core';
 import { Router } from '@angular/router';
 import { IonHeader, IonToolbar, IonSearchbar, IonItem, IonLabel, IonContent, IonList, IonListHeader, IonAvatar, IonText, IonThumbnail, IonBadge, IonIcon, IonButton, IonSkeletonText } from "@ionic/angular/standalone";
 import { addIcons } from 'ionicons';
-import { heart, notificationsOutline } from 'ionicons/icons';
+import { heart, notificationsOffOutline, notificationsOutline } from 'ionicons/icons';
 import { TimeAgoPipe } from 'src/app/core/pipes/time-ago-pipe';
 import { User } from 'src/app/core/services/user';
 import { notifications, notificationsLoading } from 'src/app/core/stores/auth.store';
@@ -47,7 +47,7 @@ export class NotificationsComponent  implements OnInit {
   }
 
   constructor(private userService: User, private router: Router) { 
-    addIcons({ heart, notificationsOutline });
+    addIcons({ heart, notificationsOutline, notificationsOffOutline });
   }
 
   ngOnInit() {

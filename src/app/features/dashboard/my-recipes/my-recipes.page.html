@@ -8,16 +8,48 @@
         <p>Mis recetas</p>
       </ion-label>
     </ion-item>
-    <ion-searchbar class="custom-searchbar" debounce="800" inputmode="search" mode="ios" placeholder="Buscar receta"></ion-searchbar>
+    <ion-searchbar [value]="searchBar()" (input)="searchBar.set($any($event.target).value)" class="custom-searchbar" (ionClear)="searchBar.set('')" debounce="800" inputmode="search" mode="ios" placeholder="Buscar receta"></ion-searchbar>
   </ion-toolbar>
 </ion-header>
 
 <ion-content class="hide-scrollbar">
  <ion-row class="ion-margin">
-  @for (recipe of recipes(); track recipe.id) {
-    <ion-col sizeLg="3" sizeMd="4" sizeSm="6" sizeXl="3" sizeXs="6">
-      <app-my-recipe-card (cardAction)="openActionSheet(recipe.id)" [recipe_id]="recipe.id" [title]="recipe.title" [rating]="recipe.averageScore" [cooking_time]="recipe.prep_time" [image_url]="recipe.image_path"></app-my-recipe-card>
-    </ion-col>
+  @defer (when !loading()) {
+    @for (recipe of filteredRecipes(); track recipe.id) {
+      <ion-col sizeLg="3" sizeMd="4" sizeSm="6" sizeXl="3" sizeXs="6">
+        <app-my-recipe-card (cardAction)="openActionSheet(recipe.id)" [recipe_id]="recipe.id" [title]="recipe.title" [rating]="recipe.averageScore" [cooking_time]="recipe.prep_time" [image_url]="recipe.image_path"></app-my-recipe-card>
+      </ion-col>
+    } @empty {
+      @if (recipes().length === 0) { 
+        <ion-col class="ion-text-center ion-padding">
+          <div>
+            <h4>Parece que la cocina está vacía 😔</h4>
+          </div>
+        </ion-col>
+      } @else {
+        <ion-col class="ion-text-center ion-padding">
+          <div>
+            <h4>No encontramos coincidencias 🔍</h4>
+          </div>
+        </ion-col>
+      }
+    }
+  } @placeholder {
+    @for (skeleton of skeletons; track $index) {
+      <ion-col sizeLg="3" sizeMd="4" sizeSm="6" sizeXl="3" sizeXs="6">
+        <ion-card>
+          <ion-thumbnail>
+            <ion-skeleton-text [animated]="true"></ion-skeleton-text>
+              <ion-item lines="none">
+                <ion-label>
+                  <ion-skeleton-text [animated]="true" style="width: 80%;"></ion-skeleton-text>
+                  <ion-skeleton-text [animated]="true" style="width: 35%; margin-top: 0.5rem;"></ion-skeleton-text>
+                </ion-label>
+            </ion-item>
+          </ion-thumbnail>
+        </ion-card>
+      </ion-col>
+    }
   }
  </ion-row>
 

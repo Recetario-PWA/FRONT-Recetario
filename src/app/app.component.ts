@@ -15,7 +15,7 @@ import { User } from './core/services/user';
 })
 export class AppComponent {
 
-  constructor(private swUpdate: SwUpdate, private alertController: AlertController, private authService: Auth, private userService: User) {
+  constructor(private swUpdate: SwUpdate, private alertController: AlertController) {
    /* if (this.swUpdate.isEnabled) {
       this.swUpdate.versionUpdates.pipe(
         filter((event): event is VersionReadyEvent => event.type === 'VERSION_READY')
@@ -28,8 +28,6 @@ export class AppComponent {
   }
 
   ngOnInit() {
-    this.authService.getUserInfo();
-    this.userService.getNotifications();
   }
 
   /* async showUpdateAlert() {

@@ -9,6 +9,7 @@ import { Recipe } from 'src/app/core/services/recipes/recipe';
 import { take, timeout } from 'rxjs';
 import { currentUser, userInfoLoading } from 'src/app/core/stores/auth.store';
 import { Auth } from 'src/app/core/services/auth';
+import { allRecipes } from 'src/app/core/stores/recipes.store';
 @Component({
   selector: 'app-home',
   templateUrl: './home.component.html',
@@ -40,7 +41,7 @@ export class HomeComponent implements OnInit {
   greetingIcon: string = '';
   loading = signal(true);
   skeletons = Array(4).fill(0);
-  recipes = signal<any[]>([]);
+  recipes = computed(() => allRecipes());
   searchBar = signal('');
   userLoading = computed(() => userInfoLoading());
   public user = computed(() => currentUser());
@@ -112,7 +113,7 @@ export class HomeComponent implements OnInit {
             averageScore: this.calculateTotalScore(recipe)
           }));
 
-          this.recipes.set(recipesWithScore);
+          allRecipes.set(recipesWithScore);
           this.loading.set(false);
 
           //console.log(this.recipes());

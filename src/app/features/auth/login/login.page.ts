@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { AbstractControl, FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators  } from '@angular/forms';
 import { IonContent, IonHeader, IonTitle, IonToolbar, IonButton, IonLabel, IonButtons, IonBackButton, IonGrid, IonRow, IonList, IonItemGroup, IonInput, IonItem, IonSelect, IonSelectOption, IonInputPasswordToggle, AlertController } from '@ionic/angular/standalone';
@@ -7,6 +7,7 @@ import { Auth } from 'src/app/core/services/auth';
 import { ErrorMessagesComponent } from 'src/app/shared/components/error-messages/error-messages.component';
 import { timeout, TimeoutError } from 'rxjs';
 import { HttpErrorResponse } from '@angular/common/http';
+import { codeEmail } from 'src/app/core/stores/auth.store';
 
 @Component({
   selector: 'app-login',
@@ -17,6 +18,7 @@ import { HttpErrorResponse } from '@angular/common/http';
 })
 export class LoginPage implements OnInit {
   loginForm: FormGroup;
+  loading = signal(false);
 
   constructor(private fb: FormBuilder, private authService: Auth, private alertCtrl: AlertController, private router: Router) {
     this.loginForm = this.fb.group({
@@ -41,13 +43,19 @@ export class LoginPage implements OnInit {
 
     const userData = this.loginForm.value;
 
+    this.loading.set(true);
+
     this.authService.login(userData).pipe(timeout(15000)).subscribe({
       next: async (response) => {
-        const email = userData.email;
+        //const email = userData.email;
+        codeEmail.set(userData.email);
 
         const result = await this.loginAlert("Credenciales correctas.", response.msg);
-        if (result === 'confirm') {
+        /*if (result === 'confirm') {
           this.router.navigate(['auth/verify-code'], { state: { email } });
+        }*/
+        if (result === 'confirm') {
+          this.router.navigate(['auth/verify-code']);
         }
       },
       error: (error: HttpErrorResponse | TimeoutError) => {
@@ -66,6 +74,7 @@ export class LoginPage implements OnInit {
     const alert = await this.alertCtrl.create({
       header: title,
       message: msg,
+      backdropDismiss: false,
       buttons: [
         {
           text: 'Aceptar',

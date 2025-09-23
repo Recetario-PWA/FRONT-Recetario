@@ -1,8 +1,12 @@
 import { Routes } from '@angular/router';
+import { tokenGuard } from './core/guards/token-guard';
+import { authenticatedGuard } from './core/guards/authenticated-guard';
+import { codeGuard } from './core/guards/code-guard';
 
 export const routes: Routes = [
   {
     path: 'welcome',
+    canActivate: [authenticatedGuard],
     loadComponent: () => import('./features/welcome/welcome.page').then(m => m.WelcomePage)
   },
   {
@@ -12,6 +16,7 @@ export const routes: Routes = [
   {
     path: 'tabs',
     loadComponent: () => import('./shared/components/tabs/tabs.component').then( m => m.TabsComponent),
+    canActivate: [tokenGuard],
     children: [
       {
         path: 'home',
@@ -46,6 +51,7 @@ export const routes: Routes = [
   },
   {
     path: 'auth',
+    canActivate: [authenticatedGuard],
     children: [
       {
         path: 'login',
@@ -57,6 +63,7 @@ export const routes: Routes = [
       },
       {
         path: 'verify-code',
+        canActivate: [codeGuard],
         loadComponent: () => import('./features/auth/code/code.page').then( m => m.CodePage)
       }
     ]

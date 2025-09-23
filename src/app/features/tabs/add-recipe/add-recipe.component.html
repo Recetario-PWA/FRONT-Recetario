@@ -15,67 +15,111 @@
 
 <ion-content class="hide-scrollbar">
   <ion-list>
-    <form>
-      <ion-item lines="none" class="ion-margin-bottom">
-        @if (loading()) {
+    <form [formGroup]="recipeForm" (ngSubmit)="onSubmit()">
+      @defer (when !loadinInfo()) {
+        <ion-item lines="none" class="ion-margin-bottom">
+          @if (loading()) {
+            <div class="drag-area">
+              <ion-spinner name="dots"></ion-spinner>
+              <ion-text>Cargando foto...</ion-text>
+            </div>
+          } @else if (photo) {
+            <div class="actionPhoto">
+              <div class="photo-area">
+                <ion-img [src]="photo"></ion-img>
+              </div>
+              <ion-button class="btnDelete ion-margin-top" size="medium" (click)="deletePhoto()">
+                <ion-icon slot="start" name="trash-outline"></ion-icon>
+                Eliminar foto
+              </ion-button>
+            </div>
+          } @else {
+            <div class="drag-area">
+              <ion-icon class="photoIcon" name="image-outline"></ion-icon>
+              <ion-text>Agregar foto 🍳</ion-text>
+              <ion-button class="ion-margin-top" size="medium" (click)="takePhoto()">
+                <ion-icon slot="start" name="camera-outline"></ion-icon>
+                Tomar foto
+              </ion-button>
+              <ion-button size="medium" (click)="selectPhoto()">
+                <ion-icon slot="start" name="images-outline"></ion-icon>
+                Seleccionar foto
+              </ion-button>
+              <app-error-messages [control]="getControl('image_path')" [version]="'f'" [label]="'La foto'"></app-error-messages>
+            </div>
+          }
+        </ion-item>
+
+        <ion-item lines="none" class="ion-margin-bottom">
+          <ion-label position="stacked">Nombre de la receta</ion-label>
+          <input formControlName="title" type="text" placeholder="Ej. Pizza casera">
+          <app-error-messages [control]="getControl('title')" [label]="'El campo'"></app-error-messages>
+        </ion-item>
+
+        <ion-item lines="none" class="ion-margin-bottom">
+          <ion-label position="stacked">Porciones</ion-label>
+          <input formControlName="servings" type="number" placeholder="Ej. 1">
+          <app-error-messages [control]="getControl('servings')" [unidad]="'porcion'" [label]="'El campo'"></app-error-messages>          
+        </ion-item>
+
+        <ion-item lines="none" class="ion-margin-bottom">
+          <ion-label position="stacked">Tiempo de preparación</ion-label>
+          <input formControlName="prep_time" type="number" placeholder="Ej. 15min">
+          <app-error-messages [control]="getControl('prep_time')" [unidad]="'minuto'" [label]="'El campo'"></app-error-messages>
+        </ion-item>
+
+        <ion-item lines="none" class="ion-margin-bottom">
+          <ion-label position="stacked">Ingredientes</ion-label>
+          <!--<ion-textarea placeholder="Enter text"></ion-textarea>-->
+          <textarea formControlName="ingredients" autocapitalize="on" wrap="hard" minlength="20" maxlength="1000" spellcheck="true" rows="8" placeholder="Escribe los ingredientes separados por (,)"></textarea>
+          <app-error-messages [control]="getControl('ingredients')" [label]="'El campo'"></app-error-messages>
+        </ion-item>
+
+        <ion-item lines="none" class="ion-margin-bottom">
+          <ion-label position="stacked">Instrucciones</ion-label>
+          <!--<ion-textarea placeholder="Enter text"></ion-textarea>-->
+          <textarea formControlName="instructions" autocapitalize="on" wrap="hard" minlength="20" maxlength="1000" spellcheck="true" rows="8" placeholder="Escribe las instrucciones separadas por (,)"></textarea>
+          <app-error-messages [control]="getControl('instructions')" [label]="'El campo'"></app-error-messages>
+        </ion-item>
+
+        <ion-button type="submit" [disabled]="sendingInfo()" size="large" class="ion-margin-horizontal btnCustom" expand="block">{{ btnText() }}</ion-button>
+      } @placeholder {
+        <ion-item lines="none" class="ion-margin-bottom">
           <div class="drag-area">
             <ion-spinner name="dots"></ion-spinner>
             <ion-text>Cargando foto...</ion-text>
           </div>
-        } @else if (photo) {
-          <div class="actionPhoto">
-            <div class="photo-area">
-              <ion-img [src]="photo"></ion-img>
-            </div>
-            <ion-button class="btnDelete ion-margin-top" size="medium" (click)="deletePhoto()">
-              <ion-icon slot="start" name="trash-outline"></ion-icon>
-              Eliminar foto
-            </ion-button>
-          </div>
-        } @else {
-          <div class="drag-area">
-            <ion-icon class="photoIcon" name="image-outline"></ion-icon>
-            <ion-text>Agregar foto 🍳</ion-text>
-            <ion-button class="ion-margin-top" size="medium" (click)="takePhoto()">
-              <ion-icon slot="start" name="camera-outline"></ion-icon>
-              Tomar foto
-            </ion-button>
-            <ion-button size="medium" (click)="selectPhoto()">
-              <ion-icon slot="start" name="images-outline"></ion-icon>
-              Seleccionar foto
-            </ion-button>
-          </div>
-        }
-      </ion-item>
+        </ion-item>
 
-      <ion-item lines="none" class="ion-margin-bottom">
-        <ion-label position="stacked">Nombre de la receta</ion-label>
-        <input type="text" placeholder="Ej. Pizza casera">
-      </ion-item>
+        <ion-item lines="none" class="ion-margin-bottom">
+          <ion-label position="stacked">Nombre de la receta</ion-label>
+          <ion-skeleton-text [animated]="true" style="width: 100%; height: 42px; border-radius: 8px;"></ion-skeleton-text>
+        </ion-item>
 
-      <ion-item lines="none" class="ion-margin-bottom">
-        <ion-label position="stacked">Porciones</ion-label>
-        <input type="number" placeholder="Ej. 1">
-      </ion-item>
+        <ion-item lines="none" class="ion-margin-bottom">
+          <ion-label position="stacked">Porciones</ion-label>
+          <ion-skeleton-text [animated]="true" style="width: 100%; height: 42px; border-radius: 8px;"></ion-skeleton-text>
+        </ion-item>
 
-      <ion-item lines="none" class="ion-margin-bottom">
-        <ion-label position="stacked">Tiempo de preparación</ion-label>
-        <input type="number" placeholder="Ej. 15min">
-      </ion-item>
+        <ion-item lines="none" class="ion-margin-bottom">
+          <ion-label position="stacked">Tiempo de preparación</ion-label>
+          <ion-skeleton-text [animated]="true" style="width: 100%; height: 42px; border-radius: 8px;"></ion-skeleton-text>
+        </ion-item>
 
-      <ion-item lines="none" class="ion-margin-bottom">
-        <ion-label position="stacked">Ingredientes</ion-label>
-        <!--<ion-textarea placeholder="Enter text"></ion-textarea>-->
-        <textarea autocapitalize="on" wrap="hard" minlength="20" maxlength="1000" spellcheck="true" rows="8" placeholder="Escribe los ingredientes separados por (,)"></textarea>
-      </ion-item>
+        <ion-item lines="none" class="ion-margin-bottom">
+          <ion-label position="stacked">Ingredientes</ion-label>
+          <!--<ion-textarea placeholder="Enter text"></ion-textarea>-->
+          <ion-skeleton-text [animated]="true" style="width: 100%; height: 42px; border-radius: 8px;"></ion-skeleton-text>
+        </ion-item>
 
-      <ion-item lines="none" class="ion-margin-bottom">
-        <ion-label position="stacked">Instrucciones</ion-label>
-        <!--<ion-textarea placeholder="Enter text"></ion-textarea>-->
-        <textarea autocapitalize="on" wrap="hard" minlength="20" maxlength="1000" spellcheck="true" rows="8" placeholder="Escribe las instrucciones separadas por (,)"></textarea>
-      </ion-item>
+        <ion-item lines="none" class="ion-margin-bottom">
+          <ion-label position="stacked">Instrucciones</ion-label>
+          <!--<ion-textarea placeholder="Enter text"></ion-textarea>-->
+          <ion-skeleton-text [animated]="true" style="width: 100%; height: 42px; border-radius: 8px;"></ion-skeleton-text>
+        </ion-item>
 
-      <ion-button type="submit" size="large" class="ion-margin-horizontal btnCustom" expand="block">{{ btnText() }}</ion-button>
+        <ion-button type="button" [disabled]="true" size="large" class="ion-margin-horizontal btnCustom" expand="block">{{ btnText() }}</ion-button>
+      }
     </form>
   </ion-list>
 </ion-content>

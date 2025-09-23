@@ -1,12 +1,12 @@
-import { Component, computed, OnInit, ViewChild } from '@angular/core';
+import { Component, computed, OnInit, signal, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { AlertController, IonActionSheet, IonBackButton, IonButtons, IonCol, IonContent, IonHeader, IonItem, IonLabel, IonRow, IonSearchbar, IonTitle, IonToolbar, NavController } from '@ionic/angular/standalone';
+import { AlertController, IonActionSheet, IonBackButton, IonButtons, IonCard, IonCol, IonContent, IonHeader, IonItem, IonLabel, IonRow, IonSearchbar, IonSkeletonText, IonThumbnail, IonTitle, IonToolbar, LoadingController, NavController } from '@ionic/angular/standalone';
 import { RecipeCardComponent } from "../../tabs/components/recipe-card/recipe-card.component";
 import { MyRecipeCardComponent } from '../components/my-recipe-card/my-recipe-card.component';
 import { addIcons } from 'ionicons';
 import { trashOutline, createOutline, eyeOutline } from 'ionicons/icons';
-import { userRecipes } from 'src/app/core/stores/recipes.store';
+import { allRecipes, userRecipes } from 'src/app/core/stores/recipes.store';
 import { Recipe } from 'src/app/core/services/recipes/recipe';
 import { Router } from '@angular/router';
 import { take, timeout } from 'rxjs';
@@ -16,13 +16,28 @@ import { take, timeout } from 'rxjs';
   templateUrl: './my-recipes.page.html',
   styleUrls: ['./my-recipes.page.scss'],
   standalone: true,
-  imports: [IonSearchbar, IonActionSheet, IonCol, IonRow, IonItem, IonButtons, IonLabel, IonBackButton, IonContent, IonHeader, IonTitle, IonToolbar, CommonModule, FormsModule, MyRecipeCardComponent]
+  imports: [IonSkeletonText, IonThumbnail, IonCard, IonSearchbar, IonActionSheet, IonCol, IonRow, IonItem, IonButtons, IonLabel, IonBackButton, IonContent, IonHeader, IonTitle, IonToolbar, CommonModule, FormsModule, MyRecipeCardComponent]
 })
 export class MyRecipesPage implements OnInit {
   @ViewChild(IonActionSheet) actionSheet!: IonActionSheet;
+  loading = signal(true);
+  skeletons = Array(6).fill(0);
   isActionSheetOpen = false;
   selectedItem: any;
   recipes = computed(() => userRecipes());
+  searchBar = signal('');
+
+  filteredRecipes = computed(() => {
+    const normalize = (str: string) => 
+      str.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
+
+    const text = normalize(this.searchBar().trim());
+    const allRecipes = this.recipes() as any[];
+    
+    if (!text) return allRecipes;
+
+    return allRecipes.filter(recipe => normalize(recipe.title).includes(text));
+  });
 
   public actionSheetButtons = [
     {
@@ -52,7 +67,7 @@ export class MyRecipesPage implements OnInit {
     },
   ];
 
-  constructor(private navCtrl: NavController, private alertCtrl: AlertController, private recipeService: Recipe, private router: Router) {
+  constructor(private loadingCtrl: LoadingController, private navCtrl: NavController, private alertCtrl: AlertController, private recipeService: Recipe, private router: Router) {
     addIcons({ trashOutline, createOutline, eyeOutline });
   }
 
@@ -86,7 +101,7 @@ export class MyRecipesPage implements OnInit {
 
       console.log('Editando:', this.selectedItem);
     } else if (role === 'destructive') {
-      this.deleteAlert();
+      this.deleteAlert(this.selectedItem);
     } 
   }
 
@@ -118,23 +133,59 @@ export class MyRecipesPage implements OnInit {
           }));
           
           userRecipes.set(recipesWithScore);
-          console.log('RECETAS: ', userRecipes());
+          this.loading.set(false);
         } else {
-          userRecipes.set(null);
+          userRecipes.set([]);
+          this.loading.set(false);
         }
       },
       error: (error) => {
-        userRecipes.set(null);
+        userRecipes.set([]);
+        this.loading.set(false);
         console.log(error);
       }
     });
   }
 
-  deleteItem() {
-    console.log('Eliminando...');
+  getAllRecipes() {
+    this.recipeService.getAllRecipes().pipe(timeout(15000), take(1)).subscribe({
+      next: (response) => {
+        if (response.result) {
+          allRecipes.set(response.data);
+        } else {
+          allRecipes.set(null);
+        }
+      },
+      error: (error) => {
+        allRecipes.set(null);
+        console.log(error);
+      }
+    });
   }
 
-  async deleteAlert() {
+  async deleteItem(id: number) {
+    const loading = await this.loadingCtrl.create({
+      message: 'Eliminando comentario...',
+      spinner: 'crescent'
+    });
+    await loading.present();
+
+    this.recipeService.deleteRecipe(id).pipe(timeout(15000), take(1)).subscribe({
+      next: async (response) => {
+        if (response.result) {
+          this.getAllRecipes();
+          this.getRecipes();
+          await loading.dismiss();
+        }
+      },
+      error: async (error) => {
+        await loading.dismiss();
+        console.log(error);
+      }
+    });
+  }
+
+  async deleteAlert(recipeId: number) {
     const alert = await this.alertCtrl.create({
       header: 'Confirmar eliminación',
       message: '¿Estás seguro de que quieres eliminar esta receta?',
@@ -147,7 +198,7 @@ export class MyRecipesPage implements OnInit {
           text: 'Eliminar',
           role: 'confirm',
           handler: () => {
-            this.deleteItem();
+            this.deleteItem(recipeId);
           },
         },
       ],

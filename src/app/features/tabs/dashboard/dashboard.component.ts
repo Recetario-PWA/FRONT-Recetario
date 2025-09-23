@@ -2,7 +2,7 @@ import { CommonModule } from '@angular/common';
 import { Component, computed, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
-import { IonSearchbar, IonHeader, IonLabel, IonToolbar, IonItem, IonContent, IonAvatar, IonText, IonButton, IonList, IonIcon, IonToggle, NavController, IonSkeletonText, IonThumbnail } from "@ionic/angular/standalone";
+import { IonSearchbar, IonHeader, IonLabel, IonToolbar, IonItem, IonContent, IonAvatar, IonText, IonButton, IonList, IonIcon, IonToggle, NavController, IonSkeletonText, IonThumbnail, LoadingController } from "@ionic/angular/standalone";
 import { addIcons } from 'ionicons';
 import { chevronForwardOutline, personOutline, restaurantOutline, settingsOutline, logOutOutline, chatbubblesOutline, moonOutline } from 'ionicons/icons';
 import { Auth } from 'src/app/core/services/auth';
@@ -26,7 +26,7 @@ export class DashboardComponent  implements OnInit {
     '39 tipos de gays': 'assets/img/avatarG.png'
   }
 
-  constructor(private router: Router, private authServive: Auth, private navCtrl: NavController) {
+  constructor(private router: Router, private authServive: Auth, private navCtrl: NavController, private loadingCtrl: LoadingController) {
     addIcons({ chevronForwardOutline, personOutline, restaurantOutline, settingsOutline, logOutOutline, chatbubblesOutline, moonOutline }); 
   }
 
@@ -67,9 +67,22 @@ export class DashboardComponent  implements OnInit {
     return this.icons[genderKey] ?? 'https://ionicframework.com/docs/img/demos/avatar.svg';
   }
 
-  logout() {
-    this.authServive.logout().subscribe(() => {
-      this.navCtrl.navigateForward(['/auth/login']);
+  async logout() {
+    const loading = await this.loadingCtrl.create({
+      message: 'Cerrando sesión...',
+      spinner: 'crescent'
+    });
+    
+    await loading.present();
+
+    this.authServive.logout().subscribe({
+      next: () => {
+        loading.dismiss();
+        this.navCtrl.navigateForward(['/auth/login']);
+      },
+      error: () => {
+        loading.dismiss();
+      }
     });
   }
 }
