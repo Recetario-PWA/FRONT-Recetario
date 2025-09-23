@@ -66,18 +66,36 @@
   "screenshots": [
     {
       "src": "/assets/screenshots/mobile1.png",
-      "sizes": "1082x2399",
+      "sizes": "1440x3120",
       "type": "image/png",
       "form_factor": "narrow"
     },
     {
+      "src": "/assets/screenshots/mobile3.png",
+      "sizes": "1440x3120",
+      "type": "image/png",
+      "form_factor": "narrow"
+    },
+        {
+      "src": "/assets/screenshots/mobile4.png",
+      "sizes": "1440x3120",
+      "type": "image/png",
+      "form_factor": "narrow"
+    },
+        {
       "src": "/assets/screenshots/mobile2.png",
-      "sizes": "1082x2399",
+      "sizes": "1440x3120",
       "type": "image/png",
       "form_factor": "narrow"
     },
     {
       "src": "/assets/screenshots/desktop1.png",
+      "sizes": "3840x2160",
+      "type": "image/png",
+      "form_factor": "wide"
+    },
+    {
+      "src": "/assets/screenshots/desktop2.png",
       "sizes": "3840x2160",
       "type": "image/png",
       "form_factor": "wide"
