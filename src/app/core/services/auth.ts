@@ -44,24 +44,24 @@ export class Auth {
 
   //INFO DEL USUARIO
   //lo deje aqui porque tiene la ruta auth xd
-  getUserInfo() {
+  getUserInfo(): Observable<any> {
     userInfoLoading.set(true);
-    this.httpClient.get<any>(`${this.baseUrl}about-me`).subscribe({
-      next: (response) => {
-        if (response.result) {
-          currentUser.set(response.data);
+    return this.httpClient.get<any>(`${this.baseUrl}about-me`).pipe(
+      tap({
+        next: (response) => {
+          if (response.result) {
+            currentUser.set(response.data);
+          } else {
+            currentUser.set(null);
+          }
           userInfoLoading.set(false);
-        } else {
+        },
+        error: () => {
           currentUser.set(null);
           userInfoLoading.set(false);
         }
-      },
-      error: (error) => {
-        currentUser.set(null);
-        userInfoLoading.set(false);
-        //console.log(error);
-      }
-    });
+      })
+    );
   }
 
   logout(): Observable<any> {

@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, effect } from '@angular/core';
 import { IonApp, IonRouterOutlet, IonAlert } from '@ionic/angular/standalone';
 import { SwUpdate, VersionReadyEvent } from '@angular/service-worker';
 import { filter, first } from 'rxjs';
@@ -6,6 +6,8 @@ import { CommonModule } from '@angular/common';
 import { AlertController } from '@ionic/angular';
 import { Auth } from './core/services/auth';
 import { User } from './core/services/user';
+import { PushService } from './core/services/push';
+import { currentUser } from './core/stores/auth.store';
 
 @Component({
   selector: 'app-root',
@@ -15,8 +17,8 @@ import { User } from './core/services/user';
 })
 export class AppComponent {
 
-  constructor(private swUpdate: SwUpdate, private alertController: AlertController) {
-   /* if (this.swUpdate.isEnabled) {
+  constructor(private authService: Auth, private userService: User,  private pushNotifications: PushService,private swUpdate: SwUpdate, private alertController: AlertController, private pushNotificationService: PushService) {
+   if (this.swUpdate.isEnabled) {
       this.swUpdate.versionUpdates.pipe(
         filter((event): event is VersionReadyEvent => event.type === 'VERSION_READY')
       ).subscribe(() => {
@@ -24,13 +26,19 @@ export class AppComponent {
       });
 
       this.swUpdate.checkForUpdate();
-    } */
+    }
   }
 
   ngOnInit() {
+    this.authService.getUserInfo().subscribe(user => {
+      if (user?.data?.id) {
+        this.pushNotifications.init(user.data.id.toString());
+      }
+    });
+    this.userService.getNotifications();
   }
 
-  /* async showUpdateAlert() {
+  async showUpdateAlert() {
     const alert = await this.alertController.create({
       header: '✨ ¡Actualización disponible!',
       message: 'Descubre funciones nuevas y mejoras que harán tu experiencia aún mejor.',
@@ -49,5 +57,5 @@ export class AppComponent {
     });
 
     await alert.present();
-  } */
+  }
 }

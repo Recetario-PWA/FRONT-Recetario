@@ -1,0 +1,57 @@
+import { Injectable } from '@angular/core';
+
+declare var PusherPushNotifications: any;
+
+@Injectable({
+  providedIn: 'root'
+})
+export class PushService {
+  private beamsClient: any;
+
+  constructor() {}
+
+  private loadBeamsScript(): Promise<void> {
+    return new Promise((resolve, reject) => {
+      if ((window as any).PusherPushNotifications) {
+        resolve();
+        return;
+      }
+
+      const script = document.createElement('script');
+      script.src = 'https://js.pusher.com/beams/2.1.0/push-notifications-cdn.js';
+      script.async = true;
+      script.onload = () => resolve();
+      script.onerror = (err) => reject(err);
+      document.body.appendChild(script);
+    });
+  }
+
+  public async init(userId: string) {
+    try {
+      await this.loadBeamsScript();
+
+      const Beams = (window as any).PusherPushNotifications;
+      if (!Beams) {
+        console.error('⚠️ PusherPushNotifications no está definido en window');
+        return;
+      }
+
+      if (Notification.permission !== 'granted') {
+        const permission = await Notification.requestPermission();
+        if (permission !== 'granted') return;
+      }
+
+      this.beamsClient = new Beams.Client({
+        instanceId: '7bf3ae47-992b-4da3-b76d-cb1285d78fa4'
+      });
+
+      await this.beamsClient.start();
+      await this.beamsClient.addDeviceInterest(`user-${userId}`);
+
+      //console.log('✅ Beams inicializado y suscrito al usuario', userId);
+
+    } catch (error) {
+      console.error('❌ Error inicializando Beams:', error);
+    }
+  }
+}

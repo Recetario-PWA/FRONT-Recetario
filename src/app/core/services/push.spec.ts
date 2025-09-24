@@ -1,13 +1,13 @@
 import { TestBed } from '@angular/core/testing';
 
-import { PushNotifications } from './push-notifications';
+import { Push } from './push';
 
-describe('PushNotifications', () => {
-  let service: PushNotifications;
+describe('Push', () => {
+  let service: Push;
 
   beforeEach(() => {
     TestBed.configureTestingModule({});
-    service = TestBed.inject(PushNotifications);
+    service = TestBed.inject(Push);
   });
 
   it('should be created', () => {

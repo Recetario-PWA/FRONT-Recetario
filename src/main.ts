@@ -11,10 +11,10 @@ import { environment } from './environments/environment.prod';
 import { provideHttpClient, withFetch, withInterceptors } from '@angular/common/http';
 import { tokenHandlerInterceptor } from './app/core/interceptors/token-handler.interceptor';
 
-/*defineCustomElements(window);
+defineCustomElements(window);
 if (environment.production) {
   enableProdMode();
-} */
+}
 
 bootstrapApplication(AppComponent, {
   providers: [
@@ -27,3 +27,9 @@ bootstrapApplication(AppComponent, {
     provideHttpClient(withFetch(), withInterceptors([tokenHandlerInterceptor])),
   ],
 });
+
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('/service-worker.js')
+    .then(reg => console.log('✅ SW Beams registrado', reg))
+    .catch(err => console.error('❌ Error registrando SW Beams:', err));
+}

@@ -5,6 +5,7 @@ import { addIcons } from 'ionicons';
 import { homeOutline, heartOutline, personOutline, notificationsOutline, home, heart, person, notifications, restaurantOutline, restaurant } from 'ionicons/icons';
 import { Auth } from 'src/app/core/services/auth';
 import { Notifications } from 'src/app/core/services/notifications';
+import { PushService } from 'src/app/core/services/push';
 import { User } from 'src/app/core/services/user';
 import { currentUser } from 'src/app/core/stores/auth.store';
 import { notifications as notis } from 'src/app/core/stores/auth.store';
@@ -27,7 +28,7 @@ export class TabsComponent  implements OnInit {
     return this.router.url.includes(`/tabs/${tabName}`);
   }
 
-  constructor(private router: Router, private authService: Auth, private userService: User, private notificationService: Notifications) { 
+  constructor(private router: Router, private notificationService: Notifications) { 
     addIcons({ homeOutline, heartOutline, personOutline, notificationsOutline, home, heart, person, notifications, restaurantOutline, restaurant });
       
     effect(() => {
@@ -35,13 +36,12 @@ export class TabsComponent  implements OnInit {
 
       if (user?.id) {
         this.notificationService.subscribeToUserNotifications(user.id);
+        //this.pushNotifications.init(user.id.toString());
       }
     })
   }
 
   ngOnInit() {
-    this.authService.getUserInfo();
-    this.userService.getNotifications();
   }
 
   goToCreateEditRecipe() {
