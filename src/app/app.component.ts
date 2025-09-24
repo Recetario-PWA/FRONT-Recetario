@@ -18,7 +18,7 @@ import { currentUser } from './core/stores/auth.store';
 export class AppComponent {
 
   constructor(private authService: Auth, private userService: User,  private pushNotifications: PushService,private swUpdate: SwUpdate, private alertController: AlertController, private pushNotificationService: PushService) {
-   if (this.swUpdate.isEnabled) {
+    if (this.swUpdate.isEnabled) {
       this.swUpdate.versionUpdates.pipe(
         filter((event): event is VersionReadyEvent => event.type === 'VERSION_READY')
       ).subscribe(() => {
@@ -42,6 +42,7 @@ export class AppComponent {
     const alert = await this.alertController.create({
       header: '✨ ¡Actualización disponible!',
       message: 'Descubre funciones nuevas y mejoras que harán tu experiencia aún mejor.',
+      backdropDismiss: false,
       buttons: [
         {
           text: 'Cancelar',

@@ -10,6 +10,7 @@ import { provideServiceWorker } from '@angular/service-worker';
 import { environment } from './environments/environment.prod';
 import { provideHttpClient, withFetch, withInterceptors } from '@angular/common/http';
 import { tokenHandlerInterceptor } from './app/core/interceptors/token-handler.interceptor';
+import { cacheInterceptor } from './app/core/interceptors/cache.interceptor';
 
 defineCustomElements(window);
 if (environment.production) {
@@ -24,7 +25,7 @@ bootstrapApplication(AppComponent, {
             enabled: !isDevMode(),
             registrationStrategy: 'registerWhenStable:30000'
           }),
-    provideHttpClient(withFetch(), withInterceptors([tokenHandlerInterceptor])),
+    provideHttpClient(withFetch(), withInterceptors([tokenHandlerInterceptor, cacheInterceptor])),
   ],
 });
 

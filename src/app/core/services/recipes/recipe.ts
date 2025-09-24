@@ -46,4 +46,12 @@ export class Recipe {
     });
     return this.http.get<{ data: any[] }>(`${this.baseUrl}favorites`, { params });
   }
+
+  newRecipe(data: any): Observable<any> {
+     return this.http.post(`${this.baseUrl}`, data);
+  }
+
+  editRecipe(id: any, data: any): Observable<any> {
+     return this.http.post(`${this.baseUrl}${id}`, data);
+  }
 }

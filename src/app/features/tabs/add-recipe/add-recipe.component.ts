@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component, NgZone, OnInit, signal } from '@angular/core';
 import { AbstractControl, FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
-import { IonHeader, IonToolbar, IonTitle, IonContent, IonItem, IonLabel, IonButton, IonImg, IonIcon, IonText, IonButtons,IonTextarea, IonList, IonInput, IonSpinner, IonBackButton, IonSkeletonText } from "@ionic/angular/standalone";
+import { IonHeader, IonToolbar, IonTitle, IonContent, IonItem, IonLabel, IonButton, IonImg, IonIcon, IonText, IonButtons,IonTextarea, IonList, IonInput, IonSpinner, IonBackButton, IonSkeletonText, LoadingController, AlertController, NavController } from "@ionic/angular/standalone";
 import { SensorCamera } from 'src/app/core/services/sensor-camera';
 import { addIcons } from 'ionicons';
 import { imageOutline, imagesOutline, cameraOutline, trashOutline } from 'ionicons/icons';
@@ -29,7 +29,7 @@ export class AddRecipeComponent  implements OnInit {
   recipeForm: FormGroup;
   recipeInfo: any = {};
 
-  constructor(private fb: FormBuilder, private recipeService: Recipe, private camService: SensorCamera, private zone: NgZone, private route: ActivatedRoute) {
+  constructor(private fb: FormBuilder, private recipeService: Recipe, private camService: SensorCamera, private zone: NgZone, private route: ActivatedRoute, private alertCtrl: AlertController, private loadingCtrl: LoadingController, private navCtrl: NavController) {
     addIcons({ imageOutline, imagesOutline, cameraOutline, trashOutline });
 
     this.recipeForm = this.fb.group({
@@ -119,7 +119,7 @@ export class AddRecipeComponent  implements OnInit {
     });
   }
 
-  onSubmit() {
+  async onSubmit() {
     if (this.recipeForm.invalid) {
       this.recipeForm.markAllAsTouched();
       return;
@@ -131,7 +131,7 @@ export class AddRecipeComponent  implements OnInit {
     const formData = new FormData();
 
     for (const key in data) {
-      if (data[key] !== null && data[key] !== undefined) {
+      if (data[key] !== null && data[key] !== undefined && key !== 'image_path') {
         formData.append(key, data[key]);
       }
     }
@@ -139,14 +139,57 @@ export class AddRecipeComponent  implements OnInit {
     if (this.photo) {
       if (this.photo.startsWith('data:image')) {
         const blob = this.base64ToBlob(this.photo);
-        formData.append('image', blob, 'recipe.jpg');
-      } else {
-        formData.append('image_path', this.photo);
+        formData.append('photo', blob, 'recipe.jpg');
       }
     }
 
-    console.log('FormData listo:');
-    formData.forEach((val, key) => console.log(key, val));
+
+    if (this.isEditMode()) {
+      const loadingPut = await this.loadingCtrl.create({
+        message: 'Actualizando la receta...',
+        spinner: 'crescent'
+      });
+      await loadingPut.present();
+
+      this.recipeService.editRecipe(this.recipeId, formData).pipe(timeout(15000), take(1)).subscribe({
+        next: async (response) => {
+          this.sendingInfo.set(false);
+            if (response.result) {
+              console.log('Receta Actualizada:', response);
+              await loadingPut.dismiss();
+              this.putRecipeAlert(response.data.id);
+            }
+        },
+        error: async (error) => {
+          this.sendingInfo.set(false);
+          await loadingPut.dismiss();
+          console.log('Error al guardar receta:', error);
+        }
+      });
+    } else {
+      const loadingPost = await this.loadingCtrl.create({
+        message: 'Publicando la receta...',
+        spinner: 'crescent'
+      });
+      await loadingPost.present();
+
+      this.recipeService.newRecipe(formData).pipe(timeout(15000), take(1)).subscribe({
+        next: async (response) => {
+          this.sendingInfo.set(false);
+            if (response.result) {
+              this.photo = null;
+              this.recipeForm.reset();
+              await loadingPost.dismiss();
+              this.postRecipeAlert(this.recipeId);
+            }
+        },
+        error: async (error) => {
+          this.sendingInfo.set(false);
+          await loadingPost.dismiss();
+          console.log('Error al guardar receta:', error);
+        }
+      });
+    }
   }
 
   //CONVERTIR IMAGEN A BASE64
@@ -165,6 +208,52 @@ export class AddRecipeComponent  implements OnInit {
     }
 
     return new Blob([intArray], { type: mime });
+  }
+
+  async postRecipeAlert(id: any) {
+    const alert = await this.alertCtrl.create({
+      header: '¡Receta publicada con éxito!',
+      message: '¿Deseas seguir editando la receta o ver sus detalles?',
+      backdropDismiss: false,
+      buttons: [
+        {
+          text: 'Publicar otra receta',
+          role: 'cancel',
+        },
+        {
+          text: 'Ver detalles',
+          role: 'confirm',
+          handler: () => {
+            this.navCtrl.navigateForward(['/recipe-detail/', id]);
+          },
+        },
+      ],
+    });
+
+    await alert.present();
+  }
+
+  async putRecipeAlert(id: any) {
+    const alert = await this.alertCtrl.create({
+      header: '¡Receta actualizada con éxito!',
+      message: 'Tu receta ha sido guardada. ¿Quieres seguir ajustando los detalles o ver cómo quedó?',
+      backdropDismiss: false,
+      buttons: [
+        {
+          text: 'Seguir editando',
+          role: 'cancel',
+        },
+        {
+          text: 'Ver receta',
+          role: 'confirm',
+          handler: () => {
+            this.navCtrl.navigateForward(['/recipe-detail/', id]);
+          },
+        },
+      ],
+    });
+
+    await alert.present();
   }
 
   ionViewWillLeave () {
