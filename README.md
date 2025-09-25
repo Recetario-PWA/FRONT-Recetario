@@ -43,7 +43,7 @@ Una **Progressive Web App (PWA)** de recetario construida con **Ionic 8** y **An
 ### 🔔 Notificaciones
 - Sección de notificaciones en tiempo real mediante **Pusher**
 - Notificaciones push mediante **Pusher Beams**
-- Actualizaciones en tiempo real para comentarios y favoritos
+- Actualizaciones en tiempo real para comentarios
 
 ### 💾 Funcionalidades offline
 - Acceso a recetas favoritas y secciones básicas sin conexión a internet
@@ -75,7 +75,7 @@ npm install
 ```
 
 3. Configurar environment.ts:
-```javascript
+```ts
 export const environment = {
   production: false,
   apiUrlBase: `API_URL`,
