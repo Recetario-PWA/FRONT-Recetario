@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { environment } from 'src/environments/environment';
 
 declare var PusherPushNotifications: any;
 
@@ -42,7 +43,7 @@ export class PushService {
       }
 
       this.beamsClient = new Beams.Client({
-        instanceId: '7bf3ae47-992b-4da3-b76d-cb1285d78fa4'
+        instanceId: environment.pusher.instanceId
       });
 
       await this.beamsClient.start();

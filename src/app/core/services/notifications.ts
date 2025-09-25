@@ -24,7 +24,7 @@ export class Notifications {
 
       this.echo = new Echo({
         broadcaster: 'pusher',
-        key: '08e5dc962b28efd9f48a',
+        key: environment.pusher.key,
         cluster: 'us2',
         forceTLS: true,
         authEndpoint: `${environment.apiUrlBase}broadcasting/auth`,
