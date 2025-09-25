@@ -1,4 +1,4 @@
-# :tw-1f36e: Recetario PWA
+# 🥞 Recetario PWA
 
 Una **Progressive Web App (PWA)** de recetario construida con **Ionic 8** y **Angular 20**. La aplicación permite gestionar recetas, usuarios y notificaciones en tiempo real, con funcionalidades offline y seguridad mediante 2FA.
 
