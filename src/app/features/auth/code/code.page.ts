@@ -1,13 +1,14 @@
 import { Component, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { AbstractControl, FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
-import { IonContent, IonHeader, IonInputOtp, IonToolbar, IonButtons, IonBackButton, IonGrid, IonLabel, IonRow, IonList, IonItemGroup, IonButton, NavController } from '@ionic/angular/standalone';
+import { IonContent, IonHeader, IonInputOtp, IonToolbar, IonButtons, IonBackButton, IonGrid, IonLabel, IonRow, IonList, IonItemGroup, IonButton, NavController, AlertController } from '@ionic/angular/standalone';
 import { Router, RouterModule } from '@angular/router';
 import { ErrorMessagesComponent } from "src/app/shared/components/error-messages/error-messages.component";
 import { Auth } from 'src/app/core/services/auth';
-import { take, timeout } from 'rxjs';
+import { take, timeout, TimeoutError } from 'rxjs';
 import { User } from 'src/app/core/services/user';
 import { codeEmail } from 'src/app/core/stores/auth.store';
+import { HttpErrorResponse } from '@angular/common/http';
 
 @Component({
   selector: 'app-code',
@@ -21,7 +22,7 @@ export class CodePage implements OnInit {
   codeForm: FormGroup;
   loading = signal(false);
 
-  constructor(private fb: FormBuilder, private authService: Auth, private userService: User, private navCtrl: NavController, private router: Router) {
+  constructor(private fb: FormBuilder, private authService: Auth, private userService: User, private navCtrl: NavController, private router: Router, private alertCtrl: AlertController) {
     this.codeForm = this.fb.group({
       email: [''],
       code: ['', [Validators.required, Validators.pattern('^[A-Za-z0-9]{5}$')]]
@@ -44,6 +45,22 @@ export class CodePage implements OnInit {
     return this.codeForm.controls[name];
   }
 
+  async errorAlert(message: any) {
+    const alert = await this.alertCtrl.create({
+      header: '¡Ups! Ocurrió un problema',
+      message: message || 'Algo salió mal al publicar tu receta. Por favor intenta de nuevo más tarde.',
+      backdropDismiss: false,
+      buttons: [
+        {
+          text: 'Entendido',
+          role: 'cancel',
+        }
+      ],
+    });
+
+    await alert.present();
+  }
+
   onSubmit() {
     if (this.codeForm.invalid) {
       this.codeForm.markAllAsTouched();
@@ -62,14 +79,23 @@ export class CodePage implements OnInit {
       next: (response) => {
         if (response.result) {
           this.authService.saveToken(response.data.token);
-          this.authService.getUserInfo();
+          this.authService.getUserInfo().subscribe();
 
           setTimeout(() => {
-            this.navCtrl.navigateForward(['/tabs/home']);
-          })
+            this.router.navigate(['/tabs/home']);
+          });
         }
       },
-      error: (error) => {
+      error: (error: HttpErrorResponse | TimeoutError) => {
+        if (error instanceof TimeoutError) {
+          this.onSubmit();
+          return;
+        }
+
+        const msg = (error as HttpErrorResponse).error?.msg || 'Ha ocurrido un error inesperado';
+        this.errorAlert(msg);
+
+        this.loading.set(false);
         console.log(error);
       }
     });

@@ -7,7 +7,6 @@ import { AlertController } from '@ionic/angular';
 import { Auth } from './core/services/auth';
 import { User } from './core/services/user';
 import { PushService } from './core/services/push';
-import { currentUser } from './core/stores/auth.store';
 
 @Component({
   selector: 'app-root',

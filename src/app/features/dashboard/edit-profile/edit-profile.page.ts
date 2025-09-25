@@ -9,7 +9,8 @@ import { currentUser, userInfoLoading } from 'src/app/core/stores/auth.store';
 import { ErrorMessagesComponent } from 'src/app/shared/components/error-messages/error-messages.component';
 import { User } from 'src/app/core/services/user';
 import { Auth } from 'src/app/core/services/auth';
-import { take, timeout } from 'rxjs';
+import { take, timeout, TimeoutError } from 'rxjs';
+import { HttpErrorResponse } from '@angular/common/http';
 
 @Component({
   selector: 'app-edit-profile',
@@ -102,7 +103,15 @@ export class EditProfilePage implements OnInit {
           await loading.dismiss();
         }
       },
-      error: async (error) => {
+      error: async (error: HttpErrorResponse | TimeoutError) => {
+        if (error instanceof TimeoutError) {
+          this.onSubmit();
+          return;
+        }
+
+        const msg = (error as HttpErrorResponse).error?.msg || 'Ha ocurrido un error inesperado';
+        this.errorAlert(msg);
+        
         await loading.dismiss();
         console.log(error);
       }
@@ -185,6 +194,22 @@ export class EditProfilePage implements OnInit {
         console.log(error);
       }
     });
+  }
+
+  async errorAlert(message: any) {
+    const alert = await this.alertCtrl.create({
+      header: '¡Ups! Ocurrió un problema',
+      message: message || 'Algo salió mal al publicar tu receta. Por favor intenta de nuevo más tarde.',
+      backdropDismiss: false,
+      buttons: [
+        {
+          text: 'Entendido',
+          role: 'cancel',
+        }
+      ],
+    });
+
+    await alert.present();
   }
 
   onPasswordModalClose() {

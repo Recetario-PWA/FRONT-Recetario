@@ -7,8 +7,10 @@ import { addIcons } from 'ionicons';
 import { imageOutline, imagesOutline, cameraOutline, trashOutline } from 'ionicons/icons';
 import { ActivatedRoute } from '@angular/router';
 import { Recipe } from 'src/app/core/services/recipes/recipe';
-import { take, timeout } from 'rxjs';
+import { take, timeout, TimeoutError } from 'rxjs';
 import { ErrorMessagesComponent } from 'src/app/shared/components/error-messages/error-messages.component';
+import { allRecipes, userRecipes } from 'src/app/core/stores/recipes.store';
+import { HttpErrorResponse } from '@angular/common/http';
 
 @Component({
   selector: 'app-add-recipe',
@@ -146,7 +148,7 @@ export class AddRecipeComponent  implements OnInit {
 
     if (this.isEditMode()) {
       const loadingPut = await this.loadingCtrl.create({
-        message: 'Actualizando la receta...',
+        message: 'Actualizando receta...',
         spinner: 'crescent'
       });
       await loadingPut.present();
@@ -155,12 +157,21 @@ export class AddRecipeComponent  implements OnInit {
         next: async (response) => {
           this.sendingInfo.set(false);
             if (response.result) {
-              console.log('Receta Actualizada:', response);
+              this.getRecipes();
+              this.getUserRecipes();
               await loadingPut.dismiss();
               this.putRecipeAlert(response.data.id);
             }
         },
-        error: async (error) => {
+        error: async (error: HttpErrorResponse | TimeoutError) => {
+          if (error instanceof TimeoutError) {
+            this.onSubmit();
+            return;
+          }
+
+          const msg = (error as HttpErrorResponse).error?.msg || 'Ha ocurrido un error inesperado';
+          this.errorAlert(msg);
+
           this.sendingInfo.set(false);
           await loadingPut.dismiss();
           console.log('Error al guardar receta:', error);
@@ -168,7 +179,7 @@ export class AddRecipeComponent  implements OnInit {
       });
     } else {
       const loadingPost = await this.loadingCtrl.create({
-        message: 'Publicando la receta...',
+        message: 'Publicando receta...',
         spinner: 'crescent'
       });
       await loadingPost.present();
@@ -178,12 +189,22 @@ export class AddRecipeComponent  implements OnInit {
           this.sendingInfo.set(false);
             if (response.result) {
               this.photo = null;
+              this.getRecipes();
+              this.getUserRecipes();
               this.recipeForm.reset();
               await loadingPost.dismiss();
               this.postRecipeAlert(this.recipeId);
             }
         },
-        error: async (error) => {
+        error: async (error: HttpErrorResponse | TimeoutError) => {
+          if (error instanceof TimeoutError) {
+            this.onSubmit();
+            return;
+          }
+
+          const msg = (error as HttpErrorResponse).error?.msg || 'Ha ocurrido un error inesperado';
+          this.errorAlert(msg);
+
           this.sendingInfo.set(false);
           await loadingPost.dismiss();
           console.log('Error al guardar receta:', error);
@@ -233,6 +254,22 @@ export class AddRecipeComponent  implements OnInit {
     await alert.present();
   }
 
+  async errorAlert(message: any) {
+    const alert = await this.alertCtrl.create({
+      header: '¡Ups! Ocurrió un problema',
+      message: message || 'Algo salió mal al publicar tu receta. Por favor intenta de nuevo más tarde.',
+      backdropDismiss: false,
+      buttons: [
+        {
+          text: 'Entendido',
+          role: 'cancel',
+        }
+      ],
+    });
+
+    await alert.present();
+  }
+
   async putRecipeAlert(id: any) {
     const alert = await this.alertCtrl.create({
       header: '¡Receta actualizada con éxito!',
@@ -254,6 +291,68 @@ export class AddRecipeComponent  implements OnInit {
     });
 
     await alert.present();
+  }
+
+  calculateTotalScore(recipe: any): number {
+    if (!recipe.comments || !Array.isArray(recipe.comments) || recipe.comments.length === 0) {
+      return 0;
+    }
+
+    const validScores = recipe.comments.map((comment: any) => {
+      const score = Number(comment.score);
+      return isNaN(score) ? null : score;
+    }).filter((score: any) => score !== null);
+
+    if (validScores.length === 0) return 0;
+
+    const totalScore = validScores.reduce((sum: any, score: any) =>sum + score, 0);
+    const averageScore = totalScore / validScores.length;
+
+    return parseFloat(averageScore.toFixed(1));
+  }
+
+  getRecipes() {
+    this.recipeService.getAllRecipes().pipe(timeout(15000), take(1)).subscribe({
+      next: (response) => {
+          if (response.result) {
+          const recipesWithScore = response.data.map((recipe: any) => ({
+            ...recipe,
+            averageScore: this.calculateTotalScore(recipe)
+          }));
+
+          allRecipes.set(recipesWithScore);
+          this.loading.set(false);
+        }
+      },
+      error: (error) => {
+        console.log(error);
+        this.loading.set(false);
+      }
+    });
+  }
+
+  getUserRecipes() {
+    this.recipeService.userRecipes().pipe(timeout(15000), take(1)).subscribe({
+      next: (response) => {
+        if (response.result) {
+          const recipesWithScore = response.data.map((recipe: any) => ({
+            ...recipe,
+            averageScore: this.calculateTotalScore(recipe)
+          }));
+          
+          userRecipes.set(recipesWithScore);
+          this.loading.set(false);
+        } else {
+          userRecipes.set([]);
+          this.loading.set(false);
+        }
+      },
+      error: (error) => {
+        userRecipes.set([]);
+        this.loading.set(false);
+        console.log(error);
+      }
+    });
   }
 
   ionViewWillLeave () {

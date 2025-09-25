@@ -5,7 +5,8 @@ import { AlertController, IonContent, IonSelect ,IonHeader, IonToolbar, IonButto
 import { Router, RouterModule } from '@angular/router';
 import { Auth } from 'src/app/core/services/auth';
 import { ErrorMessagesComponent } from "src/app/shared/components/error-messages/error-messages.component";
-import { take, timeout } from 'rxjs';
+import { take, timeout, TimeoutError } from 'rxjs';
+import { HttpErrorResponse } from '@angular/common/http';
 
 @Component({
   selector: 'app-register',
@@ -72,11 +73,35 @@ export class RegisterPage implements OnInit {
           this.registerForm.reset();
         }
       },
-      error: (error) => {
+      error: (error: HttpErrorResponse | TimeoutError) => {
+        if (error instanceof TimeoutError) {
+          this.onSubmit();
+          return;
+        }
+
+        const msg = (error as HttpErrorResponse).error?.msg || 'Ha ocurrido un error inesperado';
+        this.errorAlert(msg);
+        
         this.loading.set(false);
         console.log(error);
       }
     });
+  }
+
+  async errorAlert(message: any) {
+    const alert = await this.alertController.create({
+      header: '¡Ups! Ocurrió un problema',
+      message: message || 'Algo salió mal al publicar tu receta. Por favor intenta de nuevo más tarde.',
+      backdropDismiss: false,
+      buttons: [
+        {
+          text: 'Entendido',
+          role: 'cancel',
+        }
+      ],
+    });
+
+    await alert.present();
   }
 
   ngOnDestroy() {
