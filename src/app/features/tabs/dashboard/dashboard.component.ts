@@ -7,6 +7,7 @@ import { addIcons } from 'ionicons';
 import { chevronForwardOutline, personOutline, restaurantOutline, settingsOutline, logOutOutline, chatbubblesOutline, moonOutline } from 'ionicons/icons';
 import { Auth } from 'src/app/core/services/auth';
 import { currentUser, userInfoLoading } from 'src/app/core/stores/auth.store';
+import { clearfavList } from 'src/app/core/stores/favoriteRecipes.store';
 
 @Component({
   selector: 'app-dashboard',
@@ -78,7 +79,7 @@ export class DashboardComponent  implements OnInit {
     this.authServive.logout().subscribe({
       next: () => {
         loading.dismiss();
-        this.navCtrl.navigateForward(['/auth/login']);
+        this.navCtrl.navigateForward(['/welcome']);
       },
       error: () => {
         loading.dismiss();
