@@ -68,7 +68,7 @@
                       <ion-item lines="none">
                         <div class="ingredient-marker-container">
                           <div class="ingredient-marker"></div>
-                          <ion-label>{{ ingredient }}</ion-label>
+                          <ion-label lang="es">{{ ingredient }}</ion-label>
                         </div>
                       </ion-item>
                     }
@@ -77,7 +77,7 @@
                     @for (instruction of instructionsList; track $index; let i = $index) {
                       <div class="numbered-callout">
                         <div class="number-circle">{{ i + 1 }}</div>
-                        <p class="callout-text">
+                        <p class="callout-text" lang="es">
                           {{ instruction }}.
                         </p>
                       </div>
