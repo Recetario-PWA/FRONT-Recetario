@@ -142,14 +142,19 @@ export class AddRecipeComponent  implements OnInit {
       }
     }
 
-    if (this.photo) {
-      if (this.photo instanceof Blob) {
-        formData.append('photo', this.photo, 'recipe.jpg');
-      } else if (typeof this.photo === 'string' && this.photo.startsWith('data:image')) {
-        const blob = this.base64ToBlob(this.photo);
-        formData.append('photo', blob, 'recipe.jpg');
-      }
+  if (this.photo) {
+    let photoBlob: Blob | null = null;
+
+    if (this.photo instanceof Blob) {
+      photoBlob = this.photo;
+    } else if (typeof this.photo === 'string' && this.photo.startsWith('data:image')) {
+      photoBlob = this.base64ToBlob(this.photo);
     }
+
+    if (photoBlob) {
+      formData.append('photo', photoBlob, 'recipe.jpg');
+    }
+  }
 
     if (this.isEditMode()) {
       const loadingPut = await this.loadingCtrl.create({
