@@ -194,7 +194,7 @@ export class AddRecipeComponent  implements OnInit {
       });
       await loadingPost.present();
 
-      this.recipeService.newRecipe(formData).pipe(timeout(15000), take(1)).subscribe({
+      this.recipeService.newRecipe(formData).pipe(timeout(35000), take(1)).subscribe({
         next: async (response) => {
           this.sendingInfo.set(false);
             if (response.result) {
