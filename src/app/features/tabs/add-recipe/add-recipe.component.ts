@@ -203,6 +203,7 @@ export class AddRecipeComponent  implements OnInit {
               this.getUserRecipes();
               this.recipeForm.reset();
               await loadingPost.dismiss();
+              console.log(response);
               this.postRecipeAlert(response.data.id);
             }
         },
@@ -250,8 +251,7 @@ export class AddRecipeComponent  implements OnInit {
           text: 'Ver detalles',
           role: 'confirm',
           handler: () => {
-            this.navCtrl.navigateForward(['/recipe-detail/', id]);
-          },
+          this.navCtrl.navigateForward(['/recipe-detail/', id]);          },
         },
       ],
     });
