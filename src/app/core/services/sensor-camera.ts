@@ -20,7 +20,7 @@ export class SensorCamera {
   private async getPhoto(source: CameraSource): Promise<Blob | null> {
     try {
       const photo: Photo = await Camera.getPhoto({
-        quality: 60,
+        quality: 50,
         allowEditing: false,
         source,
         resultType: CameraResultType.Uri,
