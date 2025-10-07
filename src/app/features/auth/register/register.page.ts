@@ -79,9 +79,24 @@ export class RegisterPage implements OnInit {
           return;
         }
 
-        const msg = (error as HttpErrorResponse).error?.msg || 'Ha ocurrido un error inesperado';
+        const httpError = error as HttpErrorResponse;
+
+        const data = httpError.error?.data as Record<string, any> | undefined;
+
+        let msg = '';
+
+        if (data) {
+          const validationMessages = ([] as string[]).concat(
+            ...Object.values(data)
+          );
+
+          if (validationMessages.length > 0) {
+            msg = validationMessages.map(err => `* ${err}`).join('\n\n');
+          }
+        }
+
         this.errorAlert(msg);
-        
+
         this.loading.set(false);
         console.log(error);
       }
@@ -91,7 +106,8 @@ export class RegisterPage implements OnInit {
   async errorAlert(message: any) {
     const alert = await this.alertController.create({
       header: '¡Ups! Ocurrió un problema',
-      message: message || 'Algo salió mal al publicar tu receta. Por favor intenta de nuevo más tarde.',
+      cssClass: 'multiline-alert',
+      message: message || 'Algo salió mal. Por favor intenta de nuevo más tarde.',
       backdropDismiss: false,
       buttons: [
         {

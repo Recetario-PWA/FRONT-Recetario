@@ -11,6 +11,7 @@ import { take, timeout, TimeoutError } from 'rxjs';
 import { ErrorMessagesComponent } from 'src/app/shared/components/error-messages/error-messages.component';
 import { allRecipes, userRecipes } from 'src/app/core/stores/recipes.store';
 import { HttpErrorResponse } from '@angular/common/http';
+import heic2any from 'heic2any';
 
 @Component({
   selector: 'app-add-recipe',
@@ -67,11 +68,13 @@ export class AddRecipeComponent  implements OnInit {
       const blob = await this.camService.takePhoto();
       if (!blob) return;
 
-      this.photo = blob; 
+      const imageUrl = URL.createObjectURL(blob);
+      this.photo = imageUrl;
       this.recipeForm.patchValue({ image_path: blob });
       this.recipeForm.get('image_path')?.updateValueAndValidity();
     } catch (err) {
       console.error('Error al tomar foto', err);
+      this.errorAlert('No se pudo tomar la foto. Intenta de nuevo.');
     } finally {
       this.loading.set(false);
     }
@@ -82,12 +85,15 @@ export class AddRecipeComponent  implements OnInit {
     try {
       const blob = await this.camService.pickFromGallery();
       if (!blob) return;
+      console.log('Tipo de archivo seleccionado (después del servicio):', blob.type)
 
-      this.photo = blob;
+      const imageUrl = URL.createObjectURL(blob);
+      this.photo = imageUrl;
       this.recipeForm.patchValue({ image_path: blob });
       this.recipeForm.get('image_path')?.updateValueAndValidity();
     } catch (err) {
       console.error('Error al seleccionar foto', err);
+      this.errorAlert('No se pudo seleccionar la foto. Intenta de nuevo.');
     } finally {
       this.loading.set(false);
     }
@@ -142,19 +148,21 @@ export class AddRecipeComponent  implements OnInit {
       }
     }
 
-  if (this.photo) {
-    let photoBlob: Blob | null = null;
+    const imagePathValue = this.recipeForm.get('image_path')?.value;
 
-    if (this.photo instanceof Blob) {
-      photoBlob = this.photo;
-    } else if (typeof this.photo === 'string' && this.photo.startsWith('data:image')) {
-      photoBlob = this.base64ToBlob(this.photo);
-    }
+    if (imagePathValue) {
+      let photoBlob: Blob | null = null;
+      let fileName: string = 'recipe.jpg';
 
-    if (photoBlob) {
-      formData.append('photo', photoBlob, 'recipe.jpg');
-    }
-  }
+      if (imagePathValue instanceof Blob) {
+          photoBlob = imagePathValue;
+          fileName = photoBlob.type === 'image/jpeg' ? 'recipe.jpg' : 'recipe.png';
+      }
+
+      if (photoBlob) {
+        formData.append('photo', photoBlob, fileName);
+     }
+   }
 
     if (this.isEditMode()) {
       const loadingPut = await this.loadingCtrl.create({
@@ -203,7 +211,7 @@ export class AddRecipeComponent  implements OnInit {
               this.getUserRecipes();
               this.recipeForm.reset();
               await loadingPost.dismiss();
-              console.log('RESPUESTA: ', response);
+              //console.log('RESPUESTA: ', response);
               this.postRecipeAlert(response.data.id);
             }
         },

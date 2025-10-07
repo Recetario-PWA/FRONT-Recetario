@@ -49,6 +49,9 @@ ion-toast {
   font-weight: 600;
 }
 
+.multiline-alert .alert-message {
+  white-space: pre-line !important; 
+}
 
 /* Core CSS required for Ionic components to work properly */
 @import "@ionic/angular/css/core.css";

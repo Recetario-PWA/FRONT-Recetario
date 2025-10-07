@@ -2,15 +2,17 @@ import { CommonModule } from '@angular/common';
 import { Component, computed, ElementRef, OnInit, signal } from '@angular/core';
 import { AbstractControl, FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import {ModalController, IonContent, IonText, IonIcon, IonRow, IonGrid, IonCol, IonButton, IonList, IonItem, IonLabel, IonAvatar, IonButtons, IonToolbar, IonHeader, IonModal, IonSearchbar, IonImg, IonFab, IonFabButton, IonBackButton, IonTitle, IonChip, IonSegment, IonSegmentButton, IonSegmentView, IonSegmentContent, InfiniteScrollCustomEvent, IonInfiniteScroll, IonInfiniteScrollContent, IonCard, IonCardContent, IonCardHeader, IonCardTitle, IonCardSubtitle, IonSkeletonText, IonThumbnail, IonSpinner } from "@ionic/angular/standalone";
+import {ModalController, IonContent, IonText, IonIcon, IonRow, IonGrid, IonCol, IonButton, IonList, IonItem, IonLabel, IonAvatar, IonButtons, IonToolbar, IonHeader, IonModal, IonSearchbar, IonImg, IonFab, IonFabButton, IonBackButton, IonTitle, IonChip, IonSegment, IonSegmentButton, IonSegmentView, IonSegmentContent, InfiniteScrollCustomEvent, IonInfiniteScroll, IonInfiniteScrollContent, IonCard, IonCardContent, IonCardHeader, IonCardTitle, IonCardSubtitle, IonSkeletonText, IonThumbnail, IonSpinner, AlertController } from "@ionic/angular/standalone";
 import { addIcons } from 'ionicons';
 import { heart, heartOutline, timeOutline, restaurantOutline, chatbubbleOutline } from 'ionicons/icons';
-import { take, timeout } from 'rxjs';
+import { take, timeout, TimeoutError } from 'rxjs';
 import { Recipe } from 'src/app/core/services/recipes/recipe';
 import { addTofavList, removeFromfavList, usefavList } from 'src/app/core/stores/favoriteRecipes.store';
 import { StarRatingComponent } from "src/app/shared/components/star-rating/star-rating.component";
 import { TimeAgoPipe } from 'src/app/core/pipes/time-ago-pipe';
 import { ErrorMessagesComponent } from 'src/app/shared/components/error-messages/error-messages.component';
+import { allRecipes } from 'src/app/core/stores/recipes.store';
+import { HttpErrorResponse } from '@angular/common/http';
 
 @Component({
   selector: 'app-recipe-detail',
@@ -47,7 +49,7 @@ export class RecipeDetailComponent  implements OnInit {
     return parseFloat((total / list.length).toFixed(1));
   });
 
-  constructor(private fb: FormBuilder, private recipeService: Recipe, private el: ElementRef, private route: ActivatedRoute, private router: Router) { 
+  constructor(private alertController: AlertController, private fb: FormBuilder, private recipeService: Recipe, private el: ElementRef, private route: ActivatedRoute, private router: Router) { 
     addIcons({ heart, heartOutline, timeOutline, restaurantOutline, chatbubbleOutline });
 
     this.commentForm = this.fb.group({
@@ -160,15 +162,76 @@ export class RecipeDetailComponent  implements OnInit {
       next: (response) => {
         //ACTUALIZAR LOS COMENTARIOS
         this.getRecipe();
+        this.getRecipes();
 
         this.commentForm.reset();
         this.selectedRating.set(0);
       },
-      error: (error) => {
-        console.log(error);
+      error: (error: HttpErrorResponse | TimeoutError) => {
+        if (error instanceof TimeoutError) {
+          this.onSubmit();
+          return;
+        }
+
+        const httpError = error as HttpErrorResponse;
+
+        const data = httpError.error?.data as Record<string, any> | undefined;
+
+        let msg = '';
+
+        if (data) {
+          const validationMessages = ([] as string[]).concat(
+            ...Object.values(data)
+          );
+
+          if (validationMessages.length > 0) {
+            msg = validationMessages.map(err => `* ${err}`).join('\n\n');
+          }
+        }
+
+        this.errorAlert(msg);
       },
       complete: () => {
         this.selectedRating.set(0);
+        this.loading.set(false);
+      }
+    });
+  }
+
+  async errorAlert(message: any) {
+    const alert = await this.alertController.create({
+      header: '¡Ups! Ocurrió un problema',
+      cssClass: 'multiline-alert',
+      message: message || 'Algo salió mal. Por favor intenta de nuevo más tarde.',
+      backdropDismiss: false,
+      buttons: [
+        {
+          text: 'Entendido',
+          role: 'cancel',
+        }
+      ],
+    });
+
+    await alert.present();
+  }
+
+  getRecipes() {
+    this.recipeService.getAllRecipes().pipe(timeout(15000), take(1)).subscribe({
+      next: (response) => {
+          if (response.result) {
+          const recipesWithScore = response.data.map((recipe: any) => ({
+            ...recipe,
+            averageScore: this.calculateTotalScore(recipe)
+          }));
+
+          allRecipes.set(recipesWithScore);
+          this.loading.set(false);
+
+          //console.log(this.recipes());
+        }
+      },
+      error: (error) => {
+        console.log(error);
         this.loading.set(false);
       }
     });

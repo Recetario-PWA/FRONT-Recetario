@@ -23,15 +23,22 @@ export class SensorCamera {
         quality: 50,
         allowEditing: false,
         source,
-        resultType: CameraResultType.Uri,
+        resultType: CameraResultType.Base64,
       });
 
-      let response = await fetch(photo.webPath!);
-      let blob = await response.blob();
+      if (!photo.base64String) return null;
 
-      if (photo.format === 'heic') {
-        blob = await heic2any({ blob, toType: 'image/jpeg', quality: 0.8 }) as Blob;
+      let base64 = photo.base64String;
+      let mimeType = `image/${photo.format || 'jpeg'}`;
+
+      if (photo.format?.toLocaleLowerCase() === 'heic' || photo.format?.toLocaleLowerCase() === 'heif' || this.detectFormat(base64) === 'heic' || mimeType === 'image/heif') {
+        console.log('Convirtiendo HEIC/HEIF a JPEG');
+
+        base64 = await this.convertHeicToJpeg(base64);
+        mimeType = 'image/jpeg';
       }
+
+      let blob = this.base64ToBlob(base64, mimeType);
 
       blob = await this.resizeBlobImage(blob, 1024, 0.7);
 
@@ -43,6 +50,19 @@ export class SensorCamera {
     }
   }
 
+  private base64ToBlob(base64: string, mimeType: string): Blob {
+    const byteString = atob(base64);
+    const arrayBuffer = new ArrayBuffer(byteString.length);
+    const intArray = new Uint8Array(arrayBuffer);
+
+    for (let i = 0; i < byteString.length; i++) {
+      intArray[i] = byteString.charCodeAt(i);
+    }
+
+    return new Blob([intArray], { type: mimeType });
+}
+
+
   private detectFormat(base64: string): 'heic' | 'jpeg' | 'png' | 'unknown' {
     if (base64.startsWith('/9j/')) return 'jpeg';
     if (base64.startsWith('iVBOR')) return 'png';
@@ -53,7 +73,8 @@ export class SensorCamera {
   private async resizeBlobImage(blob: Blob, maxWidth: number, quality: number): Promise<Blob> {
     return new Promise(async (resolve, reject) => {
       const img = new Image();
-      img.src = URL.createObjectURL(blob);
+      const url = URL.createObjectURL(blob);
+      img.src = url;
 
       img.onload = () => {
         const scale = Math.min(maxWidth / img.width, 1);
@@ -73,7 +94,10 @@ export class SensorCamera {
         );
       };
 
-      img.onerror = (err) => reject(err);
+      img.onerror = (err) => {
+        URL.revokeObjectURL(url);
+        reject(err)
+      };
     });
   }
 
@@ -85,7 +109,7 @@ export class SensorCamera {
     }
     const blob = new Blob([new Uint8Array(byteNumbers)], { type: 'image/heic' });
 
-    const jpegBlob = await heic2any({ blob, toType: 'image/jpeg', quality: 0.8 }) as Blob;
+    const jpegBlob = await heic2any({ blob, toType: 'image/jpeg', quality: 0.7 }) as Blob;
 
     return new Promise<string>((resolve, reject) => {
       const reader = new FileReader();
