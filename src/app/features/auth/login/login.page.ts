@@ -66,6 +66,7 @@ export class LoginPage implements OnInit {
 
         const msg = (error as HttpErrorResponse).error?.msg || 'Ha ocurrido un error inesperado';
         this.loginAlert("Ups!", msg);
+        this.loading.set(false);
       },
     });
   }

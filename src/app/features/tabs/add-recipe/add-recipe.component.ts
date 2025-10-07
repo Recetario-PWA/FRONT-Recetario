@@ -197,7 +197,7 @@ export class AddRecipeComponent  implements OnInit {
               this.getUserRecipes();
               this.recipeForm.reset();
               await loadingPost.dismiss();
-              this.postRecipeAlert(this.recipeId);
+              this.postRecipeAlert(response.data.id);
             }
         },
         error: async (error: HttpErrorResponse | TimeoutError) => {
