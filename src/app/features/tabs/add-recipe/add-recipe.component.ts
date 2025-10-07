@@ -194,7 +194,7 @@ export class AddRecipeComponent  implements OnInit {
       });
       await loadingPost.present();
 
-      this.recipeService.newRecipe(formData).pipe(timeout(35000), take(1)).subscribe({
+      this.recipeService.newRecipe(formData).subscribe({
         next: async (response) => {
           this.sendingInfo.set(false);
             if (response.result) {
@@ -206,12 +206,7 @@ export class AddRecipeComponent  implements OnInit {
               this.postRecipeAlert(response.data.id);
             }
         },
-        error: async (error: HttpErrorResponse | TimeoutError) => {
-          if (error instanceof TimeoutError) {
-            this.onSubmit();
-            return;
-          }
-
+        error: async (error: HttpErrorResponse) => {
           const msg = (error as HttpErrorResponse).error?.msg || 'Ha ocurrido un error inesperado';
           this.errorAlert(msg);
 
