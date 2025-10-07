@@ -20,7 +20,7 @@ import { HttpErrorResponse } from '@angular/common/http';
   imports: [CommonModule, ReactiveFormsModule, FormsModule, ErrorMessagesComponent, IonSkeletonText,IonButtons, IonBackButton, IonSpinner, IonInput, IonList, IonTextarea, IonText, IonIcon, IonImg, IonButton, CommonModule, FormsModule, ReactiveFormsModule, IonLabel, IonItem, IonContent, IonTitle, IonToolbar, IonHeader],
 })
 export class AddRecipeComponent  implements OnInit {
-  photo: string | null = null;
+  photo: any | null = null;
   loading = signal(false);
   loadinInfo = signal(false);
   isEditMode = signal(false);
@@ -64,9 +64,11 @@ export class AddRecipeComponent  implements OnInit {
   async takePhoto() {
     this.loading.set(true);
     try {
-      const result = await this.camService.takePhoto();
-      this.zone.run(() => this.photo = result);
-      this.recipeForm.patchValue({ image_path: this.photo });
+      const blob = await this.camService.takePhoto();
+      if (!blob) return;
+
+      this.photo = blob; 
+      this.recipeForm.patchValue({ image_path: blob });
       this.recipeForm.get('image_path')?.updateValueAndValidity();
     } catch (err) {
       console.error('Error al tomar foto', err);
@@ -78,9 +80,11 @@ export class AddRecipeComponent  implements OnInit {
   async selectPhoto() {
     this.loading.set(true);
     try {
-      const result = await this.camService.pickFromGallery();
-      this.zone.run(() => this.photo = result);
-      this.recipeForm.patchValue({ image_path: this.photo });
+      const blob = await this.camService.pickFromGallery();
+      if (!blob) return;
+
+      this.photo = blob;
+      this.recipeForm.patchValue({ image_path: blob });
       this.recipeForm.get('image_path')?.updateValueAndValidity();
     } catch (err) {
       console.error('Error al seleccionar foto', err);
@@ -88,7 +92,7 @@ export class AddRecipeComponent  implements OnInit {
       this.loading.set(false);
     }
   }
-
+  
   public deletePhoto() {
     this.photo = null;
     this.recipeForm.patchValue({ image_path: null });
