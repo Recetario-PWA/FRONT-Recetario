@@ -64,7 +64,7 @@ export class CodePage implements OnInit {
 
   async newCodeAlert() {
     const alert = await this.alertCtrl.create({
-      header: 'Se ha enviado un nuevo código',
+      header: 'Se ha enviado un nuevo código 🥞',
       message: 'Por favor revisa en tu bandeja de spam si no lo ves en tu bandeja de entrada.',
       backdropDismiss: false,
       buttons: [
