@@ -50,7 +50,7 @@ export class LoginPage implements OnInit {
         //const email = userData.email;
         codeEmail.set(userData.email);
 
-        const result = await this.loginAlert("Credenciales correctas.", response.msg);
+        const result = await this.loginAlert("Inicio de sesión exitoso!", response.msg);
         /*if (result === 'confirm') {
           this.router.navigate(['auth/verify-code'], { state: { email } });
         }*/
@@ -72,6 +72,7 @@ export class LoginPage implements OnInit {
   }
 
   async loginAlert(title: string, msg: any): Promise<'confirm' | undefined> {
+    this.loading.set(false);
     const alert = await this.alertCtrl.create({
       header: title,
       message: msg,

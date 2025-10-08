@@ -28,7 +28,8 @@ export class Cache extends Dexie {
   }
 
   private isCacheValid(timestamp: number): boolean {
-    const twoDaysInMs = 2 * 24 * 60 * 60 * 1000;
-    return (Date.now() - timestamp) < twoDaysInMs;
+    //const twoDaysInMs = 2 * 24 * 60 * 60 * 1000;
+    const oneHourInMs = 3_600_000;
+    return (Date.now() - timestamp) < oneHourInMs;
   }
 }

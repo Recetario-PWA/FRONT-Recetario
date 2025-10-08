@@ -64,6 +64,10 @@ export class Auth {
     );
   }
 
+  resendCode(email: any): Observable<any> {
+    return this.httpClient.post(`${this.baseUrl}resend-code`, {email: email});
+  }
+
   logout(): Observable<any> {
     return this.httpClient.post(`${this.baseUrl}logout`, '').pipe(
       tap(() => {

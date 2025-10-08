@@ -18,7 +18,7 @@
       <ion-item-group class="ion-margin-horizontal ion-margin-bottom">
         <form [formGroup]="codeForm" (ngSubmit)="onSubmit()">
           <!-- CODE -->
-          <ion-input-otp formControlName="code" length="5" separators="all" type="text"></ion-input-otp>
+          <ion-input-otp formControlName="code" length="5" separators="all" type="text"> ¿No recibiste ningún código? <a (click)="resendCode()">Solicitar nuevo código</a> </ion-input-otp>
           <app-error-messages [control]="getControl('code')" label="El código"></app-error-messages>
 
           <!-- SUBMIT BUTTON -->

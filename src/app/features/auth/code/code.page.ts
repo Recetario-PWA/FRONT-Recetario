@@ -9,6 +9,7 @@ import { take, timeout, TimeoutError } from 'rxjs';
 import { User } from 'src/app/core/services/user';
 import { codeEmail } from 'src/app/core/stores/auth.store';
 import { HttpErrorResponse } from '@angular/common/http';
+import { PushService } from 'src/app/core/services/push';
 
 @Component({
   selector: 'app-code',
@@ -22,7 +23,7 @@ export class CodePage implements OnInit {
   codeForm: FormGroup;
   loading = signal(false);
 
-  constructor(private fb: FormBuilder, private authService: Auth, private userService: User, private navCtrl: NavController, private router: Router, private alertCtrl: AlertController) {
+  constructor(private fb: FormBuilder, private authService: Auth, private userService: User, private navCtrl: NavController, private router: Router, private alertCtrl: AlertController, private pushNotifications: PushService) {
     this.codeForm = this.fb.group({
       email: [''],
       code: ['', [Validators.required, Validators.pattern('^[A-Za-z0-9]{5}$')]]
@@ -61,6 +62,22 @@ export class CodePage implements OnInit {
     await alert.present();
   }
 
+  async newCodeAlert() {
+    const alert = await this.alertCtrl.create({
+      header: 'Se ha enviado un nuevo código',
+      message: 'Por favor revisa en tu bandeja de spam si no lo ves en tu bandeja de entrada.',
+      backdropDismiss: false,
+      buttons: [
+        {
+          text: 'Entendido',
+          role: 'cancel',
+        }
+      ],
+    });
+
+    await alert.present();
+  }
+
   onSubmit() {
     if (this.codeForm.invalid) {
       this.codeForm.markAllAsTouched();
@@ -79,7 +96,11 @@ export class CodePage implements OnInit {
       next: (response) => {
         if (response.result) {
           this.authService.saveToken(response.data.token);
-          this.authService.getUserInfo().subscribe();
+          this.authService.getUserInfo().subscribe(user => {
+            if (user?.data?.id) {
+              this.pushNotifications.init(user.data.id.toString());
+            }
+          });
 
           setTimeout(() => {
             this.router.navigate(['/tabs/home']);
@@ -96,6 +117,20 @@ export class CodePage implements OnInit {
         this.errorAlert(msg);
 
         this.loading.set(false);
+        console.log(error);
+      }
+    });
+  }
+
+  resendCode() { 
+    console.log('resendCode', this.email);
+    this.authService.resendCode(this.email).pipe(take(1)).subscribe({
+      next: (response) => { 
+        this.newCodeAlert();
+      },
+      error: (error: HttpErrorResponse) => {
+        const msg = (error as HttpErrorResponse).error?.msg || 'Ha ocurrido un error inesperado';
+        this.errorAlert(msg);
         console.log(error);
       }
     });
