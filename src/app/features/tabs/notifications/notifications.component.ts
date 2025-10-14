@@ -1,11 +1,11 @@
-import { Component, computed, OnInit, signal } from '@angular/core';
+import { Component, computed, effect, OnInit, signal } from '@angular/core';
 import { Router } from '@angular/router';
 import { IonHeader, IonToolbar, IonSearchbar, IonItem, IonLabel, IonContent, IonList, IonListHeader, IonAvatar, IonText, IonThumbnail, IonBadge, IonIcon, IonButton, IonSkeletonText } from "@ionic/angular/standalone";
 import { addIcons } from 'ionicons';
 import { heart, notificationsOffOutline, notificationsOutline } from 'ionicons/icons';
 import { TimeAgoPipe } from 'src/app/core/pipes/time-ago-pipe';
 import { User } from 'src/app/core/services/user';
-import { notifications, notificationsLoading } from 'src/app/core/stores/auth.store';
+import { approveNotifications, notifications, notificationsLoading } from 'src/app/core/stores/auth.store';
 
 @Component({
   selector: 'app-notifications',
@@ -16,6 +16,7 @@ import { notifications, notificationsLoading } from 'src/app/core/stores/auth.st
 })
 export class NotificationsComponent  implements OnInit {
   allComments = computed(() => notifications());
+  allApprove = computed(() => approveNotifications());
   loading = computed(() => notificationsLoading());
   skeletons = Array(4).fill(0);
   loadingMarkAll = signal(false);
@@ -50,8 +51,7 @@ export class NotificationsComponent  implements OnInit {
     addIcons({ heart, notificationsOutline, notificationsOffOutline });
   }
 
-  ngOnInit() {
-  }
+  ngOnInit() {}
 
   markAllAsRead() {
     this.loadingMarkAll.set(true);
@@ -69,7 +69,6 @@ export class NotificationsComponent  implements OnInit {
     });
   }
   
-
   markAsRead(comment: any) {
     if (!comment.read_at) {
       this.userService.markAsRead(comment.id).subscribe({
@@ -83,9 +82,11 @@ export class NotificationsComponent  implements OnInit {
       });
     }
 
-    this.router.navigate(['/recipe-detail', comment.data.recipe.id], {
-      queryParams: { commentId: comment.data.id }
-    });
+   if (comment.data.type === 'COMMENT') {
+     this.router.navigate(['/recipe-detail', comment.data.recipe.id], {
+        queryParams: { commentId: comment.data.id }
+      });
+   }
   }
 
   getIcon(comment: any): string {

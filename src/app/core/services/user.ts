@@ -2,7 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { environment } from 'src/environments/environment';
-import { notifications, notificationsLoading } from '../stores/auth.store';
+import { allNotisWithoutFilter, approveNotifications, notifications, notificationsLoading } from '../stores/auth.store';
 
 @Injectable({
   providedIn: 'root'
@@ -22,10 +22,23 @@ export class User {
 
   getNotifications() {
     notificationsLoading.set(true);
-    this.http.get<any>(`${this.baserNotificationsUrl}`).subscribe({
+    this.http.get<any>(`${environment.apiUrlBase}notifications`).subscribe({
       next: (response) => {
         if (response.data) {
-          notifications.set(response.data);
+          let allNotis = response.data;
+          allNotisWithoutFilter.set(response.data);
+
+          const commentNotis = allNotis.filter((response: any) => 
+            response.data.type === 'COMMENT'
+          );
+
+          const approveNotis = allNotis.filter((response: any) => 
+            response.data.type === 'ADMINRESPONSE'
+          )
+
+          notifications.set(commentNotis);
+          approveNotifications.set(approveNotis);
+
           notificationsLoading.set(false);
         } else {
           notifications.set(null);
@@ -45,5 +58,9 @@ export class User {
 
   markAllAsRead(): Observable<any> {
     return this.http.post(`${environment.apiUrlBase}notifications/read-all`, {});
+  }
+
+  sendRequestRole(data: any): Observable<any> {
+    return this.http.post(`${this.baseUrl}role-request`, data);
   }
 }

@@ -31,6 +31,6 @@ bootstrapApplication(AppComponent, {
 
 if ('serviceWorker' in navigator) {
   navigator.serviceWorker.register('/service-worker.js')
-    .then(reg => console.log('✅ SW Beams registrado', reg))
+    .then(reg => console.log('✅ SW Beams registrado'))
     .catch(err => console.error('❌ Error registrando SW Beams:', err));
 }

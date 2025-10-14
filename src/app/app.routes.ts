@@ -16,7 +16,7 @@ export const routes: Routes = [
   {
     path: 'tabs',
     loadComponent: () => import('./shared/components/tabs/tabs.component').then( m => m.TabsComponent),
-    canActivate: [tokenGuard],
+    canActivateChild: [tokenGuard],
     children: [
       {
         path: 'home',
@@ -43,9 +43,8 @@ export const routes: Routes = [
         loadComponent: () => import('./features/tabs/notifications/notifications.component').then( m => m.NotificationsComponent)
       },
       {
-        path: '',
-        redirectTo: 'home',
-        pathMatch: 'full'
+        path: 'send-rol-Request',
+        loadComponent: () => import('./features/tabs/rol-request/rol-request.page').then( m => m.RolRequestPage)
       }
     ]
   },
@@ -89,5 +88,9 @@ export const routes: Routes = [
     path: '',
     redirectTo: 'welcome',
     pathMatch: 'full'
+  },
+  {
+    path: 'rol-request',
+    loadComponent: () => import('./features/tabs/rol-request/rol-request.page').then( m => m.RolRequestPage)
   }
 ];

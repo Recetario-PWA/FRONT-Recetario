@@ -8,7 +8,7 @@ import { Notifications } from 'src/app/core/services/notifications';
 import { PushService } from 'src/app/core/services/push';
 import { User } from 'src/app/core/services/user';
 import { currentUser } from 'src/app/core/stores/auth.store';
-import { notifications as notis } from 'src/app/core/stores/auth.store';
+import { allNotisWithoutFilter as notis } from 'src/app/core/stores/auth.store';
 
 @Component({
   selector: 'app-tabs',
@@ -46,5 +46,9 @@ export class TabsComponent  implements OnInit {
 
   goToCreateEditRecipe() {
     this.router.navigateByUrl('/tabs/recipe/add'); 
+  }
+
+  goToSendRolRequest() {
+    this.router.navigateByUrl('/tabs/send-rol-Request');
   }
 }

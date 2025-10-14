@@ -33,6 +33,7 @@
     "@ionic/pwa-elements": "^3.3.0",
     "@pusher/push-notifications-web": "^1.1.0",
     "dexie": "^4.2.0",
+    "firebase-tools": "^14.17.0",
     "heic2any": "^0.0.4",
     "idb-keyval": "^5.1.5",
     "ionicons": "^7.0.0",

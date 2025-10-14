@@ -1,10 +1,18 @@
 <ion-tabs>  
 
-  <ion-fab vertical="bottom" horizontal="center" translucent="true" (click)="goToCreateEditRecipe()">
-    <ion-fab-button>
-      <ion-icon [name]="isTabActive('recipe/add') ? 'restaurant' : 'restaurant-outline'"></ion-icon>
-    </ion-fab-button>
-  </ion-fab>
+  @if (user()?.rol.role === 'user' || user()?.rol.role === 'admin') {
+    <ion-fab vertical="bottom" horizontal="center" translucent="true" (click)="goToCreateEditRecipe()">
+      <ion-fab-button>
+        <ion-icon [name]="isTabActive('recipe/add') ? 'restaurant' : 'restaurant-outline'"></ion-icon>
+      </ion-fab-button>
+    </ion-fab>
+  } @else {
+    <ion-fab vertical="bottom" horizontal="center" translucent="true" (click)="goToSendRolRequest()">
+      <ion-fab-button>
+        <ion-icon [name]="isTabActive('send-rol-Request') ? 'restaurant' : 'restaurant-outline'"></ion-icon>
+      </ion-fab-button>
+    </ion-fab>
+  }
   
   <ion-tab-bar slot="bottom" class="ion-no-border">
     <ion-tab-button tab="home">

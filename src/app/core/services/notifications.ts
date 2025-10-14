@@ -1,4 +1,4 @@
-import { Injectable, NgZone } from '@angular/core';
+import { Injectable, NgZone, signal } from '@angular/core';
 import Echo from 'laravel-echo';
 import Pusher from 'pusher-js';
 import { Auth } from './auth';
@@ -12,6 +12,7 @@ import { User } from './user';
 export class Notifications {
   private echo!: Echo<any>;
   private echoInitialized = false;
+  message: string = '';
 
   constructor(private userService: User, private authService: Auth, private toastCtrl: ToastController) {}
 
@@ -60,6 +61,19 @@ export class Notifications {
       const message = `💬 ${event.user.user_name} comentó en tu receta "${event.recipe.title}"`;
 
       await this.presentToast(message);
+  });
+
+  this.echo.private(`App.Models.User.${userId}`).listen('.approve.request', async (event: any) => {
+    //console.log('📩 Evento recibido desde Pusher:', event);
+    this.userService.getNotifications();
+    
+    if (event.status === 'aprobado') {
+      this.message = `🎉 Tu solicitud de cambio de rol ha sido aprobada por el administrador`;
+    } else if (event.status === 'denegado') {
+      this.message = `🚫 Tu solicitud de cambio de rol ha sido rechazada`;
+    }
+
+    await this.presentToast(this.message);
   });
 }
 

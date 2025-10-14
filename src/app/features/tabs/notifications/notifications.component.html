@@ -42,16 +42,45 @@
             <img [src]="comment.data.recipe.image_path"  />
           </ion-thumbnail>
         </ion-item>
-      } 
+      }
     } 
+
+    @for (approve of allApprove(); track approve.id) {
+        @if (approve.data.status === 'aprobado') {
+          <ion-item [class.unread]="approve.read_at == null" (click)="markAsRead(approve)">
+            <ion-avatar slot="start">
+              <img src="https://recetariopwa.sfo3.digitaloceanspaces.com/icons/avatarAdmin.png" alt="User Avatar" />
+            </ion-avatar>
+            <ion-label class="comment-label-container">
+              <div class="user-info-line">
+                <p class="notiContent">El <strong>Administrador</strong> ha aprobado tu solicitud de cambio de rol</p>
+              </div>
+              <span class="time-stamp">{{approve.created_at | timeAgo}}</span>
+            </ion-label>
+          </ion-item>
+        } @else if (approve.data.status === 'denegado') {
+          <ion-item [class.unread]="approve.read_at == null" (click)="markAsRead(approve)">
+            <ion-avatar slot="start">
+              <img src="https://recetariopwa.sfo3.digitaloceanspaces.com/icons/avatarAdmin.png" alt="User Avatar" />
+            </ion-avatar>
+            <ion-label class="comment-label-container">
+              <div class="user-info-line">
+                <p class="notiContent">El <strong>Administrador</strong> ha rechazado tu solicitud de cambio de rol</p>
+              </div>
+              <span class="time-stamp">{{approve.created_at | timeAgo}}</span>
+            </ion-label>
+          </ion-item>
+        }
+      } 
     
-    @if (allComments().length === 0 || allComments() === null) {
-      <ion-item>
-        <div class="emptyContainer">
-          <h4>No tienes notificaciones...</h4>
-        </div>
-      </ion-item>
-    }
+      @if ((!allComments()?.length || allComments() === null) && (!allApprove()?.length || allApprove() === null)) 
+      {
+        <ion-item>
+          <div class="emptyContainer">
+            <h4>No tienes notificaciones...</h4>
+          </div>
+        </ion-item>
+      }
 
     @if (groupedComments().older.length) {
       <ion-list-header>
