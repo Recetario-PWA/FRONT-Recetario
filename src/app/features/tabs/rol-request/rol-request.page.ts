@@ -6,6 +6,7 @@ import { ErrorMessagesComponent } from 'src/app/shared/components/error-messages
 import { User } from 'src/app/core/services/user';
 import { take, timeout, TimeoutError } from 'rxjs';
 import { HttpErrorResponse } from '@angular/common/http';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-rol-request',
@@ -18,7 +19,7 @@ export class RolRequestPage implements OnInit {
   loading = signal(false);
   requestForm: FormGroup;
 
-  constructor(private fb: FormBuilder, private alertController: AlertController, private userService: User, private loadingCtrl: LoadingController) {
+  constructor(private fb: FormBuilder, private alertController: AlertController, private userService: User, private loadingCtrl: LoadingController, private router: Router) {
     this.requestForm = this.fb.group({
       comment: ['', [Validators.required, Validators.minLength(10), Validators.maxLength(500)]],
     });
@@ -50,6 +51,7 @@ export class RolRequestPage implements OnInit {
         if (response.result) { 
           await sendingRequest.dismiss();
           this.loading.set(false);
+          this.requestForm.reset();
           this.succesAlert();
         }
       },
@@ -95,11 +97,17 @@ export class RolRequestPage implements OnInit {
       buttons: [
         {
           text: 'Entendido',
-          role: 'cancel',
+          handler: () => {
+            this.router.navigateByUrl('/tabs/home');
+          }
         }
       ],
     });
 
     await alert.present();
+  }
+
+  ionViewWillLeave () {
+    this.requestForm.reset();
   }
 }

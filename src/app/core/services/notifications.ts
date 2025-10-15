@@ -69,6 +69,11 @@ export class Notifications {
     
     if (event.status === 'aprobado') {
       this.message = `🎉 Tu solicitud de cambio de rol ha sido aprobada por el administrador`;
+      try {
+        window.location.reload();
+      } catch (error) {
+        console.error('❌ Error al actualizar usuario:', error);
+      }
     } else if (event.status === 'denegado') {
       this.message = `🚫 Tu solicitud de cambio de rol ha sido rechazada`;
     }
