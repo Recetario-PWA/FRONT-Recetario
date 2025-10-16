@@ -1,8 +1,9 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { environment } from '../../../environments/environment';
-import { Observable, tap } from 'rxjs';
+import { from, Observable, switchMap, tap } from 'rxjs';
 import { currentUser, userInfoLoading } from '../stores/auth.store';
+import { PushService } from './push';
 
 @Injectable({
   providedIn: 'root'
@@ -11,7 +12,7 @@ export class Auth {
   private baseUrl: string;
   private token: string | null = null;
 
-  constructor(private httpClient: HttpClient){
+  constructor(private httpClient: HttpClient, private push: PushService){
     this.baseUrl = `${environment.apiUrlBase}auth/`;
   }
 
@@ -70,6 +71,9 @@ export class Auth {
 
   logout(): Observable<any> {
     return this.httpClient.post(`${this.baseUrl}logout`, '').pipe(
+      switchMap(() =>
+        from(this.push.clear())
+      ),
       tap(() => {
         localStorage.removeItem('auth_token');
         this.token = null;
