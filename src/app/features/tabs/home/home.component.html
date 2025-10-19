@@ -29,6 +29,10 @@
 </ion-header>
 
 <ion-content class="hide-scrollbar">
+   <ion-refresher slot="fixed" (ionRefresh)="handleRefresh($event)">
+    <ion-refresher-content></ion-refresher-content>
+  </ion-refresher>
+
   <ion-label class="ion-margin-horizontal">{{ title() }} 🍽️</ion-label>
 
   <div class="ion-margin">

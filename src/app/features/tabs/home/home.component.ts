@@ -1,5 +1,5 @@
 import { Component, computed, OnInit, signal } from '@angular/core';
-import { IonHeader, IonToolbar, IonTitle, IonContent, IonLabel, IonText, IonIcon, IonItem, IonSearchbar, IonCardSubtitle, IonCardHeader, IonCardTitle, IonCardContent, IonCard, IonThumbnail, IonImg, IonAccordion, IonRow, IonCol, IonAvatar, IonGrid, IonList, IonSkeletonText, IonButton, IonInfiniteScroll, IonInfiniteScrollContent, InfiniteScrollCustomEvent } from '@ionic/angular/standalone';
+import { IonHeader, IonToolbar, IonTitle, IonContent, IonLabel, IonText, IonIcon, IonItem, IonSearchbar, IonCardSubtitle, IonCardHeader, IonCardTitle, IonCardContent, IonCard, IonThumbnail, IonImg, IonAccordion, IonRow, IonCol, IonAvatar, IonGrid, IonList, IonSkeletonText, IonButton, IonInfiniteScroll, IonInfiniteScrollContent, InfiniteScrollCustomEvent, IonRefresher, IonRefresherContent, RefresherCustomEvent } from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
 import { sunnyOutline, cloudOutline, moonOutline } from 'ionicons/icons';
 import { RecipeCardComponent } from '../components/recipe-card/recipe-card.component';
@@ -33,7 +33,9 @@ import { allRecipes } from 'src/app/core/stores/recipes.store';
     RecipeCardComponent, 
     RouterModule,
     IonSkeletonText,
-    IonThumbnail
+    IonThumbnail,
+    IonRefresher,
+    IonRefresherContent
   ],
 })
 export class HomeComponent implements OnInit {
@@ -155,5 +157,12 @@ export class HomeComponent implements OnInit {
     setTimeout(() => {
       event.target.complete();
     }, 500);
+  }
+
+  handleRefresh(event: RefresherCustomEvent) {
+    setTimeout(() => {
+      this.getRecipes();
+      event.target.complete();
+    }, 2000);
   }
 }

@@ -29,6 +29,8 @@ export class AppComponent {
   }
 
   ngOnInit() {
+    console.log(`HOLAAAA (●'◡'●) qué tanto miras aquí???`);
+    console.log(`DESARROLLADO POR ICELI 🩵`);
     this.authService.getUserInfo().subscribe(user => {
       if (user?.data?.id) {
         this.pushNotifications.init(user.data.id.toString());
