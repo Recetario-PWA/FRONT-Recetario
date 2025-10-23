@@ -15,6 +15,7 @@ export class ErrorMessagesComponent {
   @Input() label: string = '';
   @Input() version: 'm' | 'f' = 'm';
   @Input() unidad: string = '';
+  @Input() messageFormat: string = '';
 
   shouldShowError(): boolean {
     return !!this.control && this.control.invalid && (this.control.dirty || this.control.touched);
@@ -30,7 +31,7 @@ export class ErrorMessagesComponent {
       return `${this.label} es ${generoTxt}`;
     }
     if (e['email']) return `Formato de correo inválido`;
-    if (e['pattern']) return `Formato inválido`;
+    if (e['pattern']) return `${this.messageFormat}`;
     if (e['minlength']) return `Mínimo ${e['minlength'].requiredLength} caracteres`;
     if (e['maxlength']) return `Máximo ${e['maxlength'].requiredLength} caracteres`;
     if (e['min']) return `Mínimo ${e['min'].min}${this.unidad ? ' ' + this.unidad : ''}`;

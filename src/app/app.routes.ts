@@ -64,6 +64,14 @@ export const routes: Routes = [
         path: 'verify-code',
         canActivate: [codeGuard],
         loadComponent: () => import('./features/auth/code/code.page').then( m => m.CodePage)
+      },
+      {
+        path: 'recovery-password',
+        loadComponent: () => import('./features/auth/recovery-password/recovery-password.component').then( m => m.RecoveryPasswordComponent)
+      },
+      {
+        path: 'email-check',
+        loadComponent: () => import('./features/auth/email-check/email-check.component').then( m => m.EmailCheckComponent)
       }
     ]
   },

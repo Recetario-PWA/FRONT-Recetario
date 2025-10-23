@@ -43,6 +43,13 @@ export class Auth {
     return !!this.getToken();
   }
 
+  changePassword(data: any): Observable<any> {
+    return this.httpClient.put(`${this.baseUrl}change-password`, data);
+  }
+  
+  sendCode(data: any): Observable<any> {
+    return this.httpClient.post(`${this.baseUrl}resend-code`, data);
+  }
   //INFO DEL USUARIO
   //lo deje aqui porque tiene la ruta auth xd
   getUserInfo(): Observable<any> {

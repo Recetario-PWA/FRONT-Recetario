@@ -1,0 +1,34 @@
+<ion-content [fullscreen]="true">
+<ion-header class="ion-no-border">
+    <ion-toolbar>
+      <ion-buttons slot="start">
+        <ion-back-button mode="md" defaultHref="/" text=""></ion-back-button>
+      </ion-buttons>
+    </ion-toolbar>
+  </ion-header>
+  <ion-grid>
+    <ion-label color="white" class="ion-margin">
+      Recuperar cuenta
+    </ion-label>
+    <h4 class="info ion-margin">Ingresa tu correo para poder enviarte un código de autenticación.</h4>
+  </ion-grid>
+
+  <ion-row>
+    <ion-list lines="full">
+      <ion-item-group class="ion-margin-horizontal ion-margin-bottom">
+        <form [formGroup]="emailForm" (ngSubmit)="onSubmit()">
+        
+        <ion-item lines="none">
+          <ion-label position="stacked">Correo electronico</ion-label>
+          <input formControlName="email" type="email" placeholder="ejemplo@gmail.com">
+          <app-error-messages [control]="getControl('email')" label="Este campo"></app-error-messages>
+        </ion-item>
+        
+        <ion-button type="submit" [disabled]="loading()" size="large" class="btnCustom" expand="block">Enviar código</ion-button>
+      </form>
+
+      </ion-item-group>
+    </ion-list>
+  </ion-row>
+</ion-content>
+  
