@@ -35,9 +35,9 @@ export class EditProfilePage implements OnInit {
     addIcons({ closeOutline });
 
     this.updateInfoForm = this.fb.group({
-      user_name: ['',  [Validators.minLength(3), Validators.maxLength(50), Validators.pattern('^[A-Za-z][A-Za-z0-9._]{2,19}$')]],
-      name: ['', [Validators.maxLength(55), Validators.pattern("^[A-Za-zÑñÁÉÍÓÚáéíóú\\s']{1,55}$")]],
-      last_name: ['', [Validators.maxLength(55), Validators.pattern("^[A-Za-zÑñÁÉÍÓÚáéíóú\\s']{1,55}$")]],
+      user_name: ['',  [Validators.required, Validators.minLength(3), Validators.maxLength(50), Validators.pattern('^[A-Za-z][A-Za-z0-9._]{2,19}$')]],
+      name: ['', [Validators.required, Validators.maxLength(55), Validators.pattern("^[A-Za-zÑñÁÉÍÓÚáéíóú\\s']{1,55}$")]],
+      last_name: ['', [Validators.required, Validators.maxLength(55), Validators.pattern("^[A-Za-zÑñÁÉÍÓÚáéíóú\\s']{1,55}$")]],
       gender: ['', [Validators.required]],
       email: ['', [Validators.email, Validators.pattern('.+@[A-Za-z]+[.][A-Za-z]+(?:\.[A-Za-z]{2,})*'), Validators.maxLength(254)]],
     });
@@ -48,17 +48,17 @@ export class EditProfilePage implements OnInit {
     });
 
     effect(() => {
-      const currentUser = this.user();
+      const current = this.user();
 
-      if (currentUser) {
-        this.updateInfoForm.patchValue({
-          user_name: currentUser.user_name,
-          name: currentUser.name,
-          last_name: currentUser.last_name,
-          gender: currentUser.gender,
-          email: currentUser.email
-        });
-      }
+      if (!current) return;
+
+      this.updateInfoForm.patchValue({
+        user_name: current.user_name ?? '',
+        name: current.name ?? '',
+        last_name: current.last_name ?? '',
+        gender: current.gender ?? '',
+        email: current.email ?? ''
+      });
     });
   }
 

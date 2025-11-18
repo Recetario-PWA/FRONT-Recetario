@@ -71,14 +71,14 @@
         <ion-item lines="none" class="ion-margin-bottom">
           <ion-label position="stacked">Ingredientes</ion-label>
           <!--<ion-textarea placeholder="Enter text"></ion-textarea>-->
-          <textarea formControlName="ingredients" autocapitalize="on" wrap="hard" minlength="20" maxlength="1000" spellcheck="true" rows="8" placeholder="Escribe los ingredientes separados por (,)"></textarea>
+          <textarea formControlName="ingredients" autocapitalize="on" wrap="hard" minlength="20" maxlength="1000" spellcheck="true" rows="8" placeholder="Se recomienda separar los ingredientes con comas (,) para optimizar el formato de visualización"></textarea>
           <app-error-messages [control]="getControl('ingredients')" [label]="'El campo'"></app-error-messages>
         </ion-item>
 
         <ion-item lines="none" class="ion-margin-bottom">
           <ion-label position="stacked">Instrucciones</ion-label>
           <!--<ion-textarea placeholder="Enter text"></ion-textarea>-->
-          <textarea formControlName="instructions" autocapitalize="on" wrap="hard" minlength="20" maxlength="1000" spellcheck="true" rows="8" placeholder="Escribe las instrucciones separadas por (.)"></textarea>
+          <textarea formControlName="instructions" autocapitalize="on" wrap="hard" minlength="20" maxlength="1000" spellcheck="true" rows="8" placeholder="Se recomienda separar las instrucciones con puntos (.) para optimizar el formato de visualización"></textarea>
           <app-error-messages [control]="getControl('instructions')" [label]="'El campo'"></app-error-messages>
         </ion-item>
 

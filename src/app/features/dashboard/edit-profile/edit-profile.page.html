@@ -30,13 +30,13 @@
         <ion-item>
           <ion-label position="stacked">Nombre(s)</ion-label>
           <input formControlName="name" type="text" placeholder="Ej. Tyler">
-          <app-error-messages [control]="getControl(updateInfoForm, 'name')" label="Este campo"></app-error-messages>
+          <app-error-messages [control]="getControl(updateInfoForm, 'name')" label="Este campo" messageFormat="No debe incluir números o símbolos"></app-error-messages>
         </ion-item>
 
         <ion-item>
           <ion-label position="stacked">Apellidos(s)</ion-label>
           <input formControlName="last_name" type="text" placeholder="Ej. Joseph">
-          <app-error-messages [control]="getControl(updateInfoForm, 'last_name')" label="Este campo"></app-error-messages>
+          <app-error-messages [control]="getControl(updateInfoForm, 'last_name')" label="Este campo" messageFormat="No debe incluir números o símbolos"></app-error-messages>
         </ion-item>
 
         <ion-item>

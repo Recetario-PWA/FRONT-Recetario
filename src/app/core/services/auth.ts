@@ -4,6 +4,7 @@ import { environment } from '../../../environments/environment';
 import { from, Observable, switchMap, tap } from 'rxjs';
 import { currentUser, userInfoLoading } from '../stores/auth.store';
 import { PushService } from './push';
+import { AlertController } from '@ionic/angular/standalone';
 
 @Injectable({
   providedIn: 'root'
@@ -12,7 +13,7 @@ export class Auth {
   private baseUrl: string;
   private token: string | null = null;
 
-  constructor(private httpClient: HttpClient, private push: PushService){
+  constructor(private httpClient: HttpClient, private push: PushService, private alertCtrl: AlertController){
     this.baseUrl = `${environment.apiUrlBase}auth/`;
   }
 
@@ -87,5 +88,7 @@ export class Auth {
         currentUser.set(null);
       })
     );
-  }  
+  }
+  
+  
 }
