@@ -7,6 +7,7 @@ import { Auth } from 'src/app/core/services/auth';
 import { ErrorMessagesComponent } from "src/app/shared/components/error-messages/error-messages.component";
 import { take, timeout, TimeoutError } from 'rxjs';
 import { HttpErrorResponse } from '@angular/common/http';
+import { codeType } from 'src/app/core/stores/auth.store';
 
 @Component({
   selector: 'app-recovery-password',
@@ -25,11 +26,16 @@ export class RecoveryPasswordComponent  implements OnInit {
       password: ['', [Validators.required, Validators.pattern('^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[^A-Za-z\\d])[A-Za-z\\d\\W_]{8,}$'), Validators.maxLength(250), Validators.minLength(8)]],
       password_confirmation: ['', [Validators.required, Validators.pattern('^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[^A-Za-z\\d])[A-Za-z\\d\\W_]{8,}$'), Validators.maxLength(250), Validators.minLength(8)]],
     });
-
-
   }
 
   ngOnInit() {
+    const type = codeType();
+
+    if (type === null || type === '') {
+      this.router.navigateByUrl('/auth/login');
+    }
+
+    codeType.set(null);
   }
 
   getControl(name: string): AbstractControl {

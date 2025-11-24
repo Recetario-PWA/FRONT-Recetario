@@ -7,6 +7,7 @@ import { Auth } from 'src/app/core/services/auth';
 import { ErrorMessagesComponent } from "src/app/shared/components/error-messages/error-messages.component";
 import { take, timeout, TimeoutError } from 'rxjs';
 import { HttpErrorResponse } from '@angular/common/http';
+import { codeEmail, codeType } from 'src/app/core/stores/auth.store';
 
 @Component({
   selector: 'app-email-check',
@@ -35,14 +36,14 @@ export class EmailCheckComponent implements OnInit {
 
   async showAlert() {
     const alert = await this.alertController.create({
-      header: ' Cuenta encontrada!',
+      header: 'Cuenta encontrada!',
       message: '¡Se envió un código al correo, verifica el spam si no lo encuentras.',
       backdropDismiss: false,
       buttons: [
         {
           text: '¡Entendido!',
           handler: () => {
-            this.router.navigateByUrl('/auth/code');
+            this.router.navigate(['auth/verify-code']);
           }
         }
       ]
@@ -52,6 +53,7 @@ export class EmailCheckComponent implements OnInit {
   }
 
   onSubmit() {
+    codeEmail.set('');
     if(this.emailForm.invalid){
       this.emailForm.markAllAsTouched();
       return;
@@ -63,6 +65,8 @@ export class EmailCheckComponent implements OnInit {
     this.authService.sendCode(userData).pipe(timeout(15000), take(1)).subscribe({
       next: (response) => {
         if (response.result) {
+          codeEmail.set(userData.email);
+          codeType.set("recovery");
           this.showAlert();
           this.loading.set(false);
           this.emailForm.reset();

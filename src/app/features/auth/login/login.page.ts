@@ -1,29 +1,33 @@
 import { Component, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { AbstractControl, FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators  } from '@angular/forms';
-import { IonContent, IonHeader, IonTitle, IonToolbar, IonButton, IonLabel, IonButtons, IonBackButton, IonGrid, IonRow, IonList, IonItemGroup, IonInput, IonItem, IonSelect, IonSelectOption, IonInputPasswordToggle, AlertController } from '@ionic/angular/standalone';
+import { IonContent, IonHeader, IonTitle, IonToolbar, IonButton, IonLabel, IonButtons, IonBackButton, IonGrid, IonRow, IonList, IonItemGroup, IonInput, IonItem, IonSelect, IonSelectOption, IonInputPasswordToggle, AlertController, IonSpinner, LoadingController } from '@ionic/angular/standalone';
 import { Route, Router, RouterModule } from '@angular/router';
 import { Auth } from 'src/app/core/services/auth';
 import { ErrorMessagesComponent } from 'src/app/shared/components/error-messages/error-messages.component';
 import { timeout, TimeoutError } from 'rxjs';
 import { HttpErrorResponse } from '@angular/common/http';
 import { codeEmail } from 'src/app/core/stores/auth.store';
+import { NgxCaptchaModule } from 'ngx-captcha';
 
 @Component({
   selector: 'app-login',
   templateUrl: './login.page.html',
   styleUrls: ['./login.page.scss'],
   standalone: true,
-  imports: [RouterModule, ReactiveFormsModule, ErrorMessagesComponent, IonItem, IonInput, IonItemGroup, IonList, IonRow, IonGrid, IonBackButton, IonButtons, IonLabel, IonContent, IonHeader, IonToolbar, CommonModule, FormsModule, IonButton, IonInputPasswordToggle]
+  imports: [RouterModule, ReactiveFormsModule, NgxCaptchaModule, ErrorMessagesComponent, IonSpinner, IonItem, IonInput, IonItemGroup, IonList, IonRow, IonGrid, IonBackButton, IonButtons, IonLabel, IonContent, IonHeader, IonToolbar, CommonModule, FormsModule, IonButton, IonInputPasswordToggle]
 })
 export class LoginPage implements OnInit {
   loginForm: FormGroup;
   loading = signal(false);
+  siteKey = "6LelfhYsAAAAAHY7NKC7D6fLfh9b_OSEdI5_jEsc";
+  lang = 'es-419';
 
-  constructor(private fb: FormBuilder, private authService: Auth, private alertCtrl: AlertController, private router: Router) {
+  constructor(private fb: FormBuilder, private authService: Auth, private alertCtrl: AlertController, private router: Router, private loadingCtrl: LoadingController) {
     this.loginForm = this.fb.group({
       email: ['', [Validators.required, Validators.email, Validators.pattern('.+@[A-Za-z]+[.][A-Za-z]+(?:\.[A-Za-z]{2,})*'), Validators.maxLength(254)]],
-      password: ['', [Validators.required]]      
+      password: ['', [Validators.required]],
+      captcha: ['', [Validators.required]]    
     });
   }
 
@@ -35,7 +39,7 @@ export class LoginPage implements OnInit {
   }
 
   //Eventos
-  onSubmit() {
+  async onSubmit() {
     if (this.loginForm.invalid) {
       this.loginForm.markAllAsTouched();
       return;
@@ -45,11 +49,17 @@ export class LoginPage implements OnInit {
 
     this.loading.set(true);
 
+    const isLoggingIn = await this.loadingCtrl.create({
+        message: 'Iniciando sesión...',
+        spinner: 'crescent'
+    });
+    await isLoggingIn.present();
+
     this.authService.login(userData).pipe(timeout(15000)).subscribe({
       next: async (response) => {
         //const email = userData.email;
         codeEmail.set(userData.email);
-
+        await isLoggingIn.dismiss();
         const result = await this.loginAlert("Inicio de sesión exitoso!", response.msg);
         /*if (result === 'confirm') {
           this.router.navigate(['auth/verify-code'], { state: { email } });
@@ -58,13 +68,14 @@ export class LoginPage implements OnInit {
           this.router.navigate(['auth/verify-code']);
         }
       },
-      error: (error: HttpErrorResponse | TimeoutError) => {
+      error: async (error: HttpErrorResponse | TimeoutError) => {
+        await isLoggingIn.dismiss();
         if (error instanceof TimeoutError) {
           this.onSubmit();
           return;
         }
 
-        const msg = (error as HttpErrorResponse).error?.msg || 'Ha ocurrido un error inesperado';
+        const msg = (error as HttpErrorResponse).error?.msg || 'Ha ocurrido un error';
         this.loginAlert("Ups!", msg);
         this.loading.set(false);
       },

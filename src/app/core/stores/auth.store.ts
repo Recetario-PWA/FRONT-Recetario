@@ -14,4 +14,6 @@ export const notificationsLoading = signal<boolean>(false);
 
 export const codeEmail = signal<string | null>(null);
 
+export const codeType = signal<string | null>(null);
+
 //export const email = signal<string | null>(null);

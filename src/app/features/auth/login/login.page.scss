@@ -67,7 +67,7 @@ ion-content {
       }
 
       .login-btn {
-        margin-top: 1.75rem;
+        margin-top: 1rem;
         font-size: 1rem;
         font-weight: 600;
         text-transform: none;
@@ -89,6 +89,25 @@ ion-content {
   }
 }
 
-ion-item{
+ion-item {
   margin-bottom: 1rem;
+}
+
+.captcha {
+
+}
+
+.forgot-password {
+  text-align: left;
+  margin-bottom: 1.5rem;
+  a {
+    text-decoration: none;
+    color: var(--ion-color-primary);
+    font-size: 0.85rem;
+    font-weight: 600;
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
 }

@@ -35,10 +35,24 @@
             </ion-input>
             <app-error-messages [control]="getControl('password')" label="Este campo"></app-error-messages>
           </ion-item>
-
+        </div>
+        
+        <div class="forgot-password ion-margin">
+          <a routerLink="/auth/email-check" class="forgot-password">
+            ¿Olvidaste tu contraseña?
+          </a>
         </div>
 
-         <ion-button type="submit" [disabled]="loading()" size="large" expand="block" class="login-btn ion-margin-horizontal">Iniciar sesión</ion-button> 
+        <div class="ion-margin-horizontal captcha">
+          <ngx-recaptcha2
+            [siteKey]="siteKey"
+            formControlName="captcha"
+            [hl]="lang"
+            >
+          </ngx-recaptcha2>
+        </div>
+
+        <ion-button type="submit" [disabled]="loading()" size="large" expand="block" class="login-btn ion-margin-horizontal">Iniciar sesión</ion-button> 
       </form>
 
       <p>¿Eres nuevo? <a routerLink="/auth/register">Registrate aquí</a></p>

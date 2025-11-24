@@ -7,7 +7,7 @@ import { ErrorMessagesComponent } from "src/app/shared/components/error-messages
 import { Auth } from 'src/app/core/services/auth';
 import { take, timeout, TimeoutError } from 'rxjs';
 import { User } from 'src/app/core/services/user';
-import { codeEmail } from 'src/app/core/stores/auth.store';
+import { codeEmail, codeType } from 'src/app/core/stores/auth.store';
 import { HttpErrorResponse } from '@angular/common/http';
 import { PushService } from 'src/app/core/services/push';
 
@@ -95,16 +95,20 @@ export class CodePage implements OnInit {
     this.authService.verifyCode(data).pipe(timeout(15000), take(1)).subscribe({
       next: (response) => {
         if (response.result) {
-          this.authService.saveToken(response.data.token);
-          this.authService.getUserInfo().subscribe(user => {
-            if (user?.data?.id) {
-              this.pushNotifications.init(user.data.id.toString());
-            }
-          });
+          if (codeType() === "recovery"){
+            this.router.navigate(['/auth/recovery-password']);
+          } else {
+            this.authService.saveToken(response.data.token);
+            this.authService.getUserInfo().subscribe(user => {
+              if (user?.data?.id) {
+                this.pushNotifications.init(user.data.id.toString());
+              }
+            });
 
-          setTimeout(() => {
-            this.router.navigate(['/tabs/home']);
-          });
+            setTimeout(() => {
+              this.router.navigate(['/tabs/home']);
+            });
+          }
         }
       },
       error: (error: HttpErrorResponse | TimeoutError) => {
