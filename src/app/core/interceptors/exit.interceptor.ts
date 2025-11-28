@@ -15,7 +15,7 @@ const auth = inject(Auth);
       if (error.status === 401) {
         // Usuario eliminado o token inválido
         auth.logout().subscribe(() => {
-          router.navigate(['/login']);
+          router.navigate(['auth/login']);
         });
       }
 
