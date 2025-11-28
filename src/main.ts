@@ -11,6 +11,7 @@ import { environment } from './environments/environment.prod';
 import { provideHttpClient, withFetch, withInterceptors } from '@angular/common/http';
 import { tokenHandlerInterceptor } from './app/core/interceptors/token-handler.interceptor';
 import { cacheInterceptor } from './app/core/interceptors/cache.interceptor';
+import { exitInterceptor } from './app/core/interceptors/exit.interceptor';
 
 defineCustomElements(window);
 if (environment.production) {
@@ -25,7 +26,7 @@ bootstrapApplication(AppComponent, {
             enabled: !isDevMode(),
             registrationStrategy: 'registerWhenStable:30000'
           }),
-    provideHttpClient(withFetch(), withInterceptors([tokenHandlerInterceptor, cacheInterceptor])),
+    provideHttpClient(withFetch(), withInterceptors([tokenHandlerInterceptor, cacheInterceptor, exitInterceptor])),
   ],
 });
 
