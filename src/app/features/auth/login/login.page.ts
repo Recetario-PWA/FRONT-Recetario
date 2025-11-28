@@ -1,4 +1,4 @@
-import { Component, OnInit, signal } from '@angular/core';
+import { Component, OnInit, signal, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { AbstractControl, FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators  } from '@angular/forms';
 import { IonContent, IonHeader, IonTitle, IonToolbar, IonButton, IonLabel, IonButtons, IonBackButton, IonGrid, IonRow, IonList, IonItemGroup, IonInput, IonItem, IonSelect, IonSelectOption, IonInputPasswordToggle, AlertController, IonSpinner, LoadingController } from '@ionic/angular/standalone';
@@ -8,7 +8,7 @@ import { ErrorMessagesComponent } from 'src/app/shared/components/error-messages
 import { timeout, TimeoutError } from 'rxjs';
 import { HttpErrorResponse } from '@angular/common/http';
 import { codeEmail } from 'src/app/core/stores/auth.store';
-import { NgxCaptchaModule } from 'ngx-captcha';
+import { NgxCaptchaModule, ReCaptcha2Component } from 'ngx-captcha';
 
 @Component({
   selector: 'app-login',
@@ -22,6 +22,8 @@ export class LoginPage implements OnInit {
   loading = signal(false);
   siteKey = "6LelfhYsAAAAAHY7NKC7D6fLfh9b_OSEdI5_jEsc";
   lang = 'es-419';
+
+  @ViewChild(ReCaptcha2Component) recaptchaComponent!: ReCaptcha2Component;
 
   constructor(private fb: FormBuilder, private authService: Auth, private alertCtrl: AlertController, private router: Router, private loadingCtrl: LoadingController) {
     this.loginForm = this.fb.group({
@@ -69,6 +71,8 @@ export class LoginPage implements OnInit {
         }
       },
       error: async (error: HttpErrorResponse | TimeoutError) => {
+        this.recaptchaComponent.resetCaptcha();
+
         await isLoggingIn.dismiss();
         if (error instanceof TimeoutError) {
           this.onSubmit();
