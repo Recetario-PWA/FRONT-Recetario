@@ -99,7 +99,7 @@ export class EditProfilePage implements OnInit {
     this.userService.updateUser(changedData).pipe(timeout(15000), take(1)).subscribe({
       next: async (response) => {
         if (response.result) {
-          this.authService.getUserInfo();
+          this.authService.getUserInfo().subscribe();
           await loading.dismiss();
         }
       },
