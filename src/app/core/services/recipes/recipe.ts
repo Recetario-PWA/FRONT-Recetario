@@ -40,12 +40,10 @@ export class Recipe {
   }
   
   favorites(recipesIds: any[]): Observable<any> {
-    let params = new HttpParams();
-    recipesIds.forEach(id => {
-      params = params.append('favorites[]', id);
-    });
-    return this.http.get<{ data: any[] }>(`${this.baseUrl}favorites`, { params });
-  }
+  return this.http.post<{ data: any[] }>(`${this.baseUrl}favorites`, {
+    favorites: recipesIds
+  });
+}
 
   newRecipe(data: any): Observable<any> {
      return this.http.post(`${this.baseUrl}`, data);
