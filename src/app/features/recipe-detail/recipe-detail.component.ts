@@ -113,7 +113,21 @@ export class RecipeDetailComponent  implements OnInit {
           this.loadingRecipe.set(false);
         }
       },
-      error: (error) => {
+      error: async (error: HttpErrorResponse) => {
+        if (error.status === 422) {
+          const alert = await this.alertController.create({
+            header: '⚠️ Error',
+            message: error.error.msg || 'La receta no existe',
+            buttons: ['OK']
+          });
+
+          await alert.present();
+
+          this.router.navigateByUrl(this.router.url.split('?')[0]); 
+          history.back();
+          return;
+        }
+
         console.log(error);
       }
     });

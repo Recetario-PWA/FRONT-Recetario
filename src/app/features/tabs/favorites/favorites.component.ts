@@ -1,5 +1,5 @@
 import { Component, computed, effect, OnInit, signal } from '@angular/core';
-import { IonHeader, IonToolbar, IonButtons, IonBackButton, IonItem, IonLabel, IonIcon, IonText, IonAvatar, IonGrid, IonSearchbar, IonContent, IonRow, IonCol, IonCard, IonSkeletonText, IonThumbnail } from "@ionic/angular/standalone";
+import { IonHeader, IonToolbar, IonButtons, IonBackButton, IonItem, IonLabel, IonIcon, IonText, IonAvatar, IonGrid, IonSearchbar, IonContent, IonRow, IonCol, IonCard, IonSkeletonText, IonThumbnail, IonRefresher, IonRefresherContent, RefresherCustomEvent } from "@ionic/angular/standalone";
 import { RecipeCardComponent } from "../components/recipe-card/recipe-card.component";
 import { Recipe } from 'src/app/core/services/recipes/recipe';
 import { usefavList } from 'src/app/core/stores/favoriteRecipes.store';
@@ -10,7 +10,7 @@ import { take, timeout } from 'rxjs';
   templateUrl: './favorites.component.html',
   styleUrls: ['./favorites.component.scss'],
   standalone: true,
-  imports: [IonSkeletonText, IonCard, IonCol, IonRow, IonSearchbar, IonGrid, IonAvatar, IonText, IonIcon, IonLabel, IonItem, IonBackButton, IonButtons, IonToolbar, IonHeader, IonContent, RecipeCardComponent, IonThumbnail]
+  imports: [IonSkeletonText, IonCard, IonCol, IonRow, IonSearchbar, IonRefresher, IonRefresherContent, IonGrid, IonAvatar, IonText, IonIcon, IonLabel, IonItem, IonBackButton, IonButtons, IonToolbar, IonHeader, IonContent, RecipeCardComponent, IonThumbnail]
 })
 export class FavoritesComponent  implements OnInit {
   loading = signal(true);
@@ -85,5 +85,13 @@ export class FavoritesComponent  implements OnInit {
     const averageScore = totalScore / validScores.length;
 
     return parseFloat(averageScore.toFixed(1));
+  }
+
+  handleRefresh(event: RefresherCustomEvent) {
+    const ids = this.favRecipes();
+    setTimeout(() => {
+      this.getFavorites(ids);
+      event.target.complete();
+    }, 2000);
   }
 }
