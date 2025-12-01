@@ -116,7 +116,7 @@ export class RecipeDetailComponent  implements OnInit {
       error: async (error: HttpErrorResponse) => {
         if (error.status === 422) {
           const alert = await this.alertController.create({
-            header: '⚠️ Error',
+            header: 'Error',
             message: error.error.msg || 'La receta no existe',
             buttons: ['OK']
           });
