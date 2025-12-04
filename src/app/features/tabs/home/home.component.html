@@ -7,7 +7,7 @@
           <ion-text>{{ greeting }}</ion-text>
         </div>
         @defer (when !userLoading()) {
-          <p>{{ user()?.user_name || 'user' }}</p>
+          <p>{{ user()?.email || 'user' }}</p>
         } @placeholder {
           <p><ion-skeleton-text [animated]="true" style="width: 80%; height: 1.8rem;"></ion-skeleton-text></p>
         }
